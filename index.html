@@ -37,8 +37,22 @@
             released = [true,true,true,true];
             idProgress = [0,0,0,0];
             releasedIdProgress = [0,0,0,0];
-            hitRange = 32;
+            hitRange = 16;
             scrollSpeed = 15;
+
+            auto = false
+
+            Perfects = 0;
+            Goods = 0;
+            Bads = 0;
+            Misses = 0;
+            Hits = [Perfects, Goods, Bads, Misses];
+
+            function Get_Acc() {
+                totalNotes = Perfects + Goods + Bads + Misses;
+                acc = (totalNotes)/(Perfects + Goods * 2 + Bads * 4 + Misses * totalNotes)
+                return acc
+            }
 
             function LoadChart(chart, mapId) {
                 try {
@@ -113,19 +127,45 @@
                         PosY = chart.Get_Poss(i)[j].Get_Pos()[1];// - StartPos[1];
                         if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
                             if (PosY >= - (hitRange / 2)) {
-                                if (keys[i]) {
-                                        HitError(PosY*4);
-                                        RemoveNote(i, j);
-                                        return;
+                                if (PosY >= -(hitRange / 8)) {
+                                    if (PosY <= (hitRange / 8)) {
+                                        if (auto)
+                                            KeyDown(i)
+                                        if (keys[i]) {
+                                            if (auto)
+                                                KeyUp(i)
+                                            HitError(PosY*(128/(hitRange)));
+                                            RemoveNote(i, j);
+                                            Perfects++;
+                                            return;
+                                        }
+                                    }
                                 }
-                                if (PosY > (hitRange / 2)) {
-                                    HitError(PosY*4);
-                                    RemoveNote(i, j);
-                                    releasedIdProgress[i] = idProgress[i];
-                                    return;
+                                if (PosY >= -(hitRange / 4)) {
+                                    if (PosY <= (hitRange / 4)) {
+                                        if (keys[i]) {
+                                            HitError(PosY*(128/(hitRange)));
+                                            RemoveNote(i, j);
+                                            Goods++;
+                                            return;
+                                        }
+                                    }
+                                }
+                                if (keys[i]) {
+                                        HitError(PosY*(128/(hitRange)));
+                                        RemoveNote(i, j);
+                                        Bads++;
+                                        return;
                                 }
                             }
                         } 
+                        if (PosY > (hitRange / 2)) {
+                            HitError(PosY*(128/(hitRange)));
+                            RemoveNote(i, j);
+                            releasedIdProgress[i] = idProgress[i];
+                            Misses++;
+                            return;
+                        }
                     }
                 } 
             }
@@ -145,52 +185,39 @@
                 console.log(chart.Get_Poss(3));
             }
 
+            function KeyDown(index) {
+                key[index] = true
+                hitters[index].src = "Sprites/Hitter_Lit_1.png";
+                if (released[index] == true) {
+                    keys[index] = true
+                    released[index] = false;
+                }
+                setTimeout(function() {
+                    keys[index] = false
+                },1000/60);
+            }
+            
+            function KeyUp(index) {
+                key[index] = false;
+                hitters[index].src = "Sprites/Hitter_Unlit_1.png";
+                released[index] = true;
+                releasedIdProgress[index] = idProgress[index];
+            }
+
             lastUpdate = Date.now()
             window.onkeydown = function(e) {
                 switch (e.keyCode) {
                     case 68:
-                        key[0] = true
-                        hitters[0].src = "Sprites/Hitter_Lit_1.png";
-                        if (released[0] == true) {
-                            keys[0] = true
-                            released[0] = false;
-                        }
-                        setTimeout(function() {
-                            keys[0] = false
-                        },1000/60);
+                        KeyDown(0);
                         break;
                     case 70:
-                        key[1] = true
-                        hitters[1].src = "Sprites/Hitter_Lit_1.png";
-                        if (released[1] == true) {
-                            keys[1] = true
-                            released[1] = false;
-                        }
-                        setTimeout(function() {
-                            keys[1] = false
-                        },1000/60);
+                        KeyDown(1);
                         break;
                     case 74:
-                        key[2] = true
-                        hitters[2].src = "Sprites/Hitter_Lit_1.png";
-                        if (released[2] == true) {
-                            keys[2] = true
-                            released[2] = false;
-                        }
-                        setTimeout(function() {
-                            keys[2] = false
-                        },1000/60);
+                        KeyDown(2);
                         break;
                     case 75:
-                        key[3] = true
-                        hitters[3].src = "Sprites/Hitter_Lit_1.png";
-                        if (released[3] == true) {
-                            keys[3] = true
-                            released[3] = false;
-                        }
-                        setTimeout(function() {
-                            keys[3] = false
-                        },1000/60);
+                        KeyDown(3);
                         break;
                 
                     default:
@@ -200,28 +227,16 @@
             window.onkeyup = function(e) { 
                 switch (e.keyCode) {
                     case 68:
-                        key[0] = false;
-                        hitters[0].src = "Sprites/Hitter_Unlit_1.png";
-                        released[0] = true;
-                        releasedIdProgress[0] = idProgress[0];
+                        KeyUp(0);
                         break;
                     case 70:
-                        key[1] = false;
-                        hitters[1].src = "Sprites/Hitter_Unlit_1.png";
-                        released[1] = true;
-                        releasedIdProgress[1] = idProgress[1];
+                        KeyUp(1);
                         break;
                     case 74:
-                        key[2] = false;
-                        hitters[2].src = "Sprites/Hitter_Unlit_1.png";
-                        released[2] = true;
-                        releasedIdProgress[2] = idProgress[2];
+                        KeyUp(2);
                         break;
                     case 75:
-                        key[3] = false;
-                        hitters[3].src = "Sprites/Hitter_Unlit_1.png";
-                        released[3] = true;
-                        releasedIdProgress[3] = idProgress[3];
+                        KeyUp(3);
                         break;
                 
                     default:
@@ -247,7 +262,7 @@
                     hitters[i] = element;
                 }
                 Start(chartData, 1);
-                setInterval(Update, 1000/60)
+                setInterval(Update, 1)
             }
 
 
