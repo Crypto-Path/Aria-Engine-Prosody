@@ -9,10 +9,9 @@
 
             .hitter {
                 position: inherit;
-                background-color:crimson;
-                width: 96px;
-                height: 10px;
-                top: 894px;
+                width: 128px;
+                height: 128px;
+                top: 830px;
             }
 
             .hitError {
@@ -38,7 +37,7 @@
             released = [true,true,true,true];
             idProgress = [0,0,0,0];
             releasedIdProgress = [0,0,0,0];
-            hitRange = 128;
+            hitRange = 32;
             scrollSpeed = 15;
 
             function LoadChart(chart, mapId) {
@@ -54,7 +53,7 @@
             function CreateNote(chart, row, index) {
                 noteImage = document.createElement("img");
                 notes[row][index] = noteImage
-                noteImage.src = "Sprites/Note_Hit_2.png"; // Sets the image's image
+                noteImage.src = "Sprites/Note_Hit_"+(row+1)+".png"; // Sets the image's image
                 noteImage.classList.add('note'); // Sets the class for the look of the object
                 note = chart.Get_Poss(row)[index] // Gets note information
                 //noteImage.style.objectPosition = note.x + "px " + (note.y - StartPos[1]) + "px";
@@ -115,12 +114,12 @@
                         if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
                             if (PosY >= - (hitRange / 2)) {
                                 if (keys[i]) {
-                                        HitError(chart.Get_Poss(i)[j].Get_Pos()[1]);
+                                        HitError(PosY*4);
                                         RemoveNote(i, j);
                                         return;
                                 }
                                 if (PosY > (hitRange / 2)) {
-                                    HitError(chart.Get_Poss(i)[j].Get_Pos()[1]);
+                                    HitError(PosY*4);
                                     RemoveNote(i, j);
                                     releasedIdProgress[i] = idProgress[i];
                                     return;
@@ -151,7 +150,7 @@
                 switch (e.keyCode) {
                     case 68:
                         key[0] = true
-                        hitters[0].style.backgroundColor = "red";
+                        hitters[0].src = "Sprites/Hitter_Lit_1.png";
                         if (released[0] == true) {
                             keys[0] = true
                             released[0] = false;
@@ -162,7 +161,7 @@
                         break;
                     case 70:
                         key[1] = true
-                        hitters[1].style.backgroundColor = "red";
+                        hitters[1].src = "Sprites/Hitter_Lit_1.png";
                         if (released[1] == true) {
                             keys[1] = true
                             released[1] = false;
@@ -173,7 +172,7 @@
                         break;
                     case 74:
                         key[2] = true
-                        hitters[2].style.backgroundColor = "red";
+                        hitters[2].src = "Sprites/Hitter_Lit_1.png";
                         if (released[2] == true) {
                             keys[2] = true
                             released[2] = false;
@@ -184,7 +183,7 @@
                         break;
                     case 75:
                         key[3] = true
-                        hitters[3].style.backgroundColor = "red";
+                        hitters[3].src = "Sprites/Hitter_Lit_1.png";
                         if (released[3] == true) {
                             keys[3] = true
                             released[3] = false;
@@ -202,25 +201,25 @@
                 switch (e.keyCode) {
                     case 68:
                         key[0] = false;
-                        hitters[0].style.backgroundColor = "";
+                        hitters[0].src = "Sprites/Hitter_Unlit_1.png";
                         released[0] = true;
                         releasedIdProgress[0] = idProgress[0];
                         break;
                     case 70:
                         key[1] = false;
-                        hitters[1].style.backgroundColor = "";
+                        hitters[1].src = "Sprites/Hitter_Unlit_1.png";
                         released[1] = true;
                         releasedIdProgress[1] = idProgress[1];
                         break;
                     case 74:
                         key[2] = false;
-                        hitters[2].style.backgroundColor = "";
+                        hitters[2].src = "Sprites/Hitter_Unlit_1.png";
                         released[2] = true;
                         releasedIdProgress[2] = idProgress[2];
                         break;
                     case 75:
                         key[3] = false;
-                        hitters[3].style.backgroundColor = "";
+                        hitters[3].src = "Sprites/Hitter_Unlit_1.png";
                         released[3] = true;
                         releasedIdProgress[3] = idProgress[3];
                         break;
@@ -235,7 +234,7 @@
                     now = Date.now()
                     dt = now - lastUpdate;
                     lastUpdate = now;
-                    chart.ChangeProgress(1 /* (dt/16.666)*/);
+                    chart.ChangeProgress(1 * (dt/16.666));
                     UpdateNotePositions(); // Updates the the position of the notes behind the scene
                     UpdateNotes(); // Update the notes position the user will see onscreen
                     for (let i = 0; i < hitters.length; i++) {
@@ -258,11 +257,11 @@
                 <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
                 </div>
             </div>
-            <div id="HitterContainer" style="position: absolute;">
-                <div id="Hitter1" class="hitter" style="left: 7;" ></div>
-                <div id="Hitter2" class="hitter" style="left: 107;" ></div>
-                <div id="Hitter3" class="hitter" style="left: 207;" ></div>
-                <div id="Hitter4" class="hitter" style="left: 307;" ></div>
+            <div id="HitterContainer" style="position: absolute; background-color: rgba(0, 0, 0, 0.5); width:414px;height:100%">
+                <img id="Hitter1" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: -7px;" ></img>
+                <img id="Hitter2" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 93;" ></img>
+                <img id="Hitter3" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 193;" ></img>
+                <img id="Hitter4" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 293;" ></img>
             </div>
             <div id="NoteContainer" style="overflow:hidden;"></div>
         </div>
