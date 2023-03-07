@@ -1,0 +1,270 @@
+
+<html>
+    <body>
+        <style>
+            .note {
+                position: absolute;
+                width: 128px;
+            }
+
+            .hitter {
+                position: inherit;
+                background-color:crimson;
+                width: 96px;
+                height: 10px;
+                top: 894px;
+            }
+
+            .hitError {
+                position: inherit;
+                width: 5px;
+                height: 15px;
+                top:-5px;
+            }
+        </style>
+        <script src = "Scripts/note.js" ></script>
+        <script src = "Scripts/chart.js" ></script>
+        <script>
+            chart = null;
+            chartData = "{\"1\":{\"Name\":\"TestMap\",\"Creator\":\"Cyphe Mercury\",\"BPM\":60,\"4Rows\":{\"Difficulty1\":{\"Notes\":[[24000,12000,12000,24000,12000,12000,12000,12000],[30000,12000,12000,24000,12000,18000,12000],[24000,24000,12000,12000,24000,18000],[24000,24000,18000,36000,18000]]}}}}"; // TODO: Get map data from location
+            chartMetaData = null;
+
+            StartPos = [0,-830]
+
+            notes = [];
+            hitters = [];
+            key = [false,false,false,false];
+            keys = [false,false,false,false];
+            released = [true,true,true,true];
+            idProgress = [0,0,0,0];
+            releasedIdProgress = [0,0,0,0];
+            hitRange = 128;
+            scrollSpeed = 15;
+
+            function LoadChart(chart, mapId) {
+                try {
+                    _chart = JSON.parse(chart);
+                    _mapId = (mapId).toString();
+                } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
+                
+                return new Chart(_chart[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0); // Creates the chart that will be played or is being viewed
+            }
+            
+            tempNoteId = 0
+            function CreateNote(chart, row, index) {
+                noteImage = document.createElement("img");
+                notes[row][index] = noteImage
+                noteImage.src = "Sprites/Note_Hit_2.png"; // Sets the image's image
+                noteImage.classList.add('note'); // Sets the class for the look of the object
+                note = chart.Get_Poss(row)[index] // Gets note information
+                //noteImage.style.objectPosition = note.x + "px " + (note.y - StartPos[1]) + "px";
+                noteImage.style.left = (note.x - StartPos[0]) + "px"; // Sets the X location
+                noteImage.style.top = (note.y - StartPos[1]) + "px"; // Sets the Y location
+                noteImage.id = tempNoteId;
+                tempNoteId++;
+                document.getElementById("NoteContainer").appendChild(noteImage);// Appends the object to DOM
+            }
+
+            function InitNotes(chart) {
+                notes.length = chart.Get_Rows();
+                for (let i = 0; i < chart.Get_Rows(); i++) {
+                    notes[i] = []
+                    notes[i].length = chart.Get_Poss(i).length;
+                    for (let j = 0; j < chart.Get_Poss(i).length; j++) {
+                        CreateNote(chart, i, j);
+                    }
+                }
+            }
+
+            function UpdateNotePositions() {
+                for (let i = 0; i < notes.length; i++) {
+                    chart.UpdateNotes(i);
+                }
+            }
+
+            function RemoveNote(row, index) {
+                chart.Remove(row);
+                removedNote = notes[row].pop();
+                removedNote.remove()
+                idProgress[row]++;
+            }
+
+            function HitError(offset) {
+                hitError = document.createElement("div");
+                hitError.classList.add("hitError");
+                hitError.style.left = (offset+64)+"px";
+                hitError.style.backgroundColor = "rgb("+Math.abs(2*(Math.abs(offset)+64))+",160,"+Math.abs(4*(Math.abs(offset)-64))+")";
+                if (Math.abs(2*(Math.abs(offset)+64))>=255) {
+                    hitError.style.backgroundColor = "rgb(255,95,127)";
+                }
+                document.getElementById("HitErrorBar").appendChild(hitError)
+            }
+
+            function UpdateNotes() {
+                for (let i = 0; i < notes.length; i++) {
+                    for (let j = 0; j < notes[i].length; j++) {
+                        note = chart.Get_Poss(i)[j] // Gets note information
+                        notes[i][j].style.left = (note.Get_Pos()[0] - StartPos[0]) + "px"; // Sets the X location
+                        notes[i][j].style.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1]) + "px"; // Sets the Y location
+                    }
+                } 
+                for (let i = 0; i < notes.length; i++) {
+                    for (let j = 0; j < notes[i].length; j++) {
+                        note = chart.Get_Poss(i)[j]
+                        PosY = chart.Get_Poss(i)[j].Get_Pos()[1];// - StartPos[1];
+                        if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
+                            if (PosY >= - (hitRange / 2)) {
+                                if (keys[i]) {
+                                        HitError(chart.Get_Poss(i)[j].Get_Pos()[1]);
+                                        RemoveNote(i, j);
+                                        return;
+                                }
+                                if (PosY > (hitRange / 2)) {
+                                    HitError(chart.Get_Poss(i)[j].Get_Pos()[1]);
+                                    RemoveNote(i, j);
+                                    releasedIdProgress[i] = idProgress[i];
+                                    return;
+                                }
+                            }
+                        } 
+                    }
+                } 
+            }
+
+            function InitChart(ChartData, mapId) {
+                chart = LoadChart(chartData, mapId);
+                chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
+                InitNotes(chart)
+            }
+
+            function Start(chartData, mapId) {
+                InitChart(chartData, mapId)
+                console.log("Map: " + mapId + " - " + chartMetaData);
+                console.log(chart.Get_Poss(0));
+                console.log(chart.Get_Poss(1));
+                console.log(chart.Get_Poss(2));
+                console.log(chart.Get_Poss(3));
+            }
+
+            lastUpdate = Date.now()
+            window.onkeydown = function(e) {
+                switch (e.keyCode) {
+                    case 68:
+                        key[0] = true
+                        hitters[0].style.backgroundColor = "red";
+                        if (released[0] == true) {
+                            keys[0] = true
+                            released[0] = false;
+                        }
+                        setTimeout(function() {
+                            keys[0] = false
+                        },1000/60);
+                        break;
+                    case 70:
+                        key[1] = true
+                        hitters[1].style.backgroundColor = "red";
+                        if (released[1] == true) {
+                            keys[1] = true
+                            released[1] = false;
+                        }
+                        setTimeout(function() {
+                            keys[1] = false
+                        },1000/60);
+                        break;
+                    case 74:
+                        key[2] = true
+                        hitters[2].style.backgroundColor = "red";
+                        if (released[2] == true) {
+                            keys[2] = true
+                            released[2] = false;
+                        }
+                        setTimeout(function() {
+                            keys[2] = false
+                        },1000/60);
+                        break;
+                    case 75:
+                        key[3] = true
+                        hitters[3].style.backgroundColor = "red";
+                        if (released[3] == true) {
+                            keys[3] = true
+                            released[3] = false;
+                        }
+                        setTimeout(function() {
+                            keys[3] = false
+                        },1000/60);
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+            window.onkeyup = function(e) { 
+                switch (e.keyCode) {
+                    case 68:
+                        key[0] = false;
+                        hitters[0].style.backgroundColor = "";
+                        released[0] = true;
+                        releasedIdProgress[0] = idProgress[0];
+                        break;
+                    case 70:
+                        key[1] = false;
+                        hitters[1].style.backgroundColor = "";
+                        released[1] = true;
+                        releasedIdProgress[1] = idProgress[1];
+                        break;
+                    case 74:
+                        key[2] = false;
+                        hitters[2].style.backgroundColor = "";
+                        released[2] = true;
+                        releasedIdProgress[2] = idProgress[2];
+                        break;
+                    case 75:
+                        key[3] = false;
+                        hitters[3].style.backgroundColor = "";
+                        released[3] = true;
+                        releasedIdProgress[3] = idProgress[3];
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+            
+            window.onload = function() {
+                function Update(_chart) {
+                    now = Date.now()
+                    dt = now - lastUpdate;
+                    lastUpdate = now;
+                    chart.ChangeProgress(1 /* (dt/16.666)*/);
+                    UpdateNotePositions(); // Updates the the position of the notes behind the scene
+                    UpdateNotes(); // Update the notes position the user will see onscreen
+                    for (let i = 0; i < hitters.length; i++) {
+                        const element = hitters[i];
+                        element.innerHTML = key[i]+" "+idProgress[i]+"<br>"+keys[i]+" "+releasedIdProgress[i];   
+                    }
+                }
+                for (let i = 0; i < document.getElementsByClassName("hitter").length; i++) {
+                    const element = document.getElementsByClassName("hitter")[i];
+                    hitters[i] = element;
+                }
+                Start(chartData, 1);
+                setInterval(Update, 1000/60)
+            }
+
+
+        </script>
+        <div>
+            <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
+                <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
+                </div>
+            </div>
+            <div id="HitterContainer" style="position: absolute;">
+                <div id="Hitter1" class="hitter" style="left: 7;" ></div>
+                <div id="Hitter2" class="hitter" style="left: 107;" ></div>
+                <div id="Hitter3" class="hitter" style="left: 207;" ></div>
+                <div id="Hitter4" class="hitter" style="left: 307;" ></div>
+            </div>
+            <div id="NoteContainer" style="overflow:hidden;"></div>
+        </div>
+    </body>
+</html>
