@@ -147,6 +147,8 @@
                                         if (auto) {
                                             setTimeout(function() {
                                                 KeyDown(i);
+                                                FinalNoteTime = Date.now();
+                                                console.log(FinalNoteTime - StartTime)
                                             },hitRange);
                                         }
                                         if (keys[i]) {
@@ -243,6 +245,7 @@
                         KeyDown(3);
                         break;
                     case 32:
+                        StartTime = Date.now();
                         startMap();
                         break;
                 
@@ -320,7 +323,8 @@
                 inputIndex = index;
             }
 
-
+            StartTime = null;
+            FinalNoteTime = null;
             function Reload_Chart(_playing = false) {
                 clearInterval(0); // Stops Update from being called every ms
                 playing = false; // Keeps Update function from doing anything just incase
