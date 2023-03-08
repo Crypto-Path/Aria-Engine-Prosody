@@ -5,7 +5,7 @@ Link: [Aria Engine Prosody](http://cyphemercury.online/Aria-Engine-Prosody/) </b
 ## Furture Goals
  - [ ] Modifiers
    - [x] Auto
-   - [ ] Rate
+   - [x] Rate
    - [ ] Hidden
  - [ ] Map selection
  - [ ] Maps loaded from a server 

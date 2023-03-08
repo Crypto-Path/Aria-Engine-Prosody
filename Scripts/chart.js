@@ -9,7 +9,7 @@ class Chart {
      * @param {*} yVel 
      * @param {*} progress 
      */
-    constructor(map, rows, xOffset = 0, yOffset = 0, xVel = 0, yVel = 0, progress = 0) {
+    constructor(map, rows, xOffset = 0, yOffset = 0, xVel = 0, yVel = 0, progress = 0, rate = 1) {
         this.map = map;
         this.rows = rows;
         this.xOffset = xOffset;
@@ -17,6 +17,7 @@ class Chart {
         this.xVel = xVel;
         this.yVel = yVel;
         this.progress = progress;
+        this.rate = rate;
 
         this.row = []
         /*Sets each row to an empty array for some purpose idk*/
@@ -38,7 +39,7 @@ class Chart {
                     for (let x = 0; x < notes.length; x++) {
                         const element = notes[x];
                         console.log(element)
-                        this.tempNote = new Note(j*100,24000*(-element/(parseFloat(this.map["BPM"])*4)),this.row[j].length) // Creates note object
+                        this.tempNote = new Note(j*100,24000*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[j].length) // Creates note object
                         try { // A previous note doesn't always exist
                             this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[j][this.row[j].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
                             this.tempNote.Set_Pos(this.tempNote.Get_Start_Pos());
