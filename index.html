@@ -6,6 +6,55 @@
                 overflow: hidden; /* Hide scrollbars */
             }
 
+            p {
+                padding-top: 16px;
+                text-align: center;
+            }
+
+            input {
+                width: 30px;
+                height: 25px;
+                border-radius: 10px;
+                font-size: 10px;
+            }
+
+            label {
+                font-size: 16px;
+            }
+
+            /* Chrome, Safari, Edge, Opera */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
+
+            button {
+                width: 50px;
+                height: 25px auto;
+                border-radius: 10px;
+                font-size: 10px;
+            }
+
+            img {
+                image-rendering: pixelated;
+            }
+
+            .UIContainer {
+                margin-left: 2.5%;
+                Width: 95%;
+                border-radius: 10px;
+                background-color: rgba(62, 86, 114, 0.66);
+                text-align: center;
+                height: fit-content;
+                padding-bottom: 10px;
+            }
+
             .note {
                 position: absolute;
                 width: 128px;
@@ -15,7 +64,7 @@
                 position: inherit;
                 width: 128px;
                 height: 128px;
-                top: 800px;
+                top: 0px;
             }
 
             .hitError {
@@ -29,6 +78,18 @@
 
             .score {
                 border-radius: 10px;
+                background-color: yellow;
+                width: 90%;
+                margin-top: 10px;
+                margin-left: 15px;
+            }
+
+            .score:hover .scorePFP {
+                float:none;
+            }
+
+            .scorePFP {
+                float: left;
             }
         </style>
         <script src = "Scripts/note.js" ></script>
@@ -40,7 +101,7 @@
 
             playing = false
 
-            StartPos = [0,-800]
+            StartPos = [0,0]
 
             notes = [];
             hitters = [];
@@ -68,6 +129,9 @@
             Misses = 0;
             //Hits = [Perfects, Goods, Bads, Misses];
 
+            /*Misc*/
+            tempNoteId = 0
+
             function Get_Acc() {
                 totalNotes = Perfects + Goods + Bads + Misses;
                 acc = (totalNotes - Misses)/(Perfects + Goods * 2 + Bads * 4 + Misses * 8)
@@ -83,38 +147,6 @@
                 return new Chart(_chart[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
             }
             
-            tempNoteId = 0
-            function CreateNote(chart, row, index) {
-                noteImage = document.createElement("img");
-                notes[row][index] = noteImage
-                noteImage.src = "Sprites/Note_Hit_"+(row+1)+".png"; // Sets the image's image
-                noteImage.classList.add('note'); // Sets the class for the look of the object
-                note = chart.Get_Poss(row)[index] // Gets note information
-                //noteImage.style.objectPosition = note.x + "px " + (note.y - StartPos[1]) + "px";
-                noteImage.style.left = (note.x - StartPos[0]) + "px"; // Sets the X location
-                noteImage.style.top = (note.y - StartPos[1]) + "px"; // Sets the Y location
-                noteImage.id = tempNoteId;
-                tempNoteId++;
-                document.getElementById("NoteContainer").appendChild(noteImage);// Appends the object to DOM
-            }
-
-            function InitNotes(chart) {
-                notes.length = chart.Get_Rows();
-                for (let i = 0; i < chart.Get_Rows(); i++) {
-                    notes[i] = []
-                    notes[i].length = chart.Get_Poss(i).length;
-                    for (let j = 0; j < chart.Get_Poss(i).length; j++) {
-                        CreateNote(chart, i, j);
-                    }
-                }
-            }
-
-            function UpdateNotePositions() {
-                for (let i = 0; i < notes.length; i++) {
-                    chart.UpdateNotes(i);
-                }
-            }
-
             function RemoveNote(row, index) {
                 chart.Remove(row);
                 removedNote = notes[row].pop();
@@ -146,18 +178,11 @@
                 }, 500);
             }
 
-            function UpdateNotes() {
-                for (let i = 0; i < notes.length; i++) {
-                    for (let j = 0; j < notes[i].length; j++) {
-                        note = chart.Get_Poss(i)[j] // Gets note information
-                        notes[i][j].style.left = (note.Get_Pos()[0] - StartPos[0]) + "px"; // Sets the X location
-                        notes[i][j].style.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1]) + "px"; // Sets the Y location
-                    }
-                } 
+            function HitCheck() {
                 for (let i = 0; i < notes.length; i++) {
                     for (let j = 0; j < notes[i].length; j++) {
                         note = chart.Get_Poss(i)[j]
-                        PosY = chart.Get_Poss(i)[j].Get_Pos()[1];// - StartPos[1];
+                        PosY = note.Get_Pos()[1];// - StartPos[1];
                         if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
                             if (PosY >= - (hitRange / 2)) {
                                 if (PosY >= -(hitRange / 8)) {
@@ -208,7 +233,51 @@
                             return;
                         }
                     }
-                } 
+                }
+            }
+
+            function UpdateNotes() {
+                for (let i = 0; i < notes.length; i++) {
+                    for (let j = 0; j < notes[i].length; j++) {
+                        note = chart.Get_Poss(i)[j] // Gets note information
+                        noteObject = notes[i][j].style;
+                        noteObject.left = (note.Get_Pos()[0] - StartPos[0]) + "px"; // Sets the X location
+                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1]) + "px"; // Sets the Y location
+                    }
+                }  
+                HitCheck()
+            }
+
+            function CreateNote(chart, row, index) {
+                noteImage = document.createElement("img");
+                notes[row][index] = noteImage
+                noteImage.src = "Sprites/Note_Hit_"+(row+1)+".png"; // Sets the image's image
+                noteImage.classList.add('note'); // Sets the class for the look of the object
+                note = chart.Get_Poss(row)[index] // Gets note information
+                //noteImage.style.objectPosition = note.x + "px " + (note.y - StartPos[1]) + "px";
+                noteImage.style.left = (note.x - StartPos[0]) + "px"; // Sets the X location
+                noteImage.style.top = (note.y * scrollSpeed  - StartPos[1]) + "px"; // Sets the Y location
+                noteImage.id = tempNoteId;
+                tempNoteId++;
+                document.getElementById("NoteContainer").appendChild(noteImage);// Appends the object to DOM
+            }
+            
+
+            function InitNotes(chart) {
+                notes.length = chart.Get_Rows();
+                for (let i = 0; i < chart.Get_Rows(); i++) {
+                    notes[i] = []
+                    notes[i].length = chart.Get_Poss(i).length;
+                    for (let j = 0; j < chart.Get_Poss(i).length; j++) {
+                        CreateNote(chart, i, j);
+                    }
+                }
+            }
+
+            function UpdateNotePositions() {
+                for (let i = 0; i < notes.length; i++) {
+                    chart.UpdateNotes(i);
+                }
             }
 
             function InitChart(ChartData, mapId) {
@@ -298,7 +367,17 @@
             }
             
             window.onload = function() {
+                if (localStorage["ScrollSpeed"] != null)
+                    document.getElementById("OptionScrollSpeed").value = localStorage["ScrollSpeed"];
+                    
+                if (localStorage["MapXOffset"] != null)
+                    document.getElementById("OptionPlayfieldXOffset").value = localStorage["MapXOffset"];
+
+                if (localStorage["Upscroll"] == 'true')
+                    document.getElementById("OptionUpscroll").checked = true;;
+
                 function Update(_chart) {
+                    UpdateNotes(); // Update the notes position the user will see onscreen
                     if (playing) {
                         now = Date.now()
                         dt = now - lastUpdate;
@@ -306,7 +385,6 @@
                         try { chart.ChangeProgress(1 * (dt/16.666));
                         } finally { }
                         UpdateNotePositions(); // Updates the the position of the notes behind the scene
-                        UpdateNotes(); // Update the notes position the user will see onscreen
                         for (let i = 0; i < hitters.length; i++) {
                             const element = hitters[i];
                             element.innerHTML = key[i]+" "+idProgress[i]+"<br>"+keys[i]+" "+releasedIdProgress[i];   
@@ -319,19 +397,13 @@
                     const element = document.getElementsByClassName("hitter")[i];
                     hitters[i] = element;
                 }
-                Start(chartData, 1);
+                Reload_Chart();
                 setInterval(Update, 1)
             }
 
-            document.getElementById("OptionPlayfieldXOffst").addEventListener('keypress', function(e) {
-                console.log("Test");
-                if (e.key == 'Enter') {
-                }
-            });
-
             function startMap() {
                 auto = document.getElementById("OptionModAuto").checked;
-                scrollSpeed = document.getElementById("OptionScrollSpeed").value;
+                
 
                 playing = true;
                 lastUpdate = Date.now()
@@ -358,6 +430,8 @@
                 clearInterval(0); // Stops Update from being called every ms
                 playing = false; // Keeps Update function from doing anything just incase
 
+                SaveOptions(); // Gets and Sets the Options
+
                 // Removes ALL Notes
                 for (let i = 0; i < notes.length; i++) {
                     for (let j = 0; j < notes[i].length; j++) {
@@ -369,11 +443,6 @@
                 while (document.getElementById("NoteContainer").children.length > 0) {
                     document.getElementById("NoteContainer").children[0].remove();
                 }
-
-                /*// Removes hit errors
-                while (document.getElementById("HitError").children.length > 0) {
-                    document.getElementById("NoteContainer").children[0].remove();
-                }*/
 
                 // Now that all notes are go, notelock gets reset.
                 for (let i = 0; i < idProgress.length; i++) {
@@ -389,33 +458,69 @@
 
                 // For Rat Changes
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
-                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffst").value;
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
                 playing =  _playing;
             }
+            
+            function SaveOptions() {
+                scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
+                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value;
+
+                localStorage['Upscroll'] = document.getElementById("OptionUpscroll").checked;
+                localStorage['ScrollSpeed'] = scrollSpeed;
+                localStorage['MapXOffset'] = document.getElementById("OptionPlayfieldXOffset").value;
+
+                document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
+                document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
+
+                array = document.getElementsByClassName("hitter")
+                if (localStorage['Upscroll'] == 'true') {
+                    for (let i = 0; i < array.length; i++) {
+                        const element = array[i];
+                        element.style.top = ""
+                    }
+                    StartPos[1] = 0
+                } else {
+                    for (let i = 0; i < array.length; i++) {
+                        const element = array[i];
+                        element.style.top = "800px"
+                    }
+                    StartPos[1] = -800
+                }
+            }
 
         </script>
         <div id="EverythingContainer" style="position:absolute; width: 900px; left:366; height: 98%;">
-            <div style="position:inherit; width: 300px; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-                <p style="float: left; width: 100%; text-align: center;">
-                    SCORES (WIP)
-                </p> 
+            <div class = "UIContainer" style="position:inherit; width: 300px; height: 98%;">
+                <div>
+                    <p>
+                        SCORES (WIP)
+                    </p> 
+                </div>
                 <div style="width:100%; height: 10px;">
 
                 </div>
-                <div id="ScoreContainer" style="width: 100%; display: flex; align-items: center; justify-content: center;">
-                    <div id="TestScore" class="Score" style="background-color: yellow; width: 90%;">
-                        <img src="Sprites/Hitter_Unlit_1.png" style="float: left;"/>
+                <div id="ScoreContainer" class="UIContainer">
+                    <div class="Score">
+                        <img class="scorePFP" src="Sprites/Hitter_Unlit_1.png" />
                         <div>
                             <a>Cyphe Mercury</a> <br>
                             <a>Test Score: 100%</a> <br>
                             <a>Date: 3/8/2023 10:08PM (GMT-8)</a> <br>
                         </div>
                     </div>
+                    <div class="Score">
+                        <img class="scorePFP" src="Sprites/Hitter_Unlit_1.png" />
+                        <div>
+                            <a>Test Score</a> <br>
+                            <a>Test Score: 100%</a> <br>
+                            <a>Date: 3/8/2023 11:35PM (GMT-8)</a> <br>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="ChartContainer" style="position:absolute; width: 428px; height: 100%; left: 400 ;">
+            <div id="ChartContainer" style="position:absolute; width: 428px; height: 110%; left: 400; top: -10px;">
                 <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
                     <a id="AccText" style="position: inherit; top: -32px; left: 48px;"></a>
                     <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
@@ -429,25 +534,56 @@
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="MapsSettingContainer" style="position:inherit; left: 900px; width: 300px; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-                <label>Auto: </label>
-                <input id="OptionModAuto" type="checkbox"> <br>
-                <label>Rate: </label>
-                <input id="OptionModRate" type="number" value="1"> <br>
-                <label>Scroll Speed: </label>
-                <input id="OptionScrollSpeed" type="number" style="width:40px" value="15"> <br>
-                <label>Keys: (Uses key codes)</label> <br>
-                <label>1 -</label>
-                <input id="KeyCheck1" type="number" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
-                <label>2 -</label>
-                <input id="KeyCheck2" type="number" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
-                <label>3 -</label>
-                <input id="KeyCheck3" type="number" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
-                <label>4 -</label>
-                <input id="KeyCheck4" type="number" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
-                <button onclick="Reload_Chart()">Reload Chart</button> <br>
-                <label>Playfield X Offset: </label>
-                <input id="OptionPlayfieldXOffst" type="number" style="width:80px" value="366"> <br>
+            <div id="MapsSettingContainer" class = "UIContainer" style="position:inherit; left: 900px; width: 300px; height: 98%; align-items: center; justify-content: center;">
+                <div class = "UIContainer">
+                    <div>
+                        <p>
+                            MODS:
+                        </p>
+                    </div>
+                    <label>Auto: </label>
+                    <input id="OptionModAuto" type="checkbox"> <br>
+                    <label>Rate: </label>
+                    <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
+                </div>
+                <div class = "UIContainer">
+                    <div>
+                        <p>
+                            GamePlay:
+                        </p>
+                    </div>
+                    <label>Upscroll: </label>
+                    <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <br>
+                    <label>Scroll Speed: </label>
+                    <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <br>
+                    <label>Playfield X Offset: </label>
+                    <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <br>
+                    <div class = "UIContainer">
+                        <div>
+                            <p>
+                                Key Bindings:
+                            </p>
+                        </div>
+                    <label>Keys: (Uses key codes)</label> <br>
+                    <label>1 -</label>
+                    <input id="KeyCheck1" type="number" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
+                    <label>2 -</label>
+                    <input id="KeyCheck2" type="number" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
+                    <label>3 -</label>
+                    <input id="KeyCheck3" type="number" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
+                    <label>4 -</label>
+                    <input id="KeyCheck4" type="number" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
+                    </div>
+                </div>
+                
+                <div class = "UIContainer">
+                    <div>
+                        <p>
+                            Expirimental:
+                        </p>
+                    </div>
+                    <button onclick="Reload_Chart()">Reload Chart</button> <br>
+                </div>
             </div>
         </div>
     </body>
