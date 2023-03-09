@@ -387,10 +387,17 @@
                     
                 if (!isNaN(localStorage['KeyBinding4']))
                     document.getElementById("KeyCheck4").value = localStorage['KeyBinding4'];
+                    
+                hitKeys = [
+                    parseInt(document.getElementById("KeyCheck1").value),
+                    parseInt(document.getElementById("KeyCheck2").value),
+                    parseInt(document.getElementById("KeyCheck3").value),
+                    parseInt(document.getElementById("KeyCheck4").value)
+                ];
             }
             
             window.onload = function() {
-
+                LoadSettings()
                 function Update(_chart) {
                     UpdateNotes(); // Update the notes position the user will see onscreen
                     if (playing) {
