@@ -4,12 +4,17 @@
         <style>
             body {
                 overflow: hidden; /* Hide scrollbars */
-                //background-color: black;
+                /*background-color: black;*/
             }
 
             p {
                 padding-top: 16px;
                 text-align: center;
+                color: white;
+            }
+
+            a {
+                color: white;
             }
 
             input {
@@ -21,6 +26,7 @@
 
             label {
                 font-size: 16px;
+                color: white;
             }
 
             /* Chrome, Safari, Edge, Opera */
@@ -46,6 +52,25 @@
                 image-rendering: pixelated;
             }
 
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            /* Track */
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+                background: #888;
+            }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
             .UIContainer {
                 margin-left: 2.5%;
                 Width: 95%;
@@ -54,6 +79,13 @@
                 text-align: center;
                 height: fit-content;
                 padding-bottom: 10px;
+                margin-top: 10px;
+            }
+
+            .MainUIContainer {
+                background-color: rgba(62, 86, 114, 0.4);
+                border-radius: 20px;
+                overflow-y: auto; /* Hide scrollbars */
             }
 
             .note {
@@ -79,18 +111,25 @@
 
             .score {
                 border-radius: 10px;
-                background-color: yellow;
+                background-color: rosybrown;
                 width: 90%;
                 margin-top: 10px;
                 margin-left: 15px;
             }
 
-            .score:hover .scorePFP {
-                float:none;
-            }
-
             .scorePFP {
                 float: left;
+                width: 15%;
+                margin: auto;
+                background-color: rgba(0, 0, 0, 0.3);
+                border-radius: 10px;
+            }
+
+            .score:hover .scorePFP {
+                float:none;
+                width:50%;
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 33px;
             }
 
             .textarea {
@@ -98,6 +137,7 @@
                 overflow: hidden;
                 min-height: 20px;
                 line-height: 20px;
+                color: rgb(201, 201, 201);
             }
         </style>
         <script src = "Scripts/note.js" ></script>
@@ -143,7 +183,27 @@
             function Get_Acc() {
                 totalNotes = Perfects + Goods + Bads + Misses;
                 acc = (totalNotes - Misses)/(Perfects + Goods * 2 + Bads * 4 + Misses * 8)
-                return acc
+                return acc * rate
+            }
+
+            function Get_Value(acc, rate) {
+                _all = JSON.parse(chartData)["1"]["4Rows"]["Difficulty1"]["Notes"];
+                _density = 0;
+                _length = 0;
+                for (let i = 0; i < _all.length; i++) {
+                    const _row = _all[i];
+                    _totalDistance = 0;
+                    for (let j = 0; j < _row.length; j++) {
+                        const _distance = _row[j];
+                        _totalDistance += 1 / _distance
+                        _length++;
+                    }
+                    _density += _totalDistance/_all.length; // Gets Average distance between notes
+                }
+                _chartDensity = _density;
+                _chartLength = _length;
+                _difficulty = Math.sqrt((_chartDensity * _chartLength * JSON.parse(chartData)["1"]["BPM"] * rate) / 10000);
+                return Math.pow(_difficulty, (acc / 0.95));
             }
 
             function LoadChart(chart, mapId) {
@@ -187,58 +247,60 @@
             }
 
             function HitCheck() {
-                for (let i = 0; i < notes.length; i++) {
-                    for (let j = 0; j < notes[i].length; j++) {
-                        note = chart.Get_Poss(i)[j]
-                        PosY = note.Get_Pos()[1];// - StartPos[1];
-                        if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-                            if (PosY >= - (hitRange / 2)) {
-                                if (PosY >= -(hitRange / 8)) {
-                                    if (PosY <= (hitRange / 8)) {
-                                        if (auto) {
-                                            setTimeout(function() {
-                                                KeyDown(i);
-                                                FinalNoteTime = Date.now();
-                                                console.log(FinalNoteTime - StartTime)
-                                            },hitRange);
-                                        }
-                                        if (keys[i]) {
+                if (playing) {
+                    for (let i = 0; i < notes.length; i++) {
+                        for (let j = 0; j < notes[i].length; j++) {
+                            note = chart.Get_Poss(i)[j]
+                            PosY = note.Get_Pos()[1];// - StartPos[1];
+                            if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
+                                if (PosY >= - (hitRange / 2)) {
+                                    if (PosY >= -(hitRange / 8)) {
+                                        if (PosY <= (hitRange / 8)) {
                                             if (auto) {
                                                 setTimeout(function() {
-                                                    KeyUp(i);
-                                                },hitRange*2);
+                                                    KeyDown(i);
+                                                    FinalNoteTime = Date.now();
+                                                    console.log(FinalNoteTime - StartTime)
+                                                },hitRange);
                                             }
-                                            HitError(PosY*(128/(hitRange)));
-                                            RemoveNote(i, j);
-                                            Perfects++;
-                                            return;
+                                            if (keys[i]) {
+                                                if (auto) {
+                                                    setTimeout(function() {
+                                                        KeyUp(i);
+                                                    },hitRange*2);
+                                                }
+                                                HitError(PosY*(128/(hitRange)));
+                                                RemoveNote(i, j);
+                                                Perfects++;
+                                                return;
+                                            }
                                         }
                                     }
-                                }
-                                if (PosY >= -(hitRange / 4)) {
-                                    if (PosY <= (hitRange / 4)) {
-                                        if (keys[i]) {
-                                            HitError(PosY*(128/(hitRange)));
-                                            RemoveNote(i, j);
-                                            Goods++;
-                                            return;
+                                    if (PosY >= -(hitRange / 4)) {
+                                        if (PosY <= (hitRange / 4)) {
+                                            if (keys[i]) {
+                                                HitError(PosY*(128/(hitRange)));
+                                                RemoveNote(i, j);
+                                                Goods++;
+                                                return;
+                                            }
                                         }
                                     }
+                                    if (keys[i]) {
+                                            HitError(PosY*(128/(hitRange)));
+                                            RemoveNote(i, j);
+                                            Bads++;
+                                            return;
+                                    }
                                 }
-                                if (keys[i]) {
-                                        HitError(PosY*(128/(hitRange)));
-                                        RemoveNote(i, j);
-                                        Bads++;
-                                        return;
-                                }
+                            } 
+                            if (PosY > (hitRange / 2)) {
+                                HitError(PosY*(128/(hitRange)));
+                                RemoveNote(i, j);
+                                releasedIdProgress[i] = idProgress[i];
+                                Misses++;
+                                return;
                             }
-                        } 
-                        if (PosY > (hitRange / 2)) {
-                            HitError(PosY*(128/(hitRange)));
-                            RemoveNote(i, j);
-                            releasedIdProgress[i] = idProgress[i];
-                            Misses++;
-                            return;
                         }
                     }
                 }
@@ -530,8 +592,8 @@
             }
 
         </script>
-        <div id="EverythingContainer" style="position:absolute; width: 900px; left:366; height: 98%;">
-            <div class = "UIContainer" style="position:inherit; width: 300px; height: 98%;">
+        <div id="EverythingContainer" style="position:absolute; width: 1500px; left:300; top:40px; height: 98%;">
+            <div class = "UIContainer" style="position:inherit; width: 366px; height: 98%;">
                 <div>
                     <p>
                         SCORES (WIP)
@@ -545,7 +607,7 @@
                         <img class="scorePFP" src="Sprites/Hitter_Unlit_1.png" />
                         <div>
                             <a>Cyphe Mercury</a> <br>
-                            <a>Test Score: 100%</a> <br>
+                            <a>Test Score: 97.03% (Nomod)</a> <br>
                             <a>Date: 3/8/2023 10:08PM (GMT-8)</a> <br>
                         </div>
                     </div>
@@ -559,9 +621,9 @@
                     </div>
                 </div>
             </div>
-            <div id="ChartContainer" style="position:absolute; width: 428px; height: 110%; left: 400; top: -10px;">
+            <div id="ChartContainer" style="position:absolute; width: 428px; height: 110%; left: 466px; top: -10px;">
                 <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
-                    <a id="AccText" style="position: inherit; top: -32px; left: 48px;"></a>
+                    <a id="AccText" style="position: inherit; width: 128px; top: -32px; color: black; text-align: center;">&lt;Space to Start&gt;</a>
                     <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
                     </div>
                 </div>
@@ -573,7 +635,8 @@
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="MapsSettingContainer" class = "UIContainer" style="position:inherit; left: 900px; width: 300px; height: 98%; align-items: center; justify-content: center;">
+            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="position:inherit; left: 900px; width: 366px; height: 98%; align-items: center; justify-content: center;">
+
                 <div class = "UIContainer">
                     <div>
                         <p>
@@ -585,6 +648,7 @@
                     <label>Rate: </label>
                     <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
                 </div>
+
                 <div class = "UIContainer">
                     <div>
                         <p>
@@ -623,10 +687,86 @@
                     </div>
                     <button onclick="Reload_Chart()">Reload Chart</button> <br>
                     <div class="UIContainer">
+                        <div>
+                            <p>
+                                Map JSON:
+                            </p>
+                        </div>
+                        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>{"1":{"Name":"TestMap","Creator":"Cyphe Mercury","BPM":180,"4Rows":{"Difficulty1":{"Notes":[[1,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75],[1.25,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5],[1,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75,1,0.5,0.5,1,0.75,0.5,0.75],[1,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5,1,0.75,1.5,0.75,0.5,0.5]]}}}}</span>
+                    </div>
+                </div>
+                
+                <div class = "UIContainer">
+                    <div>
                         <p>
-                            Map JSON:
+                            Other:
                         </p>
-                        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>{"1":{"Name":"TestMap","Creator":"Cyphe Mercury","BPM":180,"4Rows":{"Difficulty1":{"Notes":[[1,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75],[1.25,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5],[1,1,0.5,0.5,1,0.75,0.5,0.75],[1,1,0.75,1.5,0.75,0.5,0.5]]}}}}</span>
+                    </div>
+                    <div class="UIContainer">
+                        <div>
+                            <p>
+                                Help:
+                            </p>
+                        </div>
+                        <div class="UIContainer">
+                            <div>
+                                <p>
+                                    Starting:
+                                </p>
+                            </div>
+                            <a>
+                                To start press the SPACE button on your keyboard. If done correctly notes (Object/Images, depending on the skin, likely have a diamond shaped with a futuristic tech sprite) will start falling.
+                            </a>
+                        </div>
+                        
+                        <div class="UIContainer">
+                            <div>
+                                <p>
+                                    Hitting your first note:
+                                </p>
+                            </div>
+                            <a>
+                                When a note reaches one of the note hitters (The 4 static non-moving objects that looks similar to the note but are lacking in detail comparatively) you press the respective key set in the key bindings<br>1 - Far left<br>2 - Middle left<br>3 - Middle rightt<br>4 - Far right<br> if you don't know what keys the number refer to you can use detect. Click detect, then press the key you want to assign that hitter to.<br>Default Values:<br>1 - 68:D<br>2 - 70:F<br>3 - 74:J<br>4 - 75:K.
+                            </a>
+                        </div>
+                        
+                        <div class="UIContainer">
+                            <div>
+                                <p>
+                                    Starting:
+                                </p>
+                            </div>
+                            <a>
+                                To start press the SPACE button on your keyboard. If done correctly notes (Object/Images, depending on the skin, likely have a diamond shaped with a futuristic tech sprite) will start falling.
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="UIContainer">
+                        <div>
+                            <p>
+                                About:
+                            </p>
+                        </div>
+                        <a>Made by developer, Crypto-Path otherwise known as Cyphe Mercury</a> <br>
+                        <a></a>
+                    </div>
+                    <div class="UIContainer">
+                        <div>
+                            <p>
+                                Links:
+                            </p>
+                        </div>
+                        
+
+                        <div class="UIContainer">
+                            <div>
+                                <p>
+                                    <a href="https://discord.gg/CcU8uQ7zzE">Discord:</a>
+                                </p>
+                            </div>
+                            <iframe src="https://discord.com/widget?id=1082208425582276700&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">SecretCode: 4KWebRhythmGame</iframe>
+                        </div>
                     </div>
                 </div>
             </div>
