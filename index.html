@@ -11,7 +11,7 @@
                 position: inherit;
                 width: 128px;
                 height: 128px;
-                top: 830px;
+                top: 800px;
             }
 
             .hitError {
@@ -20,6 +20,10 @@
                 height: 15px;
                 top:-5px;
                 border-radius: 5px;
+            }
+
+            .score {
+                border-radius: 10px;
             }
         </style>
         <script src = "Scripts/note.js" ></script>
@@ -31,7 +35,7 @@
 
             playing = false
 
-            StartPos = [0,-830]
+            StartPos = [0,-800]
 
             notes = [];
             hitters = [];
@@ -124,7 +128,7 @@
                 document.getElementById("HitErrorBar").appendChild(hitError)
 
                 setTimeout(function() {
-                    
+                    document.getElementById("HitErrorBar").children[2].remove();
                 }, 1000);
             }
 
@@ -244,9 +248,14 @@
                     case hitKeys[3]:
                         KeyDown(3);
                         break;
-                    case 32:
+
+                    case 32: // START MAP
                         StartTime = Date.now();
                         startMap();
+                        break;
+
+                    case 192: // RESTART MAP
+                        Reload_Chart()
                         break;
                 
                     default:
@@ -300,6 +309,12 @@
                 setInterval(Update, 1)
             }
 
+            document.getElementById("OptionPlayfieldXOffst").addEventListener('keypress', function(e) {
+                console.log("Test");
+                if (e.key == 'Enter') {
+                }
+            });
+
             function startMap() {
                 auto = document.getElementById("OptionModAuto").checked;
                 scrollSpeed = document.getElementById("OptionScrollSpeed").value;
@@ -336,10 +351,15 @@
                     }
                 }
 
-                // Removes All Visual Nnotes
+                // Removes All Visual Notes
                 while (document.getElementById("NoteContainer").children.length > 0) {
                     document.getElementById("NoteContainer").children[0].remove();
                 }
+
+                /*// Removes hit errors
+                while (document.getElementById("HitError").children.length > 0) {
+                    document.getElementById("NoteContainer").children[0].remove();
+                }*/
 
                 // Now that all notes are go, notelock gets reset.
                 for (let i = 0; i < idProgress.length; i++) {
@@ -355,43 +375,66 @@
 
                 // For Rat Changes
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
+                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffst").value;
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
                 playing =  _playing;
             }
 
         </script>
-        <div id="ChartContainer">
-            <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
-                <a id="AccText" style="position: inherit; top: -32px; left: 48px;"></a>
-                <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
+        <div id="EverythingContainer" style="position:absolute; width: 900px; left:366; height: 98%;">
+            <div style="position:inherit; width: 300px; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <p style="float: left; width: 100%; text-align: center;">
+                    SCORES (WIP)
+                </p> 
+                <div style="width:100%; height: 10px;">
+
+                </div>
+                <div id="ScoreContainer" style="width: 100%; display: flex; align-items: center; justify-content: center;">
+                    <div id="TestScore" class="Score" style="background-color: yellow; width: 90%;">
+                        <img src="Sprites/Hitter_Unlit_1.png" style="float: left;"/>
+                        <div>
+                            <a>Cyphe Mercury</a> <br>
+                            <a>Test Score: 97.059%</a> <br>
+                            <a>Date: 3/8/2023 9:03PM (GMT-8)</a> <br>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="HitterContainer" style="position: absolute; background-color: rgba(0, 0, 0, 0.5); width:414px;height:100%">
-                <img id="Hitter1" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: -7px;" ></img>
-                <img id="Hitter2" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 93;" ></img>
-                <img id="Hitter3" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 193;" ></img>
-                <img id="Hitter4" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 293;" ></img>
+            <div id="ChartContainer" style="position:absolute; width: 428px; height: 100%; left: 400 ;">
+                <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
+                    <a id="AccText" style="position: inherit; top: -32px; left: 48px;"></a>
+                    <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
+                    </div>
+                </div>
+                <div id="HitterContainer" style="position: absolute; background-color: rgba(0, 0, 0, 0.5); width:100%;height:100%">
+                    <img id="Hitter1" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 0px;" ></img>
+                    <img id="Hitter2" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 100px;" ></img>
+                    <img id="Hitter3" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 200px;" ></img>
+                    <img id="Hitter4" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 300px;" ></img>
+                </div>
+                <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="NoteContainer" style="overflow:hidden;"></div>
-        </div>
-        <div id="MapsSettingContainer" style="position:absolute; left: 500px; width: 300px; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-            <label>Auto: </label>
-            <input id="OptionModAuto" type="checkbox"> <br>
-            <label>Rate: </label>
-            <input id="OptionModRate" type="number" value="1"> <br>
-            <label>Scroll Speed: </label>
-            <input id="OptionScrollSpeed" type="number" style="width:40px" value="15"> <br>
-            <label>Keys: (Uses key codes)</label> <br>
-            <label>1 -</label>
-            <input id="KeyCheck1" type="number" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
-            <label>2 -</label>
-            <input id="KeyCheck2" type="number" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
-            <label>3 -</label>
-            <input id="KeyCheck3" type="number" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
-            <label>4 -</label>
-            <input id="KeyCheck4" type="number" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
-            <button onclick="Reload_Chart()">Reload Chart</button> <br>
+            <div id="MapsSettingContainer" style="position:inherit; left: 900px; width: 300px; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <label>Auto: </label>
+                <input id="OptionModAuto" type="checkbox"> <br>
+                <label>Rate: </label>
+                <input id="OptionModRate" type="number" value="1"> <br>
+                <label>Scroll Speed: </label>
+                <input id="OptionScrollSpeed" type="number" style="width:40px" value="15"> <br>
+                <label>Keys: (Uses key codes)</label> <br>
+                <label>1 -</label>
+                <input id="KeyCheck1" type="number" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
+                <label>2 -</label>
+                <input id="KeyCheck2" type="number" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
+                <label>3 -</label>
+                <input id="KeyCheck3" type="number" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
+                <label>4 -</label>
+                <input id="KeyCheck4" type="number" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
+                <button onclick="Reload_Chart()">Reload Chart</button> <br>
+                <label>Playfield X Offset: </label>
+                <input id="OptionPlayfieldXOffst" type="number" style="width:80px" value="366"> <br>
+            </div>
         </div>
     </body>
 </html>
