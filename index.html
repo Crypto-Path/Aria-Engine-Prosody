@@ -70,7 +70,7 @@
 
             function Get_Acc() {
                 totalNotes = Perfects + Goods + Bads + Misses;
-                acc = (totalNotes)/(Perfects + Goods * 2 + Bads * 4 + Misses * totalNotes)
+                acc = (totalNotes - Misses)/(Perfects + Goods * 2 + Bads * 4 + Misses * 8)
                 return acc
             }
 
