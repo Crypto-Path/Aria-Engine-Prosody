@@ -24,6 +24,7 @@
                 height: 15px;
                 top:-5px;
                 border-radius: 5px;
+                opacity: 0.825;
             }
 
             .score {
@@ -48,7 +49,7 @@
             released = [true,true,true,true];
             idProgress = [0,0,0,0];
             releasedIdProgress = [0,0,0,0];
-            hitRange = 16;
+            hitRange = 32;
             scrollSpeed = 15;
 
             /*Mods*/
@@ -132,8 +133,17 @@
                 document.getElementById("HitErrorBar").appendChild(hitError)
 
                 setTimeout(function() {
-                    document.getElementById("HitErrorBar").children[2].remove();
-                }, 1000);
+                    document.getElementById("HitErrorBar").children[2].style.opacity = "0.5";
+                    setTimeout(function() {
+                        document.getElementById("HitErrorBar").children[2].style.opacity = "0.25";
+                        setTimeout(function() {
+                            document.getElementById("HitErrorBar").children[2].style.opacity = "0.2125";
+                            setTimeout(function() {
+                                document.getElementById("HitErrorBar").children[2].remove();
+                            }, 125);
+                        }, 125);
+                    }, 250);
+                }, 500);
             }
 
             function UpdateNotes() {
@@ -399,8 +409,8 @@
                         <img src="Sprites/Hitter_Unlit_1.png" style="float: left;"/>
                         <div>
                             <a>Cyphe Mercury</a> <br>
-                            <a>Test Score: 97.059%</a> <br>
-                            <a>Date: 3/8/2023 9:03PM (GMT-8)</a> <br>
+                            <a>Test Score: 100%</a> <br>
+                            <a>Date: 3/8/2023 10:08PM (GMT-8)</a> <br>
                         </div>
                     </div>
                 </div>
