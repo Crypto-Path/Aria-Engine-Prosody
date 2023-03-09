@@ -365,8 +365,8 @@
                         break;
                 }
             }
-            
-            window.onload = function() {
+
+            function LoadSettings() {
                 if (localStorage["ScrollSpeed"] != null)
                     document.getElementById("OptionScrollSpeed").value = localStorage["ScrollSpeed"];
                     
@@ -374,7 +374,22 @@
                     document.getElementById("OptionPlayfieldXOffset").value = localStorage["MapXOffset"];
 
                 if (localStorage["Upscroll"] == 'true')
-                    document.getElementById("OptionUpscroll").checked = true;;
+                    document.getElementById("OptionUpscroll").checked = true;
+
+                if (!isNaN(localStorage['KeyBinding1']))
+                    document.getElementById("KeyCheck1").value = localStorage['KeyBinding1'];
+                    
+                if (!isNaN(localStorage['KeyBinding2']))
+                    document.getElementById("KeyCheck2").value = localStorage['KeyBinding2'];
+                    
+                if (!isNaN(localStorage['KeyBinding3']))
+                    document.getElementById("KeyCheck3").value = localStorage['KeyBinding3'];
+                    
+                if (!isNaN(localStorage['KeyBinding4']))
+                    document.getElementById("KeyCheck4").value = localStorage['KeyBinding4'];
+            }
+            
+            window.onload = function() {
 
                 function Update(_chart) {
                     UpdateNotes(); // Update the notes position the user will see onscreen
@@ -471,8 +486,16 @@
                 localStorage['ScrollSpeed'] = scrollSpeed;
                 localStorage['MapXOffset'] = document.getElementById("OptionPlayfieldXOffset").value;
 
+                localStorage['KeyBinding1'] = document.getElementById("KeyCheck1").value;
+                localStorage['KeyBinding2'] = document.getElementById("KeyCheck2").value;
+                localStorage['KeyBinding3'] = document.getElementById("KeyCheck3").value;
+                localStorage['KeyBinding4'] = document.getElementById("KeyCheck4").value;
+
                 document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
                 document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
+
+
+
 
                 array = document.getElementsByClassName("hitter")
                 if (localStorage['Upscroll'] == 'true') {
@@ -566,13 +589,13 @@
                         </div>
                     <label>Keys: (Uses key codes)</label> <br>
                     <label>1 -</label>
-                    <input id="KeyCheck1" type="number" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
+                    <input id="KeyCheck1" type="number" onchange="SaveOptions()" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
                     <label>2 -</label>
-                    <input id="KeyCheck2" type="number" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
+                    <input id="KeyCheck2" type="number" onchange="SaveOptions()" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
                     <label>3 -</label>
-                    <input id="KeyCheck3" type="number" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
+                    <input id="KeyCheck3" type="number" onchange="SaveOptions()" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
                     <label>4 -</label>
-                    <input id="KeyCheck4" type="number" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
+                    <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
                     </div>
                 </div>
                 
