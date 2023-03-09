@@ -7,6 +7,7 @@ Link: [Aria Engine Prosody](http://cyphemercury.online/Aria-Engine-Prosody/) </b
    - [x] Auto
    - [x] Rate
    - [ ] Hidden
+ - [ ] Option Saving
  - [ ] Map selection
  - [ ] Maps loaded from a server 
  - [ ] Mapping 
