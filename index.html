@@ -4,6 +4,7 @@
         <style>
             body {
                 overflow: hidden; /* Hide scrollbars */
+                //background-color: black;
             }
 
             p {
@@ -90,6 +91,13 @@
 
             .scorePFP {
                 float: left;
+            }
+
+            .textarea {
+                display: block;
+                overflow: hidden;
+                min-height: 20px;
+                line-height: 20px;
             }
         </style>
         <script src = "Scripts/note.js" ></script>
@@ -478,7 +486,8 @@
                 Bads = 0;
                 Misses = 0;
 
-                // For Rat Changes
+                // For map Changes
+                chartData = document.getElementById("OptionChartData").innerHTML; 
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
@@ -613,6 +622,12 @@
                         </p>
                     </div>
                     <button onclick="Reload_Chart()">Reload Chart</button> <br>
+                    <div class="UIContainer">
+                        <p>
+                            Map JSON:
+                        </p>
+                        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>{"1":{"Name":"TestMap","Creator":"Cyphe Mercury","BPM":180,"4Rows":{"Difficulty1":{"Notes":[[1,0.5,0.5,1,0.5,0.5,0.5,0.5,0.75],[1.25,0.5,0.5,1,0.5,0.75,0.5,0.5,0.5],[1,1,0.5,0.5,1,0.75,0.5,0.75],[1,1,0.75,1.5,0.75,0.5,0.5]]}}}}</span>
+                    </div>
                 </div>
             </div>
         </div>
