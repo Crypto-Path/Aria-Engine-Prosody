@@ -1,51 +1,41 @@
 {
   "1": {
-    "Name": "TestMap",
-    "Creator": "AnachroDelus",
+    "Name": "The Pathbreaking",
+    "Creator": "Cyphe Mercury",
+    "SongArtist": "Inaji",
     "BPM": 120,
     "4Rows": {
       "Difficulty1": {
-        "MapBackground":"BackgroundA.png",
-        "Song":"SongA.wav",
-        "Notes": [ 
+        "Offset": 3.8,
+        "Notes": [
           [
-            200,
-            100,
-            100,
-            200,
-            100,
-            100,
-            100,
-            100
+            0,
+            1,
+            2.75,
+            0.75
           ],
           [
-            250,
-            100,
-            100,
-            200,
-            100,
-            150,
-            100
+            0,
+            1,
+            2.25,
+            0.5,
+            0.75
           ],
           [
-            200,
-            200,
-            100,
-            100,
-            200,
-            150
+            0,
+            1.5,
+            0.5,
+            0.75,
+            2.25,
+            0.5,
+            0.5
           ],
           [
-            200,
-            200,
-            150,
-            300,
-            150
+            0,
+            2,
+            0.75,
+            2.75
           ]
-        
-        ],
-        "SVChanges": [
-
         ]
       }
     }

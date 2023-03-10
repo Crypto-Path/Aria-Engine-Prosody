@@ -23,32 +23,34 @@ class Chart {
         /*Sets each row to an empty array for some purpose idk*/
         for (let i = 0; i < rows; i++) {
             this.row[i] = [];
+            this.map["4Rows"]["Difficulty1"]["Notes"][i][0] += this.map["4Rows"]["Difficulty1"]["Offset"];
         }
+
 
         this.Load_Map()
     }
 
+    // Load Chart
     Load_Map() {
-        const mapChart = this.map["4Rows"]["Difficulty1"];
-        for (let i in mapChart) {
-            for (let j in i) {
-                try {
-                    console.log(j)
-                    const notes = this.map["4Rows"]["Difficulty1"][i][j];
-                    console.log(notes);
-                    for (let x = 0; x < notes.length; x++) {
-                        const element = notes[x];
-                        console.log(element)
-                        this.tempNote = new Note(j*100,19737*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[j].length) // Creates note object
-                        try { // A previous note doesn't always exist
-                            this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[j][this.row[j].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
-                            this.tempNote.Set_Pos(this.tempNote.Get_Start_Pos());
-                        } catch (error) { }
-                        this.Append(this.tempNote,j) // Appends note to row array which holds all notes
-                    }
-                } catch (error) {
-                    return
+        const mapChart = this.map["4Rows"]["Difficulty1"]["Notes"]; // Gets the difficulty Level
+        for (let i in mapChart) { //
+            try {
+                console.log(i)
+                const notes = mapChart[i];
+                console.log(notes);
+                for (let x = 0; x < notes.length; x++) {
+                    const element = notes[x];
+                    console.log(element)
+                    const dist = 14180 // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
+                    this.tempNote = new Note(i*100, dist*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[i].length) // Creates note object
+                    try { // A previous note doesn't always exist
+                        this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[i][this.row[i].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
+                        this.tempNote.Set_Pos(this.tempNote.Get_Start_Pos());
+                    } catch (error) { }
+                    this.Append(this.tempNote, i) // Appends note to row array which holds all notes
                 }
+            } catch (error) {
+                return
             }
         }
     }
