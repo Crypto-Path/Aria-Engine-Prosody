@@ -41,7 +41,7 @@ class Chart {
                 for (let x = 0; x < notes.length; x++) {
                     const element = notes[x];
                     console.log(element)
-                    const dist = 14180 // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
+                    const dist = 14179.9 // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
                     this.tempNote = new Note(i*100, dist*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[i].length) // Creates note object
                     try { // A previous note doesn't always exist
                         this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[i][this.row[i].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
