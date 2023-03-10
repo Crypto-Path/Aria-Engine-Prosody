@@ -2,13 +2,17 @@
 <html>
     <body>
         <style>
+            html {
+                font-size: 16px;
+            }
+
             body {
                 overflow: hidden; /* Hide scrollbars */
                 /*background-color: black;*/
             }
 
             p {
-                padding-top: 16px;
+                padding-top: 1rem;
                 text-align: center;
                 color: white;
             }
@@ -18,14 +22,14 @@
             }
 
             input {
-                width: 30px;
-                height: 25px;
-                border-radius: 10px;
-                font-size: 10px;
+                width: 1.875rem;
+                height: 1.5625rem;
+                border-radius: 0.625rem;
+                font-size: 0.625rem;
             }
 
             label {
-                font-size: 16px;
+                font-size: 1rem;
                 color: white;
             }
 
@@ -42,10 +46,10 @@
             }
 
             button {
-                width: 50px;
-                height: 25px auto;
-                border-radius: 10px;
-                font-size: 10px;
+                width: 3.125rem;
+                height: 1.5625rem auto;
+                border-radius: 0.625rem;
+                font-size: 0.625rem;
             }
 
             img {
@@ -53,7 +57,7 @@
             }
 
             ::-webkit-scrollbar {
-                width: 10px;
+                width: 0.625rem;
             }
 
             /* Track */
@@ -74,47 +78,47 @@
             .UIContainer {
                 margin-left: 2.5%;
                 Width: 95%;
-                border-radius: 10px;
+                border-radius: 0.625rem;
                 background-color: rgba(62, 86, 114, 0.66);
                 text-align: center;
                 height: fit-content;
-                padding-bottom: 10px;
-                margin-top: 10px;
+                padding-bottom: 0.625rem;
+                margin-top: 0.625rem;
             }
 
             .MainUIContainer {
                 background-color: rgba(62, 86, 114, 0.4);
-                border-radius: 20px;
+                border-radius: 1.25rem;
                 overflow-y: auto; /* Hide scrollbars */
             }
 
             .note {
                 position: absolute;
-                width: 128px;
+                width: 8rem;
             }
 
             .hitter {
                 position: inherit;
-                width: 128px;
-                height: 128px;
-                top: 0px;
+                width: 8rem;
+                height: 8rem;
+                top: 0;
             }
 
             .hitError {
                 position: inherit;
-                width: 5px;
-                height: 15px;
-                top:-5px;
-                border-radius: 5px;
+                width: 0.3125rem;
+                height: 0.9375rem;
+                top:-0.3125rem;
+                border-radius: 0.3125rem;
                 opacity: 0.825;
             }
 
             .score {
-                border-radius: 10px;
+                border-radius: 0.625rem;
                 background-color: rosybrown;
                 width: 90%;
-                margin-top: 10px;
-                margin-left: 15px;
+                margin-top: 0.625rem;
+                margin-left: 0.9375rem;
             }
 
             .scorePFP {
@@ -122,21 +126,21 @@
                 width: 15%;
                 margin: auto;
                 background-color: rgba(0, 0, 0, 0.3);
-                border-radius: 10px;
+                border-radius: 0.625rem;
             }
 
             .score:hover .scorePFP {
                 float:none;
                 width:50%;
                 background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 33px;
+                border-radius: 2.0625rem;
             }
 
             .textarea {
                 display: block;
                 overflow: hidden;
-                min-height: 20px;
-                line-height: 20px;
+                min-height: 1.25rem;
+                line-height: 1.25rem;
                 color: rgb(201, 201, 201);
             }
         </style>
@@ -238,7 +242,7 @@
             function HitError(_offset, _length) {
                 hitError = document.createElement("div"); // Creates the hit object visual
                 hitError.classList.add("hitError"); // Adds the class for the CSS
-                hitError.style.left = (_offset+64)+"px"; // Sets the position
+                hitError.style.left = (_offset+64)/16+"rem"; // Sets the position
 
                 MaxRed = Math.abs(2*(Math.abs(_offset)+64)) // Used to determine how red the object is
                 MaxBlue = Math.abs(4*(Math.abs(_offset)-64)) // Used to determine how blue the object is
@@ -341,8 +345,8 @@
                     for (let j = 0; j < notes[i].length; j++) {
                         note = chart.Get_Poss(i)[j] // Gets note information
                         noteObject = notes[i][j].style;
-                        noteObject.left = (note.Get_Pos()[0] - StartPos[0]) + "px"; // Sets the X location
-                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1]) + "px"; // Sets the Y location
+                        noteObject.left = (note.Get_Pos()[0] - StartPos[0])/16 + "rem"; // Sets the X location
+                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1])/16 + "rem"; // Sets the Y location
                     }
                 }  
                 HitCheck()
@@ -354,8 +358,8 @@
                 noteImage.src = "Sprites/Note_Hit_"+(row+1)+".png"; // Sets the image's image
                 noteImage.classList.add('note'); // Sets the class for the look of the object
                 note = chart.Get_Poss(row)[index] // Gets note information
-                noteImage.style.left = (note.x - StartPos[0]) + "px"; // Sets the X location
-                noteImage.style.top = (note.y * scrollSpeed  - StartPos[1]) + "px"; // Sets the Y location
+                noteImage.style.left = (note.x - StartPos[0])/16 + "rem"; // Sets the X location
+                noteImage.style.top = (note.y * scrollSpeed  - StartPos[1])/16 + "rem"; // Sets the Y location
                 noteImage.id = tempNoteId; // Debug Purposes
                 tempNoteId++; // Debug Purposes
                 document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
@@ -633,21 +637,21 @@
                 } else {
                     for (let i = 0; i < array.length; i++) {
                         const element = array[i];
-                        element.style.top = "800px"
+                        element.style.top = "50rem"
                     }
                     StartPos[1] = -800
                 }
             }
 
         </script>
-        <div id="EverythingContainer" style="position:absolute; width: 1500px; left:366; top:20px; height: 98%;">
-            <div class = "UIContainer" style="position:inherit; width: 366px; height: 98%;">
+        <div id="EverythingContainer" style="position:absolute; width: 93.75rem; left:22.875rem; top:1.25rem; height: 98%;">
+            <div class = "UIContainer" style="position:inherit; width: 22.875rem; height: 98%;">
                 <div>
                     <p>
                         SCORES (WIP)
                     </p> 
                 </div>
-                <div style="width:100%; height: 10px;">
+                <div style="width:100%; height: 0.625rem;">
 
                 </div>
                 <div id="ScoreContainer" class="UIContainer">
@@ -661,21 +665,21 @@
                     </div>
                 </div>
             </div>
-            <div id="ChartContainer" style="position:absolute; width: 428px; height: 110%; left: 466px; top: -10px;">
-                <div id="HitErrorBar"style="position: absolute; top:500; left: 145; width:133; height: 5px; background-color: blue;" >
-                    <a id="AccText" style="position: inherit; width: 128px; top: -32px; color: black; text-align: center;">Loading...</a>
-                    <div id="HitErrorBar" style="position: inherit; top:0; left: 64.5; width:5; height: 10px; background-color: blue;" >
+            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 110%; left: 29.125rem; top: -0.625rem;">
+                <div id="HitErrorBar"style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;" >
+                    <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; color: black; text-align: center;">Loading...</a>
+                    <div id="HitErrorBar" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;" >
                     </div>
                 </div>
                 <div id="HitterContainer" style="position: absolute; background-color: rgba(0, 0, 0, 0.5); width:100%;height:100%">
-                    <img id="Hitter1" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 0px;" ></img>
-                    <img id="Hitter2" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 100px;" ></img>
-                    <img id="Hitter3" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 200px;" ></img>
-                    <img id="Hitter4" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 300px;" ></img>
+                    <img id="Hitter1" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 0;" ></img>
+                    <img id="Hitter2" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 6.25rem;" ></img>
+                    <img id="Hitter3" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 12.5rem;" ></img>
+                    <img id="Hitter4" class="hitter" src="Sprites/Hitter_Unlit_1.png" style="left: 18.75rem;" ></img>
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="position:inherit; left: 900px; width: 366px; height: 98%; align-items: center; justify-content: center;">
+            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="position:inherit; left: 56.25rem; width: 22.875rem; height: 98%; align-items: center; justify-content: center;">
 
                 <div class = "UIContainer">
                     <div>
@@ -709,13 +713,13 @@
                         </div>
                     <label>Keys: (Uses key codes)</label> <br>
                     <label>1 -</label>
-                    <input id="KeyCheck1" type="number" onchange="SaveOptions()" style="width:40px" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
+                    <input id="KeyCheck1" type="number" onchange="SaveOptions()" style="width:2.5rem" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
                     <label>2 -</label>
-                    <input id="KeyCheck2" type="number" onchange="SaveOptions()" style="width:40px" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
+                    <input id="KeyCheck2" type="number" onchange="SaveOptions()" style="width:2.5rem" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
                     <label>3 -</label>
-                    <input id="KeyCheck3" type="number" onchange="SaveOptions()" style="width:40px" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
+                    <input id="KeyCheck3" type="number" onchange="SaveOptions()" style="width:2.5rem" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
                     <label>4 -</label>
-                    <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:40px" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
+                    <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:2.5rem" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
                     </div>
                 </div>
                 
@@ -733,7 +737,7 @@
                                 <a> done loading. </a> 
                             </div>
                         </label>
-                        <button onclick="Reload_Chart()" style="background-color: rgba(240, 100, 100, 0.5); width: 80px;">Force Reload Chart</button>
+                        <button onclick="Reload_Chart()" style="background-color: rgba(240, 100, 100, 0.5); width: 5rem;">Force Reload Chart</button>
                     </div><br>
                     <div class="UIContainer">
                         <div>
