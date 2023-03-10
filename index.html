@@ -140,6 +140,7 @@
                 color: rgb(201, 201, 201);
             }
         </style>
+        <script src = "Data/Maps.js"> </script>
         <script src = "Scripts/note.js" ></script>
         <script src = "Scripts/chart.js" ></script>
         <script>
@@ -505,6 +506,7 @@
             // When site loads
             window.onload = function() {
                 LoadSettings() // Loads settings if they were saved
+                document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
                 // Updates the game, basically the play
                 function Update(_chart) {
                     UpdateNotes(); // Update the notes position the user will see onscreen
@@ -620,9 +622,6 @@
 
                 document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
                 document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
-
-
-
 
                 array = document.getElementsByClassName("hitter")
                 if (localStorage['Upscroll'] == 'true') {
@@ -743,7 +742,6 @@
                             </p>
                         </div>
                         <span id="OptionChartData" class="textarea" role="textbox" contenteditable>
-                            {"1":{"Name":"The Pathbreaking","Creator":"Cyphe Mercury","SongArtist":"Inaji","BPM":120,"4Rows":{"Difficulty1":{"Offset":4.5,"Notes":[[0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[0],[0]]}}}}
                             
                         </span>
                     </div>
