@@ -1,5 +1,5 @@
 # Prosody
-A simple web rhythm game </br>
+A web rhythm game similar to games like osu!mania, etterna, and stepmania. Plans to have a bunch of features including poerting maps from other games, playing maps uploaded to a server (Certain ones being rank) and being able to play ranked ones for value (similar to osu!pp). Eventually accounts and profile information and leaderboards for maps. </br>
 Link: [Aria Engine Prosody](http://cyphemercury.online/Aria-Engine-Prosody/) </br> </br>
 
 ## Furture Goals
@@ -8,7 +8,7 @@ Link: [Aria Engine Prosody](http://cyphemercury.online/Aria-Engine-Prosody/) </b
    - [x] Rate
    - [ ] Hidden
    - [ ] Switcher
- - [ ] Option Saving
+ - [x] Option Saving
  - [ ] Map selection
  - [ ] Maps loaded from a server 
  - [ ] Mapping 
