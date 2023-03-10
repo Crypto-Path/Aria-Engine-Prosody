@@ -511,6 +511,10 @@
             window.onload = function() {
                 LoadSettings() // Loads settings if they were saved
                 document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
+                // Makes sure the map doesn't go too far offscreen
+                if (document.getElementById("OptionPlayfieldXOffset").value > 45) {
+                    document.getElementById("OptionPlayfieldXOffset").value = 20;
+                }
                 // Updates the game, basically the play
                 function Update(_chart) {
                     UpdateNotes(); // Update the notes position the user will see onscreen
@@ -613,7 +617,7 @@
             
             function SaveOptions() {
                 scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
-                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value;
+                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
 
                 localStorage['Upscroll'] = document.getElementById("OptionUpscroll").checked;
                 localStorage['ScrollSpeed'] = scrollSpeed;
