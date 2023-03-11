@@ -19,6 +19,8 @@ class Chart {
         this.progress = progress;
         this.rate = rate;
 
+        this.audio = null;
+
         this.row = []
         /*Sets each row to an empty array for some purpose idk*/
         for (let i = 0; i < rows; i++) {
@@ -41,7 +43,7 @@ class Chart {
                 for (let x = 0; x < notes.length; x++) {
                     const element = notes[x];
                     console.log(element)
-                    const dist = 14179.9 // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
+                    const dist = (parseFloat(this.map["BPM"])*2) // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
                     this.tempNote = new Note(i*100, dist*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[i].length) // Creates note object
                     try { // A previous note doesn't always exist
                         this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[i][this.row[i].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
@@ -75,16 +77,19 @@ class Chart {
         this.row[row].shift();
     }
 
-    UpdateNotes(row = 0) {
-        for (let i = 0; i < this.row[row].length; i++) {
-            const note = this.row[row][i];
-            note.Set_Pos([note.Get_Pos()[0], note.Get_Start_Pos()[1] + this.yVel * this.progress]);
+    UpdateNotes() {
+        for (let i = 0; i < this.row.length; i++) {
+            const _row = this.row[i];
+            for (let j = 0; j < _row.length; j++) {
+                const note = _row[j];
+                note.Set_Pos([note.Get_Pos()[0], note.Get_Start_Pos()[1] + this.yVel * this.progress]);
+            }
         }
     }
     //Update
 
     Get_Next(row) {
-
+        return this.row[row][0]
     }
 
     Get_Rows() {
@@ -100,34 +105,51 @@ class Chart {
     }
 
     Set_Progess(progress) {
-        this.progress = progress
+        this.progress = progress;
+        this.UpdateNotes()
     }
 
     ChangeProgress(change) {
         this.progress += change;
+        this.UpdateNotes()
     }
 
-    Get_Xs(row) {
-
-    }
-
-    Get_Ys(row) {
-
+    Update_Progress(_rate) {
+        this.progress = audio.currentTime / _rate;
+        this.UpdateNotes()
     }
 
     Set_X_Offet(xOffset) {
-
+        this.xOffset = xOffset
     }
 
     Set_Y_Offet(yOffset) {
-        
+        this.yOffset = yOffset
     }
 
     Set_X_Vel(xVel) {
-        
+        this.xVel = xVel;
     }
 
     Set_Y_Vel(yVel) {
-        
+        this.yVel = yVel;
+    }
+
+    Play_Audio(_rate) {
+        const audioLocation = this.map["Audio"]; // Gets JSON url or directory location for audio
+        audio = new Audio(audioLocation);
+        audio.playbackRate = _rate;
+        audio.play();
+    }
+
+    Stop_Audio() {
+        if (this.audio != null) {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+        }
+    }
+
+    Get_Audio_Time() {
+        return this.audio.currentTime;
     }
 }
