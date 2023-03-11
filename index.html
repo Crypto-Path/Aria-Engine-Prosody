@@ -167,7 +167,7 @@
             scrollSpeed = 15; // VISUAL: how fast the notes go by
             auto = true; // The game plays itself
             rate = 1; // How fast the map plays
-            hitRange = 32; // Judgement range of notes
+            hitRange = 0.1; // Judgement range of notes
 
             /*Input & Notes*/
             hitKeys = [68,70,74,75]; // Key bindings for gameplay
@@ -300,14 +300,12 @@
                                                     KeyDown(i);
                                                     FinalNoteTime = Date.now();
                                                     console.log(FinalNoteTime - StartTime)
-                                                }, hitRange);
-                                            }
-                                            if (keys[i]) {
-                                                if (auto) { // System for auto mod releasing down 
                                                     setTimeout(function() {
                                                         KeyUp(i);
-                                                    }, hitRange*2);
-                                                }
+                                                    }, 50);
+                                                }, hitRange*100);
+                                            }
+                                            if (keys[i]) {
                                                 HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
                                                 Judgements[0]++;
                                                 return;
@@ -353,7 +351,7 @@
                         note = chart.Get_Poss(i)[j] // Gets note information
                         noteObject = notes[i][j].style;
                         noteObject.left = (note.Get_Pos()[0] - StartPos[0])/16 + "rem"; // Sets the X location
-                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed - StartPos[1])/16 + "rem"; // Sets the Y location
+                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed * 80 - StartPos[1])/16 + "rem"; // Sets the Y location
                     }
                 }  
                 HitCheck()
@@ -382,13 +380,6 @@
                     for (let j = 0; j < chart.Get_Poss(i).length; j++) { // Gets each note in row
                         CreateNote(chart, i, j); // Creates note
                     }
-                }
-            }
-
-            // Changes note position behind the scene
-            function UpdateNotePositions() {
-                for (let i = 0; i < notes.length; i++) { // For each row update notes in that row
-                    chart.UpdateNotes(i); // Update notes in row
                 }
             }
 
@@ -446,8 +437,10 @@
                             break;
 
                         case 32: // START MAP
-                            StartTime = Date.now();
-                            startMap();
+                            if (!playing) {
+                                StartTime = Date.now();
+                                startMap();
+                            }
                             break;
 
                         case 192: // RESTART MAP
@@ -529,8 +522,8 @@
                         now = Date.now() // Gets current date for delta time calculation
                         dt = now - lastUpdate; // Gets delta time
                         lastUpdate = now; // Sets last update date for delta time calculation
-                        chart.ChangeProgress(1 * (dt/16.666));
-                        UpdateNotePositions(); // Updates the the position of the notes behind the scene
+                        //chart.ChangeProgress(1 * (dt/16.666));
+                        chart.Update_Progress(rate); // Updates note behind the scene based on song position
                         for (let i = 0; i < hitters.length; i++) {
                             const element = hitters[i];
                             element.innerHTML = key[i]+" "+idProgress[i]+"<br>"+keys[i]+" "+releasedIdProgress[i];
@@ -549,24 +542,11 @@
                 siteLoaded = true;
             }
 
-            // Plays Music
-            function PlayAudio() {
-                audio = new Audio('Audio/Inaji-The_Pathbreaking.mp3');
-                audio.playbackRate = rate;
-                audio.play();
-                /*setInterval(function() {
-                    KeyDown(0)
-                        setTimeout(function() {
-                        KeyUp(0)
-                    }, 250)
-                }, 500)*/
-            }
-
             function startMap() {
                 auto = document.getElementById("OptionModAuto").checked; // Check if auto mod is active
 
                 playing = true; // For the update function to know it can start
-                PlayAudio(); // Starts the song
+                chart.Play_Audio(rate) // Starts the song
 
                 lastUpdate = Date.now() // For testing purposes
             }
@@ -587,8 +567,7 @@
             function Reload_Chart(_playing = false) {
                 clearInterval(0); // Stops Update from being called every ms
                 playing = false; // Keeps Update function from doing anything just incase
-                if (audio != null)
-                    audio.pause();
+                //chart.Stop_Audio(); // Stops the music from playing
 
                 SaveOptions(); // Gets and Sets the Options
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
