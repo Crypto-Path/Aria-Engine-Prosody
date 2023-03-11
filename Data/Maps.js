@@ -8,7 +8,7 @@ const charts = {
     "4Rows": { // Four keys
       "Difficulty1": { // Difficulty so that a song can contain: easy, medium, hard, and/or more or less
         "Map Name":"Test Diff", // Difficulty name
-        "Offset": 4.2, // Usually delay until map starts
+        "Offset": 2, // Usually delay until map starts
         "Notes": [ // All notes in difficult
           [ // Row 1
             0,

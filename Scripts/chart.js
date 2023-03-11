@@ -42,11 +42,10 @@ class Chart {
                 console.log(notes);
                 for (let x = 0; x < notes.length; x++) {
                     const element = notes[x];
-                    console.log(element)
-                    const dist = (parseFloat(this.map["BPM"])*2) // Lower - Faster || Higher - Slower || Hit error going left decrease || Hit error going right increase
-                    this.tempNote = new Note(i*100, dist*(-element/(parseFloat(this.map["BPM"])*4))/this.rate,this.row[i].length) // Creates note object
+                    console.log(element); // 120bpm = 2/s
+                    this.tempNote = new Note(i*100, -element/this.rate,this.row[i].length) // Creates note object
                     try { // A previous note doesn't always exist
-                        this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], this.tempNote.Get_Pos()[1] + (this.row[i][this.row[i].length-1].Get_Pos()[1])]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
+                        this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], (this.tempNote.Get_Pos()[1]) / (this.map["BPM"] / 60) /* /4 because 4/4 music notation */ + (this.row[i][this.row[i].length-1].Get_Pos()[1]) /* Gets previous not position */]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
                         this.tempNote.Set_Pos(this.tempNote.Get_Start_Pos());
                     } catch (error) { }
                     this.Append(this.tempNote, i) // Appends note to row array which holds all notes
@@ -114,8 +113,8 @@ class Chart {
         this.UpdateNotes()
     }
 
-    Update_Progress(_rate) {
-        this.progress = audio.currentTime / _rate;
+    Update_Progress() {
+        this.progress = this.audio.currentTime / this.rate;
         this.UpdateNotes()
     }
 
@@ -137,9 +136,9 @@ class Chart {
 
     Play_Audio(_rate) {
         const audioLocation = this.map["Audio"]; // Gets JSON url or directory location for audio
-        audio = new Audio(audioLocation);
-        audio.playbackRate = _rate;
-        audio.play();
+        this.audio = new Audio(audioLocation);
+        this.audio.playbackRate = _rate;
+        this.audio.play();
     }
 
     Stop_Audio() {
