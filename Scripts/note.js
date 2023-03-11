@@ -40,4 +40,8 @@ class Note {
     Get_Id() {
         return this.id;
     }
+    const noteType = {
+   Standard: 0,
+   Hold: 1
+}
 }
