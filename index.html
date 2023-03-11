@@ -167,7 +167,7 @@
             scrollSpeed = 15; // VISUAL: how fast the notes go by
             auto = true; // The game plays itself
             rate = 1; // How fast the map plays
-            hitRange = 0.1; // Judgement range of notes
+            hitRange = 0.5; // Judgement range of notes
 
             /*Input & Notes*/
             hitKeys = [68,70,74,75]; // Key bindings for gameplay
@@ -515,6 +515,10 @@
                 if (document.getElementById("OptionPlayfieldXOffset").value > 45) {
                     document.getElementById("OptionPlayfieldXOffset").value = 20;
                 }
+                
+                /*Fun*//**/
+                /**/
+
                 // Updates the game, basically the play
                 function Update(_chart) {
                     UpdateNotes(); // Update the notes position the user will see onscreen
@@ -530,6 +534,15 @@
                         }
                         document.getElementById("AccText").innerHTML = Get_Acc().toFixed(5)*100 + "%"; // Shows user their accuracy
                         lastUpdate = Date.now() // Sets start date for delta time calculation
+                        if (document.getElementById("OptionSwitcher").checked) {
+                            if (Math.round(chart.progress) % 2 == 0) {
+                                document.getElementById("OptionUpscroll").checked = true;
+                                UpdateScrollDirection();
+                            } else {
+                                document.getElementById("OptionUpscroll").checked = false;
+                                UpdateScrollDirection();
+                            }
+                        }
                     }
                 }
                 for (let i = 0; i < document.getElementsByClassName("hitter").length; i++) {
@@ -601,6 +614,28 @@
                 Start(chartData, 1); // Generates the map
                 playing =  _playing;
             }
+
+            function UpdateScrollDirection () {
+                scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
+                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
+
+                localStorage['ScrollSpeed'] = scrollSpeed;
+
+                array = document.getElementsByClassName("hitter")
+                if (document.getElementById("OptionUpscroll").checked) {
+                    for (let i = 0; i < array.length; i++) {
+                        const element = array[i];
+                        element.style.top = ""
+                    }
+                    StartPos[1] = 0
+                } else {
+                    for (let i = 0; i < array.length; i++) {
+                        const element = array[i];
+                        element.style.top = "50rem"
+                    }
+                    StartPos[1] = -800
+                }
+            }
             
             function SaveOptions() {
                 scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
@@ -617,21 +652,7 @@
 
                 document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
                 document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
-
-                array = document.getElementsByClassName("hitter")
-                if (localStorage['Upscroll'] == 'true') {
-                    for (let i = 0; i < array.length; i++) {
-                        const element = array[i];
-                        element.style.top = ""
-                    }
-                    StartPos[1] = 0
-                } else {
-                    for (let i = 0; i < array.length; i++) {
-                        const element = array[i];
-                        element.style.top = "50rem"
-                    }
-                    StartPos[1] = -800
-                }
+                UpdateScrollDirection();
             }
 
         </script>
@@ -680,9 +701,11 @@
                         </p>
                     </div>
                     <label>Auto: </label>
-                    <input id="OptionModAuto" type="checkbox"> <br>
+                    <input id="OptionModAuto" onchange="Reload_Chart()" type="checkbox"> <br>
                     <label>Rate: </label>
                     <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
+                    <label>Switcher: </label>
+                    <input id="OptionSwitcher" onchange="Reload_Chart()" type="checkbox"> <br>
                 </div>
 
                 <div class = "UIContainer">

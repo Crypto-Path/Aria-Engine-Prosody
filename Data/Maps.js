@@ -1,16 +1,16 @@
-const charts = {
-  "1": { // Map ID
-    "Name": "The Pathbreaking", // Name of the song
-    "Audio":"Audio/Inaji-The_Pathbreaking.mp3", // Directory or url of song location
-    "SongArtist": "Inaji", // Person who composed the song song
-    "Creator": "Cyphe Mercury", // Person who mapped the chart to the song
-    "BPM": 120, // Notes/Beats per minute of song
-    "4Rows": { // Four keys
-      "Difficulty1": { // Difficulty so that a song can contain: easy, medium, hard, and/or more or less
-        "Map Name":"Test Diff", // Difficulty name
-        "Offset": 2, // Usually delay until map starts
-        "Notes": [ // All notes in difficult
-          [ // Row 1
+charts = {
+  "1": {
+    "Name": "The Pathbreaking",
+    "Audio": "Audio/Inaji-The_Pathbreaking.mp3",
+    "SongArtist": "Inaji",
+    "Creator": "Cyphe Mercury",
+    "BPM": 120,
+    "4Rows": {
+      "Difficulty1": {
+        "Map Name": "Test Diff",
+        "Offset": 2,
+        "Notes": [
+          [
             0,
             1,
             1,
@@ -120,9 +120,9 @@ const charts = {
             1,
             1
           ],
-          [ // Row 2
+          [
             0,
-            3,
+            9,
             2,
             2,
             2,
@@ -176,10 +176,10 @@ const charts = {
             2,
             2
           ],
-          [ // Row 3
+          [
             0
           ],
-          [ // Row 4
+          [
             0
           ]
         ]
