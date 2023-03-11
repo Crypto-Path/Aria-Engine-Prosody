@@ -6,12 +6,14 @@ class Note {
      * @param {*} y 
      * @param {*} id 
      */
-    constructor(x,y,id) {
+    constructor(x, y, id, type = 0, length = 1) {
         this.start_x = x;
         this.start_y = y;
         this.x = this.start_x;
         this.y = this.start_y;
         this.id = id;
+        this.type = type;
+        this.length = length;
     }
 
     Get_Start_Pos() {
@@ -40,8 +42,12 @@ class Note {
     Get_Id() {
         return this.id;
     }
-    const noteType = {
-   Standard: 0,
-   Hold: 1
-}
+    
+    Get_Type() {
+        return this.type;
+    }
+    
+    Get_Length() {
+        return this.length;
+    }
 }
