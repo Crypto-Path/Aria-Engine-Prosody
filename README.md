@@ -17,6 +17,7 @@
    - [x] Rate
    - [ ] Hidden
    - [x] Switcher
+   - [ ] Timing
  - [x] Option Saving
  - [ ] Map selection
  - [ ] Maps loaded from a server 
