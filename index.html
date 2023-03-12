@@ -301,7 +301,7 @@
                                                     setTimeout(function() {
                                                         KeyUp(i);
                                                     }, 10000 / ( chart.map["BPM"] * rate));
-                                                }, hitRange);
+                                                }, hitRange * 100);
                                             }
                                             if (keys[i]) {
                                                 HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
