@@ -12,7 +12,7 @@ class Note {
         this.x = this.start_x;
         this.y = this.start_y;
         this.id = id;
-        this.type = type;
+        this.type = type; // 0 - Standard || 1 - Hold
         this.length = length;
     }
 
