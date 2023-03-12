@@ -298,8 +298,6 @@
                                             if (auto) { // System for auto mod pressing down 
                                                 setTimeout(function() {
                                                     KeyDown(i);
-                                                    //FinalNoteTime = Date.now();
-                                                    console.log(FinalNoteTime - StartTime)
                                                     setTimeout(function() {
                                                         KeyUp(i);
                                                     }, 10000 / ( chart.map["BPM"] * rate));
