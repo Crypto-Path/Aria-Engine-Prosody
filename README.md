@@ -3,7 +3,7 @@
 <img style="float: left; image-rendering: pixelated; width: 30px" src="Sprites/Hitter_Lit_1.png">
 <a style="float:left">[Aria Engine Prosody](http://cyphemercury.online/Aria-Engine-Prosody/)</a> </br>
 
-[Discord](https://discord.gg/CcU8uQ7zzE)
+[Discord](https://discord.gg/ajWJNUHFq7)
 
 # Features
  + Chart loads from JSON
