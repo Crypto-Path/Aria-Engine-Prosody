@@ -3,97 +3,10 @@
     <head>
         <title> Prosody </title>
         <link rel="shortcut icon" type="image/png" href="Sprites/Icon.png"/>
+        <link rel="stylesheet" href="CSS/Modal.css">
+        <link rel="stylesheet" href="CSS/UI.css">
         <script src = "Scripts/IframeAutoFitter.js" ></script>
         <style>
-            html {
-                font-size: 16px;
-            }
-
-            body {
-                overflow: hidden; /* Hide scrollbars */
-                /*background-color: black;*/
-            }
-
-            p {
-                padding-top: 1rem;
-                text-align: center;
-                color: white;
-            }
-
-            a {
-                color: white;
-            }
-
-            input {
-                width: 1.875rem;
-                height: 1.5625rem;
-                border-radius: 0.625rem;
-                font-size: 0.625rem;
-            }
-
-            label {
-                font-size: 1rem;
-                color: white;
-            }
-
-            /* Chrome, Safari, Edge, Opera */
-            input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
-
-            /* Firefox */
-            input[type=number] {
-                appearance: textfield;
-            }
-
-            button {
-                width: 3.125rem;
-                height: 1.5625rem auto;
-                border-radius: 0.625rem;
-                font-size: 0.625rem;
-            }
-
-            img {
-                image-rendering: pixelated;
-            }
-
-            ::-webkit-scrollbar {
-                width: 0.625rem;
-            }
-
-            /* Track */
-            ::-webkit-scrollbar-track {
-                background: #f1f1f1;
-            }
-
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-                background: #888;
-            }
-
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555;
-            }
-
-            .UIContainer {
-                margin-left: 2.5%;
-                Width: 95%;
-                border-radius: 0.625rem;
-                background-color: rgba(62, 86, 114, 0.66);
-                text-align: center;
-                height: fit-content;
-                padding-bottom: 0.625rem;
-                margin-top: 0.625rem;
-            }
-
-            .MainUIContainer {
-                background-color: rgba(62, 86, 114, 0.4);
-                border-radius: 1.25rem;
-                overflow-y: auto; /* Hide scrollbars */
-            }
 
             .note {
                 position: absolute;
@@ -114,41 +27,6 @@
                 top:-0.3125rem;
                 border-radius: 0.3125rem;
                 opacity: 0.825;
-            }
-
-            .score {
-                border-radius: 0.625rem;
-                background-color: rosybrown;
-                width: 90%;
-                margin-top: 0.625rem;
-                margin-left: 0.9375rem;
-            }
-
-            .scorePFP {
-                float: left;
-                width: 15%;
-                margin: auto;
-                background-color: rgba(0, 0, 0, 0.3);
-                border-radius: 0.625rem;
-            }
-
-            .score:hover .scorePFP {
-                float:none;
-                width:50%;
-                background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 2.0625rem;
-            }
-
-            .textarea {
-                display: block;
-                overflow: hidden;
-                min-height: 1.25rem;
-                line-height: 1.25rem;
-                color: rgb(201, 201, 201);
-            }
-
-            iframe[seamless] {
-                border: none;
             }
         </style>
     </head>
@@ -195,8 +73,9 @@
             /*Settings*/
             HitErrorTime = 1000; // How long until Hit Errors fade completely
 
-            /*Misc*/
+            /*Misc & Results*/
             tempNoteId = 0 
+            hitErrors = [];
             //StartTime = null;
             //FinalNoteTime = null;
 
@@ -230,7 +109,6 @@
                     _chartJSON = JSON.parse(_chart);
                     _mapId = (_mapId).toString();
                 } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
-                
                 return new Chart(_chartJSON[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
             }
             
@@ -244,22 +122,16 @@
             }
 
             // Creates a hit error object, showing their offset, which fades over time
-            function HitError(_offset, _length, color) {
+            function HitError(_offset, _length, _color) {
+
+                hitErrors.push([_offset, chart.Get_Audio_Time_Left(), _color])
+
                 hitError = document.createElement("div"); // Creates the hit object visual
                 hitError.classList.add("hitError"); // Adds the class for the CSS
                 hitError.style.left = (_offset*(128/(hitRange))+64)/16+"rem"; // Sets the position
 
-                hitError.style.backgroundColor = color;
+                hitError.style.backgroundColor = _color;
                 hitError.style.opacity = "0.5";
-
-                /*MaxRed = Math.abs(2*(Math.abs(_offset)+64)) // Used to determine how red the object is
-                MaxBlue = Math.abs(4*(Math.abs(_offset)-64)) // Used to determine how blue the object is
-
-                hitError.style.backgroundColor = "rgb(" + MaxRed + ",160," + MaxBlue + ")"; // Sets the objects color (Closer to sides RED closer to center BLUE)
-
-                if (MaxRed>=255) { // If the objects is far enough right or left causing misses the color is set completely red.
-                    hitError.style.backgroundColor = "rgb(255,95,127)";
-                }*/
 
                 document.getElementById("HitErrorBar").appendChild(hitError) // Appedns the hit error object to the hit error bar
 
@@ -277,6 +149,22 @@
                         }, _length / 8); // 125ms
                     }, _length / 4); // 250ms
                 }, _length / 2); // 500ms
+            }
+            
+            function Create_Result_Hit_Errors() {
+                for (let i = 0; i < hitErrors.length; i++) {
+                    const _hitError = hitErrors[i];
+                    let _hitObject = document.createElement("div"); // Creates the hit object visual
+                    _hitObject.classList.add("hitError"); // Adds the class for the CSS
+                    _hitObject.style.top = (_hitError[0] * 18 + 5.66) + "rem"; // Sets the position
+                    _hitObject.style.left = (_hitError[1] * 100 / chart.Get_Audio_Length()) + "%"; // Sets the position
+                    _hitObject.style.position = "absolute";
+
+                    _hitObject.style.backgroundColor = _hitError[2];
+                    _hitObject.style.opacity = "0.75";
+
+                    document.getElementById("ResultErrorContainer").appendChild(_hitObject);
+                }
             }
 
             // Creates hit error and removes a note
@@ -320,6 +208,7 @@
                     }
                 }
                 document.getElementById("ComboText").innerText = "x" + Combos[2];
+                document.getElementById("AccText").innerHTML = Get_Acc().toFixed(5)*100 + "%"; // Shows user their accuracy
             }
 
             // Checks the judgement position of the next note of each row and if the user has pressed the dedicated key
@@ -330,7 +219,7 @@
                             note = chart.Get_Poss(i)[j]
                             PosY = note.Get_Pos()[1];
                             if (auto) {
-                                if (PosY >= -(hitRange / 60)) { // Perfect hit range
+                                if (PosY >= -(hitRange / 120)) { // Aut0 hit range
                                     if (PosY <= (hitRange)) {
                                     hitters[i].src = "Sprites/Hitter_Lit_1.png";
                                     HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
@@ -339,6 +228,7 @@
                                         hitters[i].src = "Sprites/Hitter_Unlit_1.png";
                                     }, 8000 / ( chart.map["BPM"] * rate));
                                     }
+                                    return
                                 }
                             }
                             if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
@@ -560,6 +450,26 @@
                     parseInt(document.getElementById("KeyCheck4").value)
                 ];
             }
+
+            function Show_Results() {
+                playing = false;
+                document.getElementById("myModal").style.display = "block";
+                document.getElementById("ResultPPAmount").innerText = Judgements[0] + " (x" + HighestCombos[0] + ")";
+                document.getElementById("ResultPAmount").innerText = Judgements[1] + " (x" + HighestCombos[1] + ")";
+                document.getElementById("ResultGAmount").innerText = Judgements[2] + " (x" + HighestCombos[2] + ")";
+                document.getElementById("ResultBAmount").innerText = Judgements[3];
+                document.getElementById("ResultMAmount").innerText = Judgements[4];
+                
+                document.getElementById("ResultScore").innerText = Math.round(Get_Score());
+                document.getElementById("ResultAcc").innerText = Math.round(Get_Acc()*100000)/1000 + "%";
+                document.getElementById("ResultValue").innerText = "WIP";
+                
+                document.getElementById("ResultAuto").innerText = document.getElementById("OptionModAuto").checked;
+                document.getElementById("ResultRate").innerText = "x" + document.getElementById("OptionModRate").value;
+                document.getElementById("ResultSwitcher").innerText = document.getElementById("OptionSwitcher").checked;
+
+                Create_Result_Hit_Errors()
+            }
             
             // When site loads
             window.onload = function() {
@@ -569,25 +479,20 @@
                 if (document.getElementById("OptionPlayfieldXOffset").value > 45) {
                     document.getElementById("OptionPlayfieldXOffset").value = 20;
                 }
-                
-                /*Fun*//**/
-                /**/
 
                 // Updates the game, basically the play
                 function Update(_chart) {
                     HitCheck()
                     UpdateNotes(); // Update the notes position the user will see onscreen
                     if (playing) { // Checks if chart is playing or not
-                        //now = Date.now() // Gets current date for delta time calculation
-                        //dt = now - lastUpdate; // Gets delta time
-                        //lastUpdate = now; // Sets last update date for delta time calculation
-                        //chart.ChangeProgress(1 * (dt/16.666));
+                        if (chart.Get_Audio_Time_Left() <= 0) {
+                            Show_Results()
+                        }
                         chart.Update_Progress(rate); // Updates note behind the scene based on song position
                         for (let i = 0; i < hitters.length; i++) {
                             const element = hitters[i];
                             element.innerHTML = key[i]+" "+idProgress[i]+"<br>"+keys[i]+" "+releasedIdProgress[i];
                         }
-                        document.getElementById("AccText").innerHTML = Get_Acc().toFixed(5)*100 + "%"; // Shows user their accuracy
                         //lastUpdate = Date.now() // Sets start date for delta time calculation
                         if (document.getElementById("OptionSwitcher").checked) {
                             if (Math.round(chart.progress) % 2 == 0) {
@@ -604,10 +509,11 @@
                     const element = document.getElementsByClassName("hitter")[i];
                     hitters[i] = element;
                 }
-                Reload_Chart();
+                Reload_Chart(); // First reload to avoid errors
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;";
                 setInterval(Update, 1000/240)
                 siteLoaded = true;
+                setTimeout(Reload_Chart, 100) // Second reload to fix faults in the first
             }
 
             function startMap() {
@@ -641,6 +547,7 @@
                 SaveOptions(); // Gets and Sets the Options
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
                 document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
+                document.getElementById("myModal").style.display = "none"; // Hides result screen
 
                 // Removes ALL Notes
                 for (let i = 0; i < notes.length; i++) {
@@ -652,6 +559,13 @@
                 // Removes All Visual Notes
                 while (document.getElementById("NoteContainer").children.length > 0) {
                     document.getElementById("NoteContainer").children[0].remove();
+                }
+                
+                // Removes all hit errors in results menu
+                _delete = document.getElementById("ResultErrorContainer").children;
+                for (let i = 0; i < _delete.length; i++) {
+                    _delete[0].remove;
+                    hitErrors.pop(0);
                 }
 
                 // Now that all notes are go, notelock gets reset.
@@ -671,6 +585,7 @@
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
                 playing =  _playing;
+                
             }
 
             function UpdateScrollDirection () {
@@ -714,9 +629,85 @@
             }
 
         </script>
-        
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <p style="font-size: x-large;" >Results Menu</p>
+                <div id="ResultsSScoreContainer" style="display:flex">
+                    <div class="UIContainer">
+                        <a>Score: </a><a id="ResultScore">0</a>
+                    </div>
+                    <div class="UIContainer">
+                        <a>Accuracy: </a><a id="ResultAcc">0</a>
+                    </div>
+                    <div class="UIContainer">
+                        <a>Value: </a><a id="ResultValue">0</a>
+                    </div>
+                </div>
+                <div id="ResultsContainer" style="display:flex">
+                    <div class="UIContainer" style="max-width: 20%; display: flex;">
+                        <div id="ResultData" style="float:left;width: 50%">
+                            <p>Mods</p>
+                            <div class="UIContainer">
+                                <br>
+                                <a>Auto - </a>
+                                <a id="ResultAuto">False</a>
+                                <br>
+                                <a>Rate - </a>
+                                <a id="ResultRate">x1.0</a>
+                                <br>
+                                <a>Swticher - </a>
+                                <a id="ResultSwitcher">False</a>
+                            </div>
+                        </div>
+                        <div id="ResultData" style="float:left;width: 50%">
+                            <p>Judgements</p>
+                            <div class="UIContainer">
+                                <br>
+                                <a>Perfect+ - </a>
+                                <a id="ResultPPAmount">0</a>
+                                <br>
+                                <a>Prefect - </a>
+                                <a id="ResultPAmount">0</a>
+                                <br>
+                                <a>Good - </a>
+                                <a id="ResultGAmount">0</a>
+                                <br>
+                                <a>Bad - </a>
+                                <a id="ResultBAmount">0</a>
+                                <br>
+                                <a>Miss - </a>
+                                <a id="ResultMAmount">0</a>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="UIContainer" style="max-width: 80%; height: 11.5rem;">
+                        <div id="ResultError" style="float:left">
+                            <div id="ResultHitErrorBar"style="position: relative; top: 2rem; width:0.3125rem; height: 8.3125rem; background-color: blue;" >
+                                <div id="ResultHitErrorBarExtension" style="position: inherit; top:4rem; left: 0rem; width:0.625rem; height: 0.325rem; background-color: blue;" >
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ResultError" style="float:right">
+                            <div id="ResultHitErrorBar"style="position: relative; top: 2rem; width:0.3125rem; height: 8.3125rem; background-color: blue;" >
+                                <div id="ResultHitErrorBarExtension" style="position: inherit; top:4rem; left: -0.5rem; width:0.625rem; height: 0.325rem; background-color: blue;" >
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ResultErrorContainer" style="position:relative; width: 100%; height: 100%">
+                        </div>
+                    </div>
+                </div>
+                <div class="UIContainer" style="width: 97.5%;">
+                    <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
+                        Restart
+                    </button>
+                </div>
+            </div>
+          
+        </div>
         <div id="EverythingContainer" style="position:absolute; width: 93.75rem; left:22.875rem; /*top:1.25rem;*/ height: 98%;">
-            <div class = "UIContainer" style="position:inherit; width: 22.875rem; height: 98%;">
+            <div class = "UIContainer MainUIContainer" style="position:inherit; width: 22.875rem; height: 98%;">
                 <div>
                     <p>
                         SCORES (WIP)

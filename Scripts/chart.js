@@ -151,4 +151,12 @@ class Chart {
     Get_Audio_Time() {
         return this.audio.currentTime;
     }
+
+    Get_Audio_Time_Left() {
+        return this.audio.duration - this.audio.currentTime;
+    }
+
+    Get_Audio_Length() {
+        return this.audio.duration;
+    }
 }

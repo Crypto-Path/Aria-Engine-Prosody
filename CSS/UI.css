@@ -1,0 +1,127 @@
+
+html {
+  font-size: 16px;
+}
+
+body {
+  overflow: hidden; /* Hide scrollbars */
+  /*background-color: black;*/
+}
+
+p {
+  padding-top: 1rem;
+  text-align: center;
+  color: white;
+}
+
+a {
+  color: white;
+}
+
+input {
+  width: 1.875rem;
+  height: 1.5625rem;
+  border-radius: 0.625rem;
+  font-size: 0.625rem;
+}
+
+label {
+  font-size: 1rem;
+  color: white;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+}
+
+button {
+  width: 3.125rem;
+  height: 1.5625rem auto;
+  border-radius: 0.625rem;
+  font-size: 0.625rem;
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+iframe[seamless] {
+  border: none;
+}
+
+::-webkit-scrollbar {
+  width: 0.625rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.UIContainer {
+  margin-left: 2.5%;
+  Width: 95%;
+  border-radius: 0.625rem;
+  background-color: rgba(62, 86, 114, 0.66);
+  text-align: center;
+  height: fit-content;
+  min-height: 1rem;
+  max-width: 100%;
+  padding-bottom: 0.625rem;
+  margin-top: 0.625rem;
+}
+
+.MainUIContainer {
+  background-color: rgba(62, 86, 114, 0.4);
+  border-radius: 1.25rem;
+  overflow-y: auto; /* Hide scrollbars */
+}
+
+.score {
+  border-radius: 0.625rem;
+  background-color: rosybrown;
+  width: 90%;
+  margin-top: 0.625rem;
+  margin-left: 0.9375rem;
+}
+
+.scorePFP {
+  float: left;
+  width: 15%;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.625rem;
+}
+
+.score:hover .scorePFP {
+  float:none;
+  width:50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2.0625rem;
+}
+
+.textarea {
+  display: block;
+  overflow: hidden;
+  min-height: 1.25rem;
+  line-height: 1.25rem;
+  color: rgb(201, 201, 201);
+}
