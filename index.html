@@ -169,7 +169,7 @@
             scrollSpeed = 15; // VISUAL: how fast the notes go by
             auto = true; // The game plays itself
             rate = 1; // How fast the map plays
-            hitRange = 0.33; // Judgement range of notes
+            hitRange = 0.5; // Judgement range of notes
 
             /*Input & Notes*/
             hitKeys = [68,70,74,75]; // Key bindings for gameplay
@@ -188,7 +188,7 @@
 
             /*Score Calculation*/
             Judgements = [0, 0, 0, 0, 0];
-            JudgementWeights = [1, 1, 2, 4, 8];
+            JudgementWeights = [1, 1.2, 2.5, 5, 10];
             Combos = [0, 0, 0]; // P+, Perfect, Full combo
             HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -221,7 +221,7 @@
                 let _HighestPP = HighestCombos[0] / _totalNotes;
                 let _HighestP = HighestCombos[1] / _totalNotes;
                 let _HighestC = HighestCombos[2] / _totalNotes;
-                let _score = Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(_HighestPP)) * Math.sqrt(_HighestP) * _HighestC)) * _acc * (_hitNotes / _totalNotes)) * 10000000; // Score calculation...
+                let _score = Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(_HighestPP)) * Math.sqrt(_HighestP) * _HighestC)) * _acc * (_hitNotes / _totalNotes)) * 11000000; // Score calculation...
                 return _score;
             }
 
@@ -244,19 +244,22 @@
             }
 
             // Creates a hit error object, showing their offset, which fades over time
-            function HitError(_offset, _length) {
+            function HitError(_offset, _length, color) {
                 hitError = document.createElement("div"); // Creates the hit object visual
                 hitError.classList.add("hitError"); // Adds the class for the CSS
                 hitError.style.left = (_offset+64)/16+"rem"; // Sets the position
 
-                MaxRed = Math.abs(2*(Math.abs(_offset)+64)) // Used to determine how red the object is
+                hitError.style.backgroundColor = color;
+                hitError.style.opacity = "0.5";
+
+                /*MaxRed = Math.abs(2*(Math.abs(_offset)+64)) // Used to determine how red the object is
                 MaxBlue = Math.abs(4*(Math.abs(_offset)-64)) // Used to determine how blue the object is
 
                 hitError.style.backgroundColor = "rgb(" + MaxRed + ",160," + MaxBlue + ")"; // Sets the objects color (Closer to sides RED closer to center BLUE)
 
                 if (MaxRed>=255) { // If the objects is far enough right or left causing misses the color is set completely red.
                     hitError.style.backgroundColor = "rgb(255,95,127)";
-                }
+                }*/
 
                 document.getElementById("HitErrorBar").appendChild(hitError) // Appedns the hit error object to the hit error bar
 
@@ -276,8 +279,8 @@
             }
 
             // Creates hit error and removes a note
-            function HitNote(_PosY, _ErrorTime, _row) { 
-                HitError(_PosY, _ErrorTime); // Creates hit error
+            function HitNote(_PosY, _ErrorTime, _row, _color = "rgb(255,95,127)") {
+                HitError(_PosY, _ErrorTime, _color); // Creates hit error
                 RemoveNote(_row); // Removes note by row
             }
 
@@ -334,11 +337,11 @@
                                                     KeyDown(i);
                                                     setTimeout(function() {
                                                         KeyUp(i);
-                                                    }, 10000 / ( chart.map["BPM"] * rate));
-                                                }, hitRange * 66);
+                                                    }, 16000 / ( chart.map["BPM"] * rate));
+                                                }, hitRange * 60);
                                             }
                                             if (keys[i]) {
-                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i, "rgb(135,206,235)");
                                                 IncreaseCombo(0)
                                                 return;
                                             }
@@ -348,7 +351,7 @@
                                     if (PosY >= -(hitRange / 8)) { // Perfect hit range
                                         if (PosY <= (hitRange / 8)) {
                                             if (keys[i]) {
-                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i, "rgb(155,206,215)");
                                                 IncreaseCombo(1)
                                                 return;
                                             }
@@ -358,7 +361,7 @@
                                     if (PosY >= -(hitRange / 4)) { // Good hit range
                                         if (PosY <= (hitRange / 4)) {
                                             if (keys[i]) {
-                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i, "rgb(175,206,195)");
                                                 IncreaseCombo(2)
                                                 return;
                                             }
@@ -366,7 +369,7 @@
                                     }
 
                                     if (keys[i]) { // Bad hit range
-                                            HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                            HitNote(PosY*(128/(hitRange)), HitErrorTime, i, "rgb(195,206,175)");
                                             IncreaseCombo(3)
                                             return;
                                     }
