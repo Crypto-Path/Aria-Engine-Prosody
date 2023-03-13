@@ -186,9 +186,11 @@
             inputIndex = null; // For Detection
             waitingForInput = false; // For Detection, or possibly other uses
 
-            /*Judgements*/
-            Judgements = [0,0,0,0];
-            JudgementWeights = [1, 2, 4, 8];
+            /*Score Calculation*/
+            Judgements = [0, 0, 0, 0, 0];
+            JudgementWeights = [1, 1, 2, 4, 8];
+            Combos = [0, 0, 0]; // P+, Perfect, Full combo
+            HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
             /*Settings*/
             HitErrorTime = 1000; // How long until Hit Errors fade completely
@@ -200,8 +202,9 @@
 
             // Returns accuracy of play
             function Get_Acc() {
-                _totalNotes = 0; // Total notes with the exception of the ones missed
-                _weight = 0; // The weight of all the notes combined to calculate the accuracy
+                let _totalNotes = 0; // Total notes
+                let _weight = 0; // The weight of all the notes combined to calculate the accuracy
+                let _acc = 0; // The accuracy
                 for (let i = 0; i < Judgements.length; i++) { _totalNotes += Judgements[i]; } // Gets total notes
                 for (let i = 0; i < JudgementWeights.length; i++) { _weight += Judgements[i] * JudgementWeights[i]; } // Gets weight of play
                 _acc = _totalNotes/_weight; // Calculates accuracy
@@ -209,24 +212,17 @@
             }
 
             //Gets
-            function Get_Value(_acc, _rate) {
-                _all = JSON.parse(chartData)["1"]["4Rows"]["Difficulty1"]["Notes"]; // Gets all notes in JSON chart
-                _density = 0; // Inits var
-                _length = 0; // Inits var
-                for (let i = 0; i < _all.length; i++) { // Gets all rows
-                    const _row = _all[i];
-                    _totalDistance = 0; // Inits Var
-                    for (let j = 0; j < _row.length; j++) { // Gets all notes
-                        const _distance = _row[j]; // Gets distance between notes
-                        _totalDistance += 1 / _distance // Gets distance flipped
-                        _length++; // Increase total notes
-                    }
-                    _density += _totalDistance/_all.length; // Gets Average distance between notes
-                }
-                _chartDensity = _density; // For more calculation if needed
-                _chartLength = _length; // For more calculation if needed
-                _difficulty = Math.sqrt((_chartDensity * _chartLength * JSON.parse(chartData)["1"]["BPM"] * _rate) / 10000); // Calculates Difficulty
-                return Math.pow(_difficulty, (_acc / 0.95)); // Returns value
+            function Get_Score() {
+                let _acc = Get_Acc()
+                let _totalNotes = 0;
+                let _hitNotes = 0;
+                for (let i = 0; i < Judgements.length; i++) { _totalNotes += Judgements[i]; }
+                for (let i = 0; i < Judgements.length-1; i++) { _hitNotes += Judgements[i]; }
+                let _HighestPP = HighestCombos[0] / _totalNotes;
+                let _HighestP = HighestCombos[1] / _totalNotes;
+                let _HighestC = HighestCombos[2] / _totalNotes;
+                let _score = Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(_HighestPP)) * Math.sqrt(_HighestP) * _HighestC)) * _acc * (_hitNotes / _totalNotes)) * 10000000; // Score calculation...
+                return _score;
             }
 
             function LoadChart(_chart, _mapId) {
@@ -285,6 +281,43 @@
                 RemoveNote(_row); // Removes note by row
             }
 
+            // For score calculation
+            function IncreaseCombo(_id) {
+                Judgements[_id]++; // For acc calculation
+                switch (_id) {
+                    case 0:
+                        Combos[0]++;
+                        Combos[1]++;
+                        Combos[2]++;
+                        break;
+
+                    case 1:
+                        Combos[0] = 0;
+                        Combos[1]++;
+                        Combos[2]++;
+                        break;
+
+                    case 2:
+                        Combos[0] = 0;
+                        Combos[1] = 0;
+                        Combos[2]++;
+                        break;
+                
+                    default:
+                        Combos[0] = 0;
+                        Combos[1] = 0;
+                        Combos[2] = 0;
+                        break;
+                }
+                for (let i = 0; i < Combos.length; i++) {
+                    const _combo = Combos[i];
+                    if (_combo > HighestCombos[i]) {
+                        HighestCombos[i] = _combo;
+                    }
+                }
+                document.getElementById("ComboText").innerText = "x" + Combos[2];
+            }
+
             // Checks the judgement position of the next note of each row and if the user has pressed the dedicated key
             function HitCheck() {
                 if (playing) { // Checks if the map is playing to avoid being able to hit notes before the game is started
@@ -294,20 +327,29 @@
                             PosY = note.Get_Pos()[1];
                             if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
                                 if (PosY >= - (hitRange / 2)) { // Hit range
-
-                                    if (PosY >= -(hitRange / 8)) { // Perfect hit range
-                                        if (PosY <= (hitRange / 8)) {
+                                    if (PosY >= -(hitRange / 12)) { // Perfect hit range
+                                        if (PosY <= (hitRange / 12)) {
                                             if (auto) { // System for auto mod pressing down 
                                                 setTimeout(function() {
                                                     KeyDown(i);
                                                     setTimeout(function() {
                                                         KeyUp(i);
                                                     }, 10000 / ( chart.map["BPM"] * rate));
-                                                }, hitRange * 100);
+                                                }, hitRange * 66);
                                             }
                                             if (keys[i]) {
                                                 HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
-                                                Judgements[0]++;
+                                                IncreaseCombo(0)
+                                                return;
+                                            }
+                                        }
+                                    }
+
+                                    if (PosY >= -(hitRange / 8)) { // Perfect hit range
+                                        if (PosY <= (hitRange / 8)) {
+                                            if (keys[i]) {
+                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                                IncreaseCombo(1)
                                                 return;
                                             }
                                         }
@@ -317,27 +359,23 @@
                                         if (PosY <= (hitRange / 4)) {
                                             if (keys[i]) {
                                                 HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
-                                                Judgements[1]++;
+                                                IncreaseCombo(2)
                                                 return;
                                             }
                                         }
                                     }
 
                                     if (keys[i]) { // Bad hit range
-                                                HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
-                                            Judgements[2]++;
+                                            HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
+                                            IncreaseCombo(3)
                                             return;
                                     }
-                                    
-                                    /*HitNote(PosY*(128/(hitRange)), HitErrorTime, i, j);
-                                    releasedIdProgress[i] = idProgress[i];
-                                    Misses++;*/
                                 }
                             } 
                             if (PosY > (hitRange / 2)) { // If no notes are hit in any of the hit ranges the note misses
                                 HitNote(PosY*(128/(hitRange)), HitErrorTime, i);
                                 releasedIdProgress[i] = idProgress[i];
-                                Judgements[3]++;
+                                IncreaseCombo(4)
                                 return;
                             }
                         }
@@ -585,6 +623,7 @@
 
                 SaveOptions(); // Gets and Sets the Options
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
+                document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
 
                 // Removes ALL Notes
                 for (let i = 0; i < notes.length; i++) {
@@ -605,7 +644,9 @@
                 }
 
                 // Resets play information
-                Judgements = [0, 0, 0, 0];
+                Judgements = [0, 0, 0, 0, 0];
+                Combos = [0, 0, 0];
+                HighestCombos = [0, 0, 0];
 
                 // For map Changes
                 chartData = document.getElementById("OptionChartData").innerHTML; 
@@ -680,6 +721,7 @@
             </div>
             <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 110%; left: 29.125rem; top: -0.625rem;">
                 <div id="HitErrorBar"style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;" >
+                    <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; color: black; text-align: center;"></a>
                     <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; color: black; text-align: center;">Loading...</a>
                     <div id="HitErrorBar" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;" >
                     </div>
