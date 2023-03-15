@@ -34,6 +34,9 @@
         <script src = "Data/Maps.js"> </script>
         <script src = "Scripts/note.js" ></script>
         <script src = "Scripts/chart.js" ></script>
+        <script src = "Scripts/savingAndLoading.js" ></script>
+        <script src = "Scripts/statCalculations.js" ></script>
+        <script src = "Scripts/noteRenderer.js" ></script>
         <script>
             chart = null; // The chart itself
             chartData = null; // TODO: Get map data from location
@@ -79,37 +82,10 @@
             //StartTime = null;
             //FinalNoteTime = null;
 
-            function Get_TotalNotes() {
-                let _totalNotes = 0
-                for (let i = 0; i < Judgements.length; i++) { _totalNotes += Judgements[i]; } // Gets total notes
-                return _totalNotes;
-            }
-
-            // Returns accuracy of play
-            function Get_Acc() {
-                let _totalNotes = Get_TotalNotes(); // Total notes
-                let _weight = 0; // The weight of all the notes combined to calculate the accuracy
-                let _acc = 0; // The accuracy
-                for (let i = 0; i < JudgementWeights.length; i++) { _weight += Judgements[i] * JudgementWeights[i]; } // Gets weight of play
-                _acc = _totalNotes/_weight; // Calculates accuracy
-                return _acc; // Returns accuracy
-            }
-
-            //Gets
-            function Get_Score() {
-                let _acc = Get_Acc()
-                let _totalNotes = Get_TotalNotes();
-                let _hitNotes = 0;
-                for (let i = 0; i < Judgements.length-1; i++) { _hitNotes += Judgements[i]; }
-                let _HighestPP = HighestCombos[0] / _totalNotes;
-                let _HighestP = HighestCombos[1] / _totalNotes;
-                let _HighestC = HighestCombos[2] / _totalNotes;
-                let _score = Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(_HighestPP)) * Math.sqrt(_HighestP) * _HighestC)) * _acc * (_hitNotes / _totalNotes)) * (1000000 - _totalNotes) + Judgements[0]; // Score calculation...
-                return _score;
-            }
+            
 
             function LoadChart(_chart, _mapId) {
-                try { // To avoid error 
+                try { // TFGo avoid error 
                     _chartJSON = JSON.parse(_chart);
                     _mapId = (_mapId).toString();
                 } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
@@ -119,8 +95,8 @@
             // Removes next note in row
             function RemoveNote(_row) {
                 chart.Remove(_row); // Removes the note behind the scene
-                removedNote = notes[_row].pop(); // Removes visual note from the notes array and gets that same visual object
-                removedNote.remove() // Removes the visual note
+                let _removedNote = notes[_row].pop(); // Removes visual note from the notes array and gets that same visual object
+                _removedNote.remove() // Removes the visual note
 
                 idProgress[_row]++; // Increases idProgress so next note in row can be hit
             }
@@ -158,14 +134,14 @@
             function Create_Result_Hit_Errors() {
                 console.log("Creating Hit errors");
                 for (let i = 0; i < hitErrors.length; i++) { 
-                    if (i % 10 == 0) {
-                        console.log("Progress: "+  i / Get_TotalNotes());
+                    if (i % 50 == 0) {
+                        console.log("Progress: " +  Math.round((i / Get_TotalNotes(Judgements))*100)/100 + "%");
                     }
                     const _hitError = hitErrors[i];
                     let _hitObject = document.createElement("div"); // Creates the hit object visual
                     _hitObject.classList.add("hitError"); // Adds the class for the CSS
                     _hitObject.style.top = (_hitError[0] * 18 + 5.66) + "rem"; // Sets the position
-                    _hitObject.style.left = (_hitError[1] * 100 / chart.Get_Audio_Length()) + "%"; // Sets the position
+                    _hitObject.style.left = (-(_hitError[1] * 100 / chart.Get_Audio_Length()) + 100) +"%"; // Sets the position
                     _hitObject.style.position = "absolute";
 
                     _hitObject.style.backgroundColor = _hitError[2];
@@ -173,6 +149,7 @@
 
                     document.getElementById("ResultErrorContainer").appendChild(_hitObject);
                 }
+                console.log("Progress: 100%");
             }
 
             // Creates hit error and removes a note
@@ -216,7 +193,7 @@
                     }
                 }
                 document.getElementById("ComboText").innerText = "x" + Combos[2];
-                document.getElementById("AccText").innerHTML = Get_Acc().toFixed(5)*100 + "%"; // Shows user their accuracy
+                document.getElementById("AccText").innerHTML = Get_Acc(Judgements, JudgementWeights).toFixed(5)*100 + "%"; // Shows user their accuracy
             }
 
             // Checks the judgement position of the next note of each row and if the user has pressed the dedicated key
@@ -240,15 +217,7 @@
                                 }
                             }
                             if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-                                if (PosY >= - (hitRange / 2)) { // Hit range
-                                    /*if (PosY >= -(hitRange / 60)) { // Auto hit range
-                                        if (PosY <= (hitRange / 60)) {
-                                            KeyDown(i);
-                                            setTimeout(function() {
-                                                KeyUp(i);
-                                            }, 8000 / ( chart.map["BPM"] * rate));
-                                        }
-                                    }*/
+                                if (PosY >= - (hitRange / 1.5)) {
                                     
                                     if (PosY >= -(hitRange / 12)) { // Perfect hit range
                                         if (PosY <= (hitRange / 12)) {
@@ -280,10 +249,21 @@
                                         }
                                     }
 
-                                    if (keys[i]) { // Bad hit range
-                                            HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
-                                            IncreaseCombo(3)
-                                            return;
+
+                                    if (PosY >= -(hitRange / 2)) { // Good hit range
+                                        if (PosY <= (hitRange / 2)) {
+                                            if (keys[i]) { // Bad hit range
+                                                    HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
+                                                    IncreaseCombo(3)
+                                                    return;
+                                            }
+                                        }
+                                    }
+                                    
+                                    if (keys[i]) { // Miss hit range
+                                        HitNote(PosY, HitErrorTime, i);
+                                        IncreaseCombo(4)
+                                        return;
                                     }
                                 }
                             } 
@@ -298,47 +278,10 @@
                 }
             }
 
-            function UpdateNotes() {
-                for (let i = 0; i < notes.length; i++) {
-                    for (let j = 0; j < notes[i].length; j++) {
-                        note = chart.Get_Poss(i)[j] // Gets note information
-                        noteObject = notes[i][j].style;
-                        noteObject.left = (note.Get_Pos()[0] - StartPos[0])/16 + "rem"; // Sets the X location
-                        noteObject.top = (note.Get_Pos()[1] * scrollSpeed * 80 - StartPos[1])/16 + "rem"; // Sets the Y location
-                    }
-                }  
-            }
-
-            function CreateNote(chart, row, index) {
-                noteImage = document.createElement("img"); // Creates image object
-                notes[row][index] = noteImage; // Set visual notes array to image object
-                noteImage.src = "Sprites/Notes/Note_Hit_"+(row+1)+".png"; // Sets the image's image
-                noteImage.classList.add('note'); // Sets the class for the look of the object
-                note = chart.Get_Poss(row)[index] // Gets note information
-                noteImage.style.left = (note.x - StartPos[0])/16 + "rem"; // Sets the X location
-                noteImage.style.top = (note.y * scrollSpeed  - StartPos[1])/16 + "rem"; // Sets the Y location
-                noteImage.id = tempNoteId; // Debug Purposes
-                tempNoteId++; // Debug Purposes
-                document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
-            }
-            
-
-            // Initiates the notes in the chart
-            function InitNotes(chart) {
-                notes.length = chart.Get_Rows(); // Gets the length of rows (How many rows exist in chart)
-                for (let i = 0; i < chart.Get_Rows(); i++) { // Checks for each row
-                    notes[i] = [] // Inits var
-                    notes[i].length = chart.Get_Poss(i).length; // Sets length of each array in notes
-                    for (let j = 0; j < chart.Get_Poss(i).length; j++) { // Gets each note in row
-                        CreateNote(chart, i, j); // Creates note
-                    }
-                }
-            }
-
             function InitChart(ChartData, mapId) {
                 chart = LoadChart(chartData, mapId);
                 chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
-                InitNotes(chart)
+                notes = InitNotes(chart, notes) // Create original note objects and assigns them to the note var
             }
 
             function Start(chartData, mapId) {
@@ -401,6 +344,7 @@
                     }
                 }
             }
+
             window.onkeyup = function(e) { 
                 if (siteLoaded) {
                     switch (e.keyCode) {
@@ -423,38 +367,6 @@
                 }
             }
 
-            // Loads settings from localStorage
-            function LoadSettings() {
-                if (localStorage["ScrollSpeed"] != null) // Makes sure scroll speed was saved
-                    document.getElementById("OptionScrollSpeed").value = localStorage["ScrollSpeed"];
-                    
-                if (localStorage["MapXOffset"] != null) // Makes sure map x offset was saved
-                    document.getElementById("OptionPlayfieldXOffset").value = localStorage["MapXOffset"];
-
-                if (localStorage["Upscroll"] == 'true') // Makes sure upscroll was saved
-                    document.getElementById("OptionUpscroll").checked = true;
-
-                if (!isNaN(localStorage['KeyBinding1'])) // Makes sure key binding 1 was saved
-                    document.getElementById("KeyCheck1").value = localStorage['KeyBinding1'];
-                    
-                if (!isNaN(localStorage['KeyBinding2'])) // Makes sure key binding 2 was saved
-                    document.getElementById("KeyCheck2").value = localStorage['KeyBinding2'];
-                    
-                if (!isNaN(localStorage['KeyBinding3'])) // Makes sure key binding 3 was saved
-                    document.getElementById("KeyCheck3").value = localStorage['KeyBinding3'];
-                    
-                if (!isNaN(localStorage['KeyBinding4'])) // Makes sure key binding 4 was saved
-                    document.getElementById("KeyCheck4").value = localStorage['KeyBinding4'];
-                    
-                // Assigns keybindings to what was saved
-                hitKeys = [ 
-                    parseInt(document.getElementById("KeyCheck1").value),
-                    parseInt(document.getElementById("KeyCheck2").value),
-                    parseInt(document.getElementById("KeyCheck3").value),
-                    parseInt(document.getElementById("KeyCheck4").value)
-                ];
-            }
-
             function Show_Results() {
                 console.log("Setting Results")
                 playing = false;
@@ -466,8 +378,8 @@
                 document.getElementById("ResultBAmount").innerText = Judgements[3];
                 document.getElementById("ResultMAmount").innerText = Judgements[4];
                 
-                document.getElementById("ResultScore").innerText = Math.round(Get_Score());  console.log("Showing Score Results");
-                document.getElementById("ResultAcc").innerText = Math.round(Get_Acc()*100000)/1000 + "%";  console.log("Showing Acc Results");
+                document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos));  console.log("Showing Score Results");
+                document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights)*100000)/1000 + "%";  console.log("Showing Acc Results");
                 document.getElementById("ResultValue").innerText = "WIP";  console.log("Showing Value Results");
                 
                 document.getElementById("ResultAuto").innerText = document.getElementById("OptionModAuto").checked;  console.log("Showing Mods");
@@ -491,7 +403,7 @@
                 // Updates the game, basically the play
                 function Update(_chart) {
                     HitCheck()
-                    UpdateNotes(); // Update the notes position the user will see onscreen
+                    UpdateNotes(chart); // Update the notes position the user will see onscreen
                     if (playing) { // Checks if chart is playing or not
                         if (chart.Get_Audio_Time_Left() <= 0) {
                             document.getElementById("AccText").innerHTML = "&lt;Waiting for Song to end&gt;";
@@ -620,24 +532,6 @@
                     }
                     StartPos[1] = -800
                 }
-            }
-            
-            function SaveOptions() {
-                scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
-                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
-
-                localStorage['Upscroll'] = document.getElementById("OptionUpscroll").checked;
-                localStorage['ScrollSpeed'] = scrollSpeed;
-                localStorage['MapXOffset'] = document.getElementById("OptionPlayfieldXOffset").value;
-
-                localStorage['KeyBinding1'] = document.getElementById("KeyCheck1").value;
-                localStorage['KeyBinding2'] = document.getElementById("KeyCheck2").value;
-                localStorage['KeyBinding3'] = document.getElementById("KeyCheck3").value;
-                localStorage['KeyBinding4'] = document.getElementById("KeyCheck4").value;
-
-                document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
-                document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
-                UpdateScrollDirection();
             }
 
         </script>
