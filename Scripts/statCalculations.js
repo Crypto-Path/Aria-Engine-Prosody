@@ -9,7 +9,7 @@ function Get_Acc(_judgements, _judgementsWeights) {
     let _weight = 0; // The weight of all the notes combined to calculate the accuracy
     let _acc = 0; // The accuracy
     for (let i = 0; i < _judgementsWeights.length; i++) { _weight += _judgements[i] * _judgementsWeights[i]; } // Gets weight of play
-    _acc = Get_TotalNotes(_judgements) / _weight; // Calculates accuracy
+    _acc = (Get_TotalNotes(_judgements) - _judgements[4]) / _weight; // Calculates accuracy
     return _acc; // Returns accuracy
 }
 
