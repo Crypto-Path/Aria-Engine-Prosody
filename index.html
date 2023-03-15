@@ -396,8 +396,8 @@
                 LoadSettings() // Loads settings if they were saved
                 document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
                 // Makes sure the map doesn't go too far offscreen
-                if (document.getElementById("OptionPlayfieldXOffset").value > 45) {
-                    document.getElementById("OptionPlayfieldXOffset").value = 20;
+                if (document.getElementById("OptionPlayfieldXOffset").value > 100) {
+                    document.getElementById("OptionPlayfieldXOffset").value = 46.8;
                 }
 
                 // Updates the game, basically the play
@@ -443,7 +443,8 @@
                 playing = true; // For the update function to know it can start
                 chart.Play_Audio(rate) // Starts the song
 
-                //lastUpdate = Date.now() // For testing purposes
+                document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHiding");
+                document.getElementById("ScoreBoard").classList.add("delay-1", "UIHiding");
             }
 
             function Set_Input_Key(input) {
@@ -459,16 +460,23 @@
                 inputIndex = index;
             }
 
-            function Reload_Chart(_playing = false) {
+            function Reload_Chart(_object = null, _playing = false) {
                 clearInterval(0); // Stops Update from being called every ms
                 playing = false; // Keeps Update function from doing anything just incase
                 if (chart != null) // Makes sure thare IS audio that can be disable
                     chart.Stop_Audio(); // Stops the music from playing
 
+                if (_object != null) {
+                    _object.blur()
+                }
+
                 SaveOptions(); // Gets and Sets the Options
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
                 document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
                 document.getElementById("myModal").style.display = "none"; // Hides result screen
+
+                document.getElementById("MapsSettingContainer").classList.remove("UIHiding");
+                document.getElementById("ScoreBoard").classList.remove("UIHiding");
 
                 // Removes ALL Notes
                 for (let i = 0; i < notes.length; i++) {
@@ -514,7 +522,7 @@
 
             function UpdateScrollDirection () {
                 scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
-                document.getElementById("EverythingContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
+                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
 
                 localStorage['ScrollSpeed'] = scrollSpeed;
 
@@ -612,8 +620,8 @@
             </div>
           
         </div>
-        <div id="EverythingContainer" style="position:absolute; width: 93.75rem; left:22.875rem; /*top:1.25rem;*/ height: 98%;">
-            <div class = "UIContainer MainUIContainer" style="position:inherit; width: 22.875rem; height: 98%;">
+        <div id="EverythingContainer" >
+            <div id = "ScoreBoard" class = "UIContainer MainUIContainer" style="float:left; width:25%; max-width: 33%; height: 100%;">
                 <div>
                     <p>
                         SCORES (WIP)
@@ -633,14 +641,14 @@
                     </div>
                 </div>
             </div>
-            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 110%; left: 29.125rem; top: -0.625rem;">
+            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 110%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
                 <div id="HitErrorBar"style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;" >
-                    <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; color: black; text-align: center;"></a>
-                    <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; color: black; text-align: center;">Loading...</a>
+                    <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; text-align: center;"></a>
+                    <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; text-align: center;">Loading...</a>
                     <div id="HitErrorBarExtension" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;" >
                     </div>
                 </div>
-                <div id="HitterContainer" style="position: absolute; background-color: rgba(0, 0, 0, 0.5); width:100%;height:100%">
+                <div id="HitterContainer" style="position: absolute; width:100%;height:100%">
                     <img id="Hitter1" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 0;" ></img>
                     <img id="Hitter2" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 6.25rem;" ></img>
                     <img id="Hitter3" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 12.5rem;" ></img>
@@ -648,7 +656,7 @@
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="position:inherit; left: 56.25rem; width: 22.875rem; height: 98%; align-items: center; justify-content: center;">
+            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="float:right; width:25%; max-width: 33%; height: 100%; align-items: center; justify-content: center;">
 
                 <div class = "UIContainer">
                     <div>
@@ -657,7 +665,7 @@
                         </p>
                     </div>
                     <label>Auto: </label>
-                    <input id="OptionModAuto" onchange="Reload_Chart()" type="checkbox"> <br>
+                    <input id="OptionModAuto" onchange="Reload_Chart(this)" type="checkbox"> <br>
                     <label>Rate: </label>
                     <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
                     <label>Switcher: </label>
@@ -670,6 +678,8 @@
                             GamePlay:
                         </p>
                     </div>
+                    <label>Background Dim: </label>
+                    <input id="OptionBGDim" oninput="this.nextElementSibling.value = this.value" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
                     <label>Upscroll: </label>
                     <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <br>
                     <label>Scroll Speed: </label>
