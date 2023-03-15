@@ -1,11 +1,17 @@
 
+
 html {
   font-size: 16px;
 }
 
 body {
-  overflow: hidden; /* Hide scrollbars */
-  /*background-color: black;*/
+  overflow: hidden;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../Sprites/Background/BG.png'); 
+  background-size:     cover;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: center center;              /* optional, center the image */
+  color: white;
 }
 
 p {
@@ -80,7 +86,7 @@ iframe[seamless] {
   margin-left: 2.5%;
   Width: 95%;
   border-radius: 0.625rem;
-  background-color: rgba(62, 86, 114, 0.66);
+  background-color: rgba(62, 86, 114, 0.76);
   text-align: center;
   height: fit-content;
   min-height: 1rem;
@@ -89,10 +95,20 @@ iframe[seamless] {
   margin-top: 0.625rem;
 }
 
+.UIHiding {
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 1.5s;
+}
+
 .MainUIContainer {
-  background-color: rgba(62, 86, 114, 0.4);
+  background-color: rgba(62, 86, 114, 0.66);
   border-radius: 1.25rem;
   overflow-y: auto; /* Hide scrollbars */
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.5s;
 }
 
 .score {
@@ -124,4 +140,8 @@ iframe[seamless] {
   min-height: 1.25rem;
   line-height: 1.25rem;
   color: rgb(201, 201, 201);
+}
+
+.delay-1 {
+  transition-delay:  250ms;
 }
