@@ -69,7 +69,8 @@
 
             /*Score Calculation*/
             Judgements = [0, 0, 0, 0, 0];
-            JudgementWeights = [1, 1.2, 2.5, 5, 10];
+            JudgementWeights = [1, 1.010101, 1.5, 3, 9];
+            JudgementRanges = [32, 8, 4, 2];
             Combos = [0, 0, 0]; // P+, Perfect, Full combo
             HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -79,10 +80,11 @@
             /*Misc & Results*/
             tempNoteId = 0 
             hitErrors = [];
+            rotation = [0,0,0,0];
+            rotateProgress = 0
+            pause = [true, false, 0] // Can pause, Is paused, Paused amount
             //StartTime = null;
             //FinalNoteTime = null;
-
-            
 
             function LoadChart(_chart, _mapId) {
                 try { // TFGo avoid error 
@@ -207,20 +209,26 @@
                                 if (PosY >= -(hitRange / 120)) { // Aut0 hit range
                                     if (PosY <= (hitRange)) {
                                     hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
+                                    if (document.getElementById("OptionRB").checked) {
+                                        Set_BG_Rotation(i)
+                                    }
                                     HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
                                     IncreaseCombo(0)
                                     setTimeout(function() {
+                                        if (document.getElementById("OptionRB").checked) {
+                                            Set_BG_Rotation(i, false)
+                                        }
                                         hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
-                                    }, 8000 / ( chart.map["BPM"] * rate));
+                                    }, 16000 / ( chart.map["BPM"] * rate));
                                     }
-                                    return
+                                    return;
                                 }
                             }
                             if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
                                 if (PosY >= - (hitRange / 1.5)) {
                                     
-                                    if (PosY >= -(hitRange / 12)) { // Perfect hit range
-                                        if (PosY <= (hitRange / 12)) {
+                                    if (PosY >= -(hitRange / JudgementRanges[0])) { // Perfect hit range
+                                        if (PosY <= (hitRange / JudgementRanges[0])) {
                                             if (keys[i]) {
                                                 HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
                                                 IncreaseCombo(0)
@@ -229,8 +237,8 @@
                                         }
                                     }
 
-                                    if (PosY >= -(hitRange / 8)) { // Perfect hit range
-                                        if (PosY <= (hitRange / 8)) {
+                                    if (PosY >= -(hitRange / JudgementRanges[1])) { // Perfect hit range
+                                        if (PosY <= (hitRange / JudgementRanges[1])) {
                                             if (keys[i]) {
                                                 HitNote(PosY, HitErrorTime, i, "rgb(155,206,215)");
                                                 IncreaseCombo(1)
@@ -239,8 +247,8 @@
                                         }
                                     }
 
-                                    if (PosY >= -(hitRange / 4)) { // Good hit range
-                                        if (PosY <= (hitRange / 4)) {
+                                    if (PosY >= -(hitRange / JudgementRanges[2])) { // Good hit range
+                                        if (PosY <= (hitRange / JudgementRanges[2])) {
                                             if (keys[i]) {
                                                 HitNote(PosY, HitErrorTime, i, "rgb(175,206,195)");
                                                 IncreaseCombo(2)
@@ -250,12 +258,12 @@
                                     }
 
 
-                                    if (PosY >= -(hitRange / 2)) { // Good hit range
-                                        if (PosY <= (hitRange / 2)) {
+                                    if (PosY >= -(hitRange / JudgementRanges[3])) { // Good hit range
+                                        if (PosY <= (hitRange / JudgementRanges[3])) {
                                             if (keys[i]) { // Bad hit range
-                                                    HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
-                                                    IncreaseCombo(3)
-                                                    return;
+                                                HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
+                                                IncreaseCombo(3);
+                                                return;
                                             }
                                         }
                                     }
@@ -289,23 +297,80 @@
                 console.log("Map: " + mapId + " - " + chartMetaData);
             }
 
-            function KeyDown(index) {
-                key[index] = true
-                hitters[index].src = "Sprites/Notes/Hitter_Lit_1.png";
-                if (released[index] == true) {
-                    keys[index] = true
-                    released[index] = false;
+            function Set_BG_Rotation(_index, _set = true) {
+                if (_set) {
+                let v = 0
+                    switch (_index) {
+                        case 0:
+                            v = -document.getElementById("OptionRIL").value;
+                            break;
+                        case 1:
+                            v = -document.getElementById("OptionRIS").value;
+                            break;
+                        case 2:
+                            v = document.getElementById("OptionRIS").value;
+                            break;
+                        case 3:
+                            v = document.getElementById("OptionRIL").value;
+                            break;
+                        default:
+                            break;
+                    }
+                    rotation[_index] = v;
+                    return;
+                }
+                rotation[_index] = 0;
+            }
+
+            function BG_Rotate() {
+                let _r = 0 // Rotation
+                for (let i = 0; i < rotation.length; i++) { _r += rotation[i] / 4; } // Finds average rotation amount
+                if (Math.round(rotateProgress) != Math.round(_r)) { // To avoid wiggling
+                    if (rotateProgress <  _r) { // If rotation is smaller
+                        rotateProgress += 0.1;
+                    } else { // If rotation is larger
+                        rotateProgress -= 0.1;
+                    }
+                }
+                document.getElementById("BGPattern").style.transform = "rotate(" + rotateProgress + "deg)";
+                document.getElementById("BGCenter").style.transform = "rotate(" + rotateProgress * 3 + "deg)";
+            }
+
+            function KeyDown(_index) {
+                key[_index] = true
+                hitters[_index].src = "Sprites/Notes/Hitter_Lit_1.png";
+
+                Set_BG_Rotation(_index)
+
+                if (released[_index] == true) {
+                    keys[_index] = true
+                    released[_index] = false;
                 }
                 setTimeout(function() {
-                    keys[index] = false
+                    keys[_index] = false
                 },1000/120);
             }
             
-            function KeyUp(index) {
-                key[index] = false;
-                hitters[index].src = "Sprites/Notes/Hitter_Unlit_1.png";
-                released[index] = true;
-                releasedIdProgress[index] = idProgress[index];
+            function KeyUp(_index) {
+                key[_index] = false;
+                hitters[_index].src = "Sprites/Notes/Hitter_Unlit_1.png";
+
+                Set_BG_Rotation(_index, false)
+
+                released[_index] = true;
+                releasedIdProgress[_index] = idProgress[_index];
+            }
+
+            function Pause() {
+                pause[0] = false;
+                pause[1] = true;
+                pause[2]++;
+                chart.Pause();
+            }
+
+            function Resume() {
+                pause[1] = false;
+                chart.Resume()
             }
 
             window.onkeydown = function(e) {
@@ -315,16 +380,24 @@
                     }
                     switch (e.keyCode) {
                         case hitKeys[0]:
-                            KeyDown(0);
+                            if (!pause[1]) {
+                                KeyDown(0);
+                            }
                             break;
                         case hitKeys[1]:
-                            KeyDown(1);
+                            if (!pause[1]) {
+                                KeyDown(1);
+                            }
                             break;
                         case hitKeys[2]:
-                            KeyDown(2);
+                            if (!pause[1]) {
+                                KeyDown(2);
+                            }
                             break;
                         case hitKeys[3]:
-                            KeyDown(3);
+                            if (!pause[1]) {
+                                KeyDown(3);
+                            }
                             break;
 
                         case 32: // START MAP
@@ -333,7 +406,14 @@
                                 startMap();
                             }
                             break;
-
+                        
+                        case 27: // Pause
+                            if (pause[0] && playing) {
+                                Pause(true)
+                                document.getElementById("PauseMenu").style.display = "block";
+                                return;
+                            }
+                            break
                         case 192: // RESTART MAP
                             Reload_Chart()
                             break;
@@ -371,7 +451,8 @@
                 console.log("Setting Results")
                 playing = false;
                 console.log("Ending Play");
-                document.getElementById("myModal").style.display = "block"; console.log("Showing Results");
+                document.getElementById("StatsMenu").style.display = "block"; console.log("Showing Results");
+                document.getElementById("PauseMenu").style.display = "none";
                 document.getElementById("ResultPPAmount").innerText = Judgements[0] + " (x" + HighestCombos[0] + ")"; console.log("Showing Judgement & Combo Results");
                 document.getElementById("ResultPAmount").innerText = Judgements[1] + " (x" + HighestCombos[1] + ")";
                 document.getElementById("ResultGAmount").innerText = Judgements[2] + " (x" + HighestCombos[2] + ")";
@@ -389,6 +470,7 @@
                 console.log("Base Results Done");
 
                 Create_Result_Hit_Errors(); console.log("Showing Hit Error Results");
+                pause = [true, false, 0]
             }
             
             // When site loads
@@ -397,7 +479,7 @@
                 document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
                 // Makes sure the map doesn't go too far offscreen
                 if (document.getElementById("OptionPlayfieldXOffset").value > 100) {
-                    document.getElementById("OptionPlayfieldXOffset").value = 46.8;
+                    document.getElementById("OptionPlayfieldXOffset").value = 46.9;
                 }
 
                 // Updates the game, basically the play
@@ -425,6 +507,10 @@
                             }
                         }
                     }
+                    
+                    if (document.getElementById("OptionRB").checked) {
+                        BG_Rotate()
+                    }
                 }
                 for (let i = 0; i < document.getElementsByClassName("hitter").length; i++) {
                     const element = document.getElementsByClassName("hitter")[i];
@@ -443,8 +529,8 @@
                 playing = true; // For the update function to know it can start
                 chart.Play_Audio(rate) // Starts the song
 
-                document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHiding");
-                document.getElementById("ScoreBoard").classList.add("delay-1", "UIHiding");
+                document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHidingRight");
+                document.getElementById("ScoreBoard").classList.add("delay-1", "UIHidingLeft");
             }
 
             function Set_Input_Key(input) {
@@ -473,10 +559,11 @@
                 SaveOptions(); // Gets and Sets the Options
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
                 document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
-                document.getElementById("myModal").style.display = "none"; // Hides result screen
+                document.getElementById("StatsMenu").style.display = "none"; // Hides result screen
+                document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
 
-                document.getElementById("MapsSettingContainer").classList.remove("UIHiding");
-                document.getElementById("ScoreBoard").classList.remove("UIHiding");
+                document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
+                document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
 
                 // Removes ALL Notes
                 for (let i = 0; i < notes.length; i++) {
@@ -516,6 +603,7 @@
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
+                Resize()
                 playing =  _playing;
                 
             }
@@ -534,16 +622,59 @@
                     }
                     StartPos[1] = 0
                 } else {
+                    let s = 58 * window.innerHeight / 1080 // rem location of visual hitters || *16 is location of notes to be hit
                     for (let i = 0; i < array.length; i++) {
                         const element = array[i];
-                        element.style.top = "50rem"
+                        element.style.top = s + "rem"
                     }
-                    StartPos[1] = -800
+                    StartPos[1] = -s * 16
                 }
             }
 
+            function Resize() {
+                UpdateScrollDirection()
+                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * window.innerWidth / 1920 + "rem"
+                document.getElementById("ChartContainer").style.width = 26.75 * window.innerWidth / 1920 + "rem"
+                for (let i = 0; i < hitters.length; i++) {
+                    const _hit = hitters[i];
+                    _hit.style.left = (6 * i) * window.innerWidth / 1920 + "rem"
+                    _hit.style.width = 8 * window.innerWidth / 1920 + "rem"
+                    _hit.style.height = _hit.style.width
+                    //hitters[i] = _hit
+                }
+            }
+
+            window.onresize = function() {
+                Resize()
+            }
+
         </script>
-        <div id="myModal" class="modal">
+        <div id="PauseMenu" class="modal">
+            <div class="modal-content">
+                <p style="font-size: x-large;" >Pause Menu</p>
+                <div class="UIContainer" style="width: 97.5%;">
+                    <button onclick="{
+                        document.getElementById('PauseMenu').style.display = 'none';
+                        setTimeout(function() {
+                            Resume();
+                            setTimeout(function() {
+                                pause[0] = true;
+                            }, 3000)
+                        }, 1000)
+                    }" style="width: 5rem; height: 3rem;">
+                        Resume
+                    </button>
+                    <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
+                        Restart
+                    </button>
+                    <button onclick="Show_Results()" style="width: 5rem; height: 3rem;">
+                        Exit
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="StatsMenu" class="modal">
             <div class="modal-content">
                 <p style="font-size: x-large;" >Results Menu</p>
                 <div id="ResultsSScoreContainer" style="display:flex">
@@ -618,10 +749,9 @@
                     </button>
                 </div>
             </div>
-          
-        </div>
+        </div> <!-- End of modal HTML -->
         <div id="EverythingContainer" >
-            <div id = "ScoreBoard" class = "UIContainer MainUIContainer" style="float:left; width:25%; max-width: 33%; height: 100%;">
+            <div id = "ScoreBoard" class = "UIContainer MainUIContainer" style="float:left; width:20%; max-width: 25%; height: 97%;">
                 <div>
                     <p>
                         SCORES (WIP)
@@ -641,7 +771,7 @@
                     </div>
                 </div>
             </div>
-            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 110%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
+            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 120%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
                 <div id="HitErrorBar"style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;" >
                     <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; text-align: center;"></a>
                     <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; text-align: center;">Loading...</a>
@@ -656,7 +786,7 @@
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
-            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="float:right; width:25%; max-width: 33%; height: 100%; align-items: center; justify-content: center;">
+            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="float:right; width:20%; max-width: 25%; height: 97%; align-items: center; justify-content: center;">
 
                 <div class = "UIContainer">
                     <div>
@@ -678,8 +808,6 @@
                             GamePlay:
                         </p>
                     </div>
-                    <label>Background Dim: </label>
-                    <input id="OptionBGDim" oninput="this.nextElementSibling.value = this.value" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
                     <label>Upscroll: </label>
                     <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <br>
                     <label>Scroll Speed: </label>
@@ -702,6 +830,24 @@
                     <label>4 -</label>
                     <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:2.5rem" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
                     </div>
+                </div>
+
+                <div class = "UIContainer">
+                    <label>Background Dim: </label>
+                    <input id="OptionBGDim" oninput="{
+                        this.nextElementSibling.value = this.value
+                        document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')'
+                        }" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
+                    <label>Rotate Background: </label>
+                    <input id="OptionRB" onchange="SaveOptions()" type="checkbox"> <br>
+                    <label>Rotation Intesity: </label> <br>
+                    <!--
+                        RI - Rotation Intesite
+                        S - Small (Inner)
+                        L - Large (Outer)
+                    -->
+                    <label>Pattern (Outer, Inner): </label>
+                    <input id="OptionRIS" oninput="{ rotationIntesitySP = this.value }" type="number" min="1" max="100" value="5" style="width: 2rem;"> <label>deg</label> <input id="OptionRIL" oninput="{ rotationIntesitySP = this.value }" type="number" min="1" max="100" value="10" style="width: 2rem;"> <label>deg</label> <br>
                 </div>
                 
                 <div class = "UIContainer">
@@ -733,6 +879,12 @@
                 </div>
                 <iframe id='iFrame1' src="SettingsPanel/Other.htm" style="width: 100%; height:77.5rem" frameborder="0" scrolling="no" onload="" seamless></iframe>
             </div>
+        </div>
+        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
+            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
+            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" src="Sprites/Background/Pattern.png" />
+            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
         </div>
     </body>
 </html>
