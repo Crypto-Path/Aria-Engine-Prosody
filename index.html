@@ -549,6 +549,7 @@
             function Reload_Chart(_object = null, _playing = false) {
                 clearInterval(0); // Stops Update from being called every ms
                 playing = false; // Keeps Update function from doing anything just incase
+                pause = [true, false, 0];
                 if (chart != null) // Makes sure thare IS audio that can be disable
                     chart.Stop_Audio(); // Stops the music from playing
 
