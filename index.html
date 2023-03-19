@@ -22,7 +22,7 @@
 
             .hitError {
                 position: inherit;
-                width: 0.3125rem;
+                width: 0.125rem;
                 height: 0.9375rem;
                 top:-0.3125rem;
                 border-radius: 0.3125rem;
@@ -78,6 +78,7 @@
             HitErrorTime = 1000; // How long until Hit Errors fade completely
 
             /*Misc & Results*/
+            exited = false
             tempNoteId = 0 
             hitErrors = [];
             rotation = [0,0,0,0];
@@ -110,7 +111,7 @@
 
                 hitError = document.createElement("div"); // Creates the hit object visual
                 hitError.classList.add("hitError"); // Adds the class for the CSS
-                hitError.style.left = (_offset*(128/(hitRange))+64)/16+"rem"; // Sets the position
+                hitError.style.left = ((_offset*(128/(hitRange))+64)/9) * (window.innerWidth / 1920) + "rem"; // Sets the position
 
                 hitError.style.backgroundColor = _color;
                 hitError.style.opacity = "0.5";
@@ -447,6 +448,46 @@
                 }
             }
 
+            function Set_Score_Rank_Image() {
+                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_F.png"
+                if (Get_Acc(Judgements, JudgementWeights) <  0.7) return;
+
+                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
+                if (Judgements[4] != 0) return;
+
+                if (Judgements[3] == 0) {
+                    if (Judgements[2] == 0) {
+                        if (Judgements[1] == 0) {
+                            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC+.png"
+                            return;
+                        }
+                        document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC.png"
+                        return;
+                    }
+                    document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_FC.png"
+                    return;
+                }
+                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
+            }
+
+            function Set_Acc_Rank_Image() {
+                const _acc = Get_Acc(Judgements, JudgementWeights);
+
+                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_F.png"
+                if (_acc < 0.7) return;
+
+                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_C.png"
+                if (_acc < 0.8) return;
+
+                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_B.png"
+                if (_acc < 0.9) return;
+
+                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_A.png"
+                if (_acc < 0.95) return;
+                
+                if (_acc == 1) document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_EX.png";
+            }
+
             function Show_Results() {
                 console.log("Setting Results")
                 playing = false;
@@ -471,6 +512,9 @@
 
                 Create_Result_Hit_Errors(); console.log("Showing Hit Error Results");
                 pause = [true, false, 0]
+
+                Set_Score_Rank_Image()
+                Set_Acc_Rank_Image()
             }
             
             // When site loads
@@ -636,6 +680,10 @@
                 UpdateScrollDirection()
                 document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * window.innerWidth / 1920 + "rem"
                 document.getElementById("ChartContainer").style.width = 26.75 * window.innerWidth / 1920 + "rem"
+                document.getElementById("HitErrorBar").style.left = 6 * window.innerWidth / 1920 + "rem"
+                document.getElementById("HitErrorBar").style.width = 15 * window.innerWidth / 1920 + "rem"
+                document.getElementById("HitErrorBarExtension").style.left = 6.66 * window.innerWidth / 1920 + "rem"
+                document.getElementById("HitErrorBarExtension").style.width = window.innerWidth / 1920 + "rem"
                 for (let i = 0; i < hitters.length; i++) {
                     const _hit = hitters[i];
                     _hit.style.left = (6 * i) * window.innerWidth / 1920 + "rem"
@@ -668,7 +716,10 @@
                     <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
                         Restart
                     </button>
-                    <button onclick="Show_Results()" style="width: 5rem; height: 3rem;">
+                    <button onclick="{
+                        exited = true;
+                        Show_Results()
+                        }" style="width: 5rem; height: 3rem;">
                         Exit
                     </button>
                     
@@ -679,11 +730,17 @@
             <div class="modal-content">
                 <p style="font-size: x-large;" >Results Menu</p>
                 <div id="ResultsSScoreContainer" style="display:flex">
-                    <div class="UIContainer">
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         <a>Score: </a><a id="ResultScore">0</a>
+                        <div class = "UIContainer">
+                            <img id="ResultRankScore" src = "Sprites/Ranks/Rank_FC.png" style="width: 10rem; margin: 5%; "/>
+                        </div>
                     </div>
-                    <div class="UIContainer">
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         <a>Accuracy: </a><a id="ResultAcc">0</a>
+                        <div class = "UIContainer">
+                            <img id = "ResultRankAcc" src = "Sprites/Ranks/Rank_EX.png" style="width: 10rem; margin: 5%; "/>
+                        </div>
                     </div>
                     <div class="UIContainer">
                         <a>Value: </a><a id="ResultValue">0</a>

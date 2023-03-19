@@ -55,7 +55,7 @@ button {
 }
 
 img {
-  image-rendering: pixelated;
+  /*image-rendering: pixelated;*/
 }
 
 iframe[seamless] {
