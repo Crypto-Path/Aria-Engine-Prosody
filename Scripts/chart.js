@@ -156,4 +156,12 @@ class Chart {
     Get_Audio_Length() {
         return this.audio.duration;
     }
+
+    Pause() {
+        this.audio.pause();
+    }
+
+    Resume() {
+        this.audio.play();
+    }
 }

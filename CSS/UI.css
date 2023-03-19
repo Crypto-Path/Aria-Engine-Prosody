@@ -1,11 +1,16 @@
 
+
 html {
   font-size: 16px;
 }
 
 body {
-  overflow: hidden; /* Hide scrollbars */
-  /*background-color: black;*/
+  overflow: hidden;
+  background-size:     cover;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: center center;              /* optional, center the image */
+  color: white;
+  margin: 0 0 0 0;
 }
 
 p {
@@ -50,7 +55,7 @@ button {
 }
 
 img {
-  image-rendering: pixelated;
+  /*image-rendering: pixelated;*/
 }
 
 iframe[seamless] {
@@ -78,9 +83,10 @@ iframe[seamless] {
 
 .UIContainer {
   margin-left: 2.5%;
+  margin-right: 2.5%;
   Width: 95%;
   border-radius: 0.625rem;
-  background-color: rgba(62, 86, 114, 0.66);
+  background-color: rgba(62, 86, 114, 0.5);
   text-align: center;
   height: fit-content;
   min-height: 1rem;
@@ -89,10 +95,29 @@ iframe[seamless] {
   margin-top: 0.625rem;
 }
 
+.UIHidingLeft {
+  opacity: 0;
+  transform: translate(-100%,0);
+  transition-property: opacity, transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.5s;
+}
+
+.UIHidingRight {
+  opacity: 0;
+  transform: translate(100%,0);
+  transition-property: opacity, transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: 1.5s;
+}
+
 .MainUIContainer {
-  background-color: rgba(62, 86, 114, 0.4);
+  background-color: rgba(62, 86, 114, 0.33);
   border-radius: 1.25rem;
   overflow-y: auto; /* Hide scrollbars */
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.5s;
 }
 
 .score {
@@ -124,4 +149,16 @@ iframe[seamless] {
   min-height: 1.25rem;
   line-height: 1.25rem;
   color: rgb(201, 201, 201);
+}
+
+.background {
+  image-rendering: auto !important; 
+}
+
+.delay-1 {
+  -webkit-transition: all 1s ease-in-out;
+     -moz-transition: all 1s ease-in-out;
+      -ms-transition: all 1s ease-in-out;
+       -o-transition: all 1s ease-in-out;
+          transition: all 1s ease-in-out;
 }
