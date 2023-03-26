@@ -54,9 +54,6 @@ button {
   font-size: 0.625rem;
 }
 
-img {
-  /*image-rendering: pixelated;*/
-}
 
 iframe[seamless] {
   border: none;
@@ -81,7 +78,7 @@ iframe[seamless] {
   background: #555;
 }
 
-.UIContainer {
+.UIContainer { /*Most Divs*/
   margin-left: 2.5%;
   margin-right: 2.5%;
   Width: 95%;
@@ -95,7 +92,7 @@ iframe[seamless] {
   margin-top: 0.625rem;
 }
 
-.UIHidingLeft {
+.UIHidingLeft { /*Settings when games starts*/
   opacity: 0;
   transform: translate(-100%,0);
   transition-property: opacity, transform;
@@ -103,7 +100,7 @@ iframe[seamless] {
   transition-duration: 0.5s;
 }
 
-.UIHidingRight {
+.UIHidingRight { /*Leaderboard when games starts*/
   opacity: 0;
   transform: translate(100%,0);
   transition-property: opacity, transform;
@@ -111,7 +108,7 @@ iframe[seamless] {
   transition-duration: 1.5s;
 }
 
-.MainUIContainer {
+.MainUIContainer { /*The two main panels (Leaderboard, Settings)*/
   background-color: rgba(62, 86, 114, 0.33);
   border-radius: 1.25rem;
   overflow-y: auto; /* Hide scrollbars */
@@ -120,7 +117,7 @@ iframe[seamless] {
   transition-duration: 0.5s;
 }
 
-.score {
+.score {  /*Leaderboard score*/
   border-radius: 0.625rem;
   background-color: rosybrown;
   width: 90%;
@@ -128,7 +125,7 @@ iframe[seamless] {
   margin-left: 0.9375rem;
 }
 
-.scorePFP {
+.scorePFP { /*Leaderboard score profile picture of user*/
   float: left;
   width: 15%;
   margin: auto;
@@ -136,14 +133,14 @@ iframe[seamless] {
   border-radius: 0.625rem;
 }
 
-.score:hover .scorePFP {
+.score:hover .scorePFP { /*Leaderboard score when it gets hovered over*/
   float:none;
   width:50%;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 2.0625rem;
 }
 
-.textarea {
+.textarea { /*Larger text box's made to fite everything and resize*/
   display: block;
   overflow: hidden;
   min-height: 1.25rem;
@@ -151,11 +148,11 @@ iframe[seamless] {
   color: rgb(201, 201, 201);
 }
 
-.background {
+.background { /*BG of game*/
   image-rendering: auto !important; 
 }
 
-.delay-1 {
+.delay-1 {  /*Delays*/
   -webkit-transition: all 1s ease-in-out;
      -moz-transition: all 1s ease-in-out;
       -ms-transition: all 1s ease-in-out;
