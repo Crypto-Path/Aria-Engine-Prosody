@@ -17,7 +17,8 @@
             .SongSelector {
                 display: block;
                 background-color: rgba(0, 0, 0, 0.5);
-                width: 33%;
+                width: 20rem;
+                max-width: 45%;
                 cursor: pointer;
             }
             .SongSelector:hover {
@@ -38,48 +39,276 @@
                 text-align: left;
                 border-radius: 0 0 1rem 1rem;
             }
+
+            ::-webkit-scrollbar {
+                -webkit-appearance: scrollbartrack-vertical;
+                -webkit-appearance: scrollbarthumb-vertical;
+            }    
         </style>
     </head>
     <body>
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
-        <div id="Container" class = "UIContainer">
+        <div id="Container" class = "UIContainer" style="height: 95%;">
             <div id="TitleMenuContainer" class="UIContainer">
                 <a>
-                    Main Menu
+                    Song Select
                 </a>
             </div>
-            <div id="SongsContainer" class="UIContainer" style="display: flex;">
-                <button id="Song" class="UIContainer SongSelector">
+            <div id="SongsContainer" class="UIContainer" style="display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: 87%;">
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
                     <div class = "UIContainer SongBanner">
                         <img src="Sprites/Icon.png" style="margin-top: 2rem;">
                         <a>
                             Song
                         </a>
                     </div>
-                    <div class = "UIContainer">
+                    <div class = "UIContainer" >
                         <p>
-                            Song Stats<br>
-                            Length:1<br>
-                            Difficulty:1<br>
-                            Score:1 <img src = "Sprites/Ranks/Rank_F.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_F.png" class="miniIcon">
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
                         </p>
                     </div>
                 </button>
-                <button id="Song" class="UIContainer SongSelector">
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
                     <div class = "UIContainer SongBanner">
                         <img src="Sprites/Icon.png" style="margin-top: 2rem;">
                         <a>
                             Song
                         </a>
                     </div>
-                    <div class = "UIContainer">
+                    <div class = "UIContainer" >
                         <p>
-                            Song Stats<br>
-                            Length:1<br>
-                            Difficulty:1<br>
-                            Score:1 <img src = "Sprites/Ranks/Rank_F.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_F.png" class="miniIcon">
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
+                        </p>
+                    </div>
+                </button>
+                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
+                    <div class = "UIContainer SongBanner">
+                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
+                        <a>
+                            Song
+                        </a>
+                    </div>
+                    <div class = "UIContainer" >
+                        <p>
+                            Length: 1:00<br>
+                            Difficulty: 12<br>
+                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
                         </p>
                     </div>
                 </button>
