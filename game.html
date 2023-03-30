@@ -31,6 +31,7 @@
         </style>
     </head>
     <body>
+        <script src = "Scripts/antiContext.js" ></script>
         <script src = "Data/Maps.js"> </script>
         <script src = "Scripts/note.js" ></script>
         <script src = "Scripts/chart.js" ></script>
@@ -835,9 +836,13 @@
                 </div>
                 <div id="HitterContainer" style="position: absolute; width:100%;height:100%">
                     <img id="Hitter1" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 0;" ></img>
+                    <button style="position: absolute;top: 65%; left: 5%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(0)" onmouseup="KeyUp(0)"></button>
                     <img id="Hitter2" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 6.25rem;" ></img>
+                    <button style="position: absolute;top: 65%; left: 27%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(1)" onmouseup="KeyUp(1)"></button>
                     <img id="Hitter3" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 12.5rem;" ></img>
+                    <button style="position: absolute;top: 65%; left: 50%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(2)" onmouseup="KeyUp(2)"></button>
                     <img id="Hitter4" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 18.75rem;" ></img>
+                    <button style="position: absolute;top: 65%; left: 72%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(3)" onmouseup="KeyUp(3)"></button>
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
