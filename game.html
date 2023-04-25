@@ -680,16 +680,17 @@
 
             function Resize() {
                 UpdateScrollDirection()
-                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * window.innerWidth / 1920 + "rem"
-                document.getElementById("ChartContainer").style.width = 26.75 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBar").style.left = 6 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBar").style.width = 15 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBarExtension").style.left = 6.66 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBarExtension").style.width = window.innerWidth / 1920 + "rem"
+                const windowWidth = window.innerWidth / 1920
+                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * windowWidth + "rem"
+                document.getElementById("ChartContainer").style.width = 26.75 * windowWidth + "rem"
+                document.getElementById("HitErrorBar").style.left = 6 * windowWidth + "rem"
+                document.getElementById("HitErrorBar").style.width = 15 * windowWidth + "rem"
+                document.getElementById("HitErrorBarExtension").style.left = 6.66 * windowWidth + "rem"
+                document.getElementById("HitErrorBarExtension").style.width = windowWidth + "rem"
                 for (let i = 0; i < hitters.length; i++) {
                     const _hit = hitters[i];
-                    _hit.style.left = (6 * i) * window.innerWidth / 1920 + "rem"
-                    _hit.style.width = 8 * window.innerWidth / 1920 + "rem"
+                    _hit.style.left = (6 * i) * windowWidth + "rem"
+                    _hit.style.width = 8 * windowWidth + "rem"
                     _hit.style.height = _hit.style.width
                     //hitters[i] = _hit
                 }
@@ -837,13 +838,13 @@
                 </div>
                 <div id="HitterContainer" style="position: absolute; width:100%;height:100%">
                     <img id="Hitter1" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 0;" ></img>
-                    <button style="position: absolute;top: 65%; left: 5%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(0)" onmouseup="KeyUp(0)"></button>
+                    <button style="position: absolute;top: 65%; left: 5%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0);" onmousedown="KeyDown(0)" onmouseup="KeyUp(0)"></button>
                     <img id="Hitter2" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 6.25rem;" ></img>
-                    <button style="position: absolute;top: 65%; left: 27%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(1)" onmouseup="KeyUp(1)"></button>
+                    <button style="position: absolute;top: 65%; left: 27%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0);" onmousedown="KeyDown(1)" onmouseup="KeyUp(1)"></button>
                     <img id="Hitter3" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 12.5rem;" ></img>
-                    <button style="position: absolute;top: 65%; left: 50%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(2)" onmouseup="KeyUp(2)"></button>
+                    <button style="position: absolute;top: 65%; left: 50%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0);" onmousedown="KeyDown(2)" onmouseup="KeyUp(2)"></button>
                     <img id="Hitter4" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 18.75rem;" ></img>
-                    <button style="position: absolute;top: 65%; left: 72%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,1);" onmousedown="KeyDown(3)" onmouseup="KeyUp(3)"></button>
+                    <button style="position: absolute;top: 65%; left: 72%; height: 15%; width: 20%; background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0);" onmousedown="KeyDown(3)" onmouseup="KeyUp(3)"></button>
                 </div>
                 <div id="NoteContainer" style="overflow:hidden;"></div>
             </div>
