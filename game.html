@@ -41,7 +41,7 @@
         <script src = "Scripts/noteRenderer.js" ></script>
         <script>
             chart = null; // The chart itself
-            chartData = null; // TODO: Get map data from location
+            chartData = null; // Gets map data from location
             chartMetaData = null; // Chart name and stuff the user would see
 
             siteLoaded = false; // Makes sure the site is loaded before user can do anything
@@ -94,6 +94,7 @@
                     _chartJSON = JSON.parse(_chart);
                     _mapId = (_mapId).toString();
                 } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
+
                 return new Chart(_chartJSON[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
             }
             
@@ -291,10 +292,14 @@
                 }
             }
 
-            function InitChart(ChartData, mapId) {
-                chart = LoadChart(chartData, mapId);
+            function InitChart(_chartData, _mapId) {
+                chart = LoadChart(_chartData, _mapId);
                 chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
                 notes = InitNotes(chart, notes) // Create original note objects and assigns them to the note var
+                
+                document.getElementById("BGGradient").src = _chartJSON[_mapId]["BG"]["Gradient"];
+                document.getElementById("BGPattern").src = _chartJSON[_mapId]["BG"]["Pattern"];
+                document.getElementById("BGCenter").src = _chartJSON[_mapId]["BG"]["Center"];
             }
 
             function Start(chartData, mapId) {
@@ -565,10 +570,10 @@
                     hitters[i] = element;
                 }
                 Reload_Chart(); // First reload to avoid errors
+
                 document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;";
                 setInterval(Update, 1000/240)
                 siteLoaded = true;
-                setTimeout(Reload_Chart, 100) // Second reload to fix faults in the first
             }
 
             function startMap() {
@@ -652,6 +657,7 @@
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
+
                 Resize()
                 playing =  _playing;
                 
@@ -963,11 +969,11 @@
                 <iframe id='iFrame1' src="SettingsPanel/Other.htm" style="width: 100%; height:77.5rem" frameborder="0" scrolling="no" onload="" seamless></iframe>
             </div>
         </div>
-        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
             <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
-            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" src="Sprites/Background/Pattern.png" />
-            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
+            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" />
+            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" />
+            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" />
         </div>
     </body>
 </html>
