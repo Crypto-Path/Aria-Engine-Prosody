@@ -72,7 +72,7 @@
             /*Score Calculation*/
             Judgements = [0, 0, 0, 0, 0];
             JudgementWeights = [1, 1.010101, 1.111111, 1.5, 3];
-            JudgementRanges = [32, 8, 4, 2];
+            JudgementRanges = [32, 8, 4, 1];
             Combos = [0, 0, 0]; // P+, Perfect, Full combo
             HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -147,6 +147,8 @@
                     _hitObject.classList.add("hitError"); // Adds the class for the CSS
                     _hitObject.style.top = (_hitError[0] * 18 + 5.66) + "rem"; // Sets the position
                     _hitObject.style.left = (-(_hitError[1] * 100 / chart.Get_Audio_Length()) + 100) +"%"; // Sets the position
+                    _hitObject.style.height = "0.25rem";
+                    _hitObject.style.width = "0.25rem";
                     _hitObject.style.position = "absolute";
 
                     _hitObject.style.backgroundColor = _hitError[2];
@@ -729,6 +731,25 @@
         <div id="StatsMenu" class="modal">
             <div class="modal-content">
                 <p style="font-size: x-large;" >Results Menu</p>
+                <div id="MapName" style="display:flex">
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                        Map Name
+                    </div>
+                </div>
+                <div id="MapMetaData" class="UIContainer" style="display:flex">
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                        Artist: Inaji
+                    </div>
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                        Creator: Cyphe Mercury
+                    </div>
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                        Difficulty: [Test Diff]
+                    </div>
+                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                        Date: Today, Now
+                    </div>
+                </div>
                 <div id="ResultsSScoreContainer" style="display:flex">
                     <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         <a>Score: </a><a id="ResultScore">0</a>
