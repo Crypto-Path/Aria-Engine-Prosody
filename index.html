@@ -55,6 +55,25 @@
                 <a>
                     Song Select
                 </a>
+                <div class="UIContainer" style="display: flex;">
+                    <div class="UIContainer" style="float:left; width: 20%;">
+                        <button style="width: 75%; height: 3rem; font-size: 32px; display: inline-flex;" onclick="window.location.href='editor.html'">
+                            <img src="Sprites/Notes/Note_Hit_4.png" style="width:30%" />
+                            Editor
+                        </button>
+                    </div> 
+                    <div class="UIContainer">
+                        <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
+                        <button>
+                            Search
+                        </button>
+                    </div> 
+                    <div class="UIContainer" style="float:right; width: 20%;">
+                        <button>
+                            Profile
+                        </button>
+                    </div> 
+                </div>
             </div>
             <div id="SongsContainer" class="UIContainer" style="display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: 87%;">
                 <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
