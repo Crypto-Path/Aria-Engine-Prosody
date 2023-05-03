@@ -11,8 +11,9 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 10px;
-            width: 15%;
+            width: 20rem;
+            margin-left: auto;
+            margin-right: auto;
             background-color: rgba(0, 0, 0, 0.4);
             border: 1px solid #888;
             position: fixed;
@@ -31,22 +32,22 @@
         }
 
         .grid-cell {
-            aspect-ratio : 1 / 1;
             border: 1px solid #ccc;
         }
 
         .note {
             background-image: url("Sprites/Notes/Note_Hit_1.png");
-            background-repeat:no-repeat;
+            background-repeat: no-repeat;
             background-size: contain;
+            background-position-x: center;
         }
         
 
         input {
-        width: auto;
-        height: 1.5625rem;
-        border-radius: 0.625rem;
-        font-size: 0.625rem;
+            width: auto;
+            height: 1.5625rem;
+            border-radius: 0.625rem;
+            font-size: 0.625rem;
         }
 
         
@@ -62,15 +63,44 @@
         <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
     </div>
     <div id="EditorContainer">
-        <div id="map-editor"></div>
+        <div id="map-editor">
+        </div>
+        <div id="HitBar" style="width: 20rem; height: 0.5rem; background-color: rgba(226, 57, 49, 0.75); position:absolute; bottom: -960px">
+        </div>
     </div>
     <script> 
         // Get the map editor container
         const mapEditor = document.querySelector('#map-editor');
         let offsetY = 0;
+        let offset
         let audio = 0;
         let mapLength = 0;
         let BPM = 0;
+
+        let file;
+
+        let Json = {
+            "1": {
+                "Name": "???",
+                "Audio": "???",
+                "SongArtist": "???",
+                "Creator": "???",
+                "BPM": 60,
+                "BG": {
+                    "BG":"Sprites/Background/BG.png",
+                    "Gradient":"Sprites/Background/Gradient.png",
+                    "Pattern":"Sprites/Background/Pattern.png",
+                    "Center":"Sprites/Background/Center.png"
+                },
+                "4Rows": {
+                    "Difficulty1": {
+                        "Map Name": "???",
+                        "Offset": 0,
+                        "Notes":[[],[],[],[]]
+                    }
+                }
+            }
+        }
 
         // Toggle note placement on click
         function toggleNote(event) {
@@ -79,6 +109,27 @@
             const row = cell.getAttribute('data-row');
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
+            cell.classList.contains('note') ? Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)) : Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].pop(parseInt(row));
+            console.log(cell)
+
+            Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
+                return a - b;
+            });
+
+            UpdateChartJson()
+        }
+
+        function UpdateChartJson() {
+            try {
+                Json["1"]["Audio"] = document.getElementById("MDPreAudio").value;
+            } catch (error) { }
+            Json["1"]["Name"] = document.getElementById("MDChartName").value;
+            Json["1"]["SongArtist"] = document.getElementById("MDArtist").value;
+            Json["1"]["Creator"] = document.getElementById("MDCreator").value;
+            Json["1"]["BPM"] = document.getElementById("MDBPM").value;
+            Json["1"]["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
+
+            document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
         }
 
         function play() {
@@ -92,14 +143,16 @@
         // Move the grid up or down on scroll
         document.addEventListener('scroll', function(event) {
             const deltaY = event.deltaY;
-            offsetY += deltaY;
+            offsetY += deltaY/BPM;
         });
 
         window.onload = function() {
             // Updates the game, basically the play
             function Update() {
                 if (audio != null) {
-                    mapEditor.style.transform = `rotate(180deg) translateY(${-audio.currentTime*BPM*4}px)`;
+                    //mapEditor.style.transform = `rotate(180deg) translateY(${(-audio.currentTime*BPM*4+BPM*offset)/16}rem)`;
+                    mapEditor.style.bottom = `${(-audio.currentTime*466.6+BPM*offset)/16}rem`;
+                    //document.getElementById("HitBar").style.transform = `translateY(${(audio.currentTime*BPM*4)/16}rem)`;
                 }
             }
             setInterval(Update, 1000/240)
@@ -108,8 +161,9 @@
             }
 
             document.getElementById('MDAudio').addEventListener('change', function(event){
+                document.getElementById('MDPreAudio').value = "Custom"
                 console.log('change on input#file triggered');
-                var file = this.files[0],
+                file = this.files[0],
                 fileURL = blob.createObjectURL(file);
                 console.log(file);
                 console.log('File name: '+file.name);
@@ -119,6 +173,36 @@
                 console.log('File type: '+file.type);
                 console.log('File BlobURL: '+ fileURL);
                 document.getElementById('audio').src = fileURL;
+                setTimeout(() => {
+                    ReloadChart();
+                }, 100);
+            });
+            
+            document.getElementById('MDPreAudio').addEventListener('change', function(){
+                console.log(`${this.value}`);
+                console.log('File name: '+this.value);
+                file = this.value;
+                fileURL = this.value;
+                console.log('File type: mp3');
+                document.getElementById('audio').src = this.value;
+
+                switch (this.value.split('/')[1]) {
+                    case "Inaji-The_Pathbreaking.mp3":
+                            document.getElementById("MDChartName").value = "The Pathbreaking"
+                            document.getElementById("MDBPM").value = 120;
+                            BPM = 120;
+                            document.getElementById("MDOffset").value = 2.13;
+                        break;
+                    case "Cyberspace Abyss.mp3":
+                            document.getElementById("MDChartName").value = "Cyberspace Abyss"
+                            document.getElementById("MDBPM").value = 170;
+                            BPM = 170;
+                            document.getElementById("MDOffset").value = 0;
+                        break;
+                
+                    default:
+                        break;
+                }
                 setTimeout(() => {
                     ReloadChart();
                 }, 100);
@@ -146,19 +230,41 @@
             if (audio != 0) {
                 pause()
             }
-            var cells = document.getElementsByClassName('grid-cell');
             audio = document.getElementById("audio");
 
-            while(cells[0]) {
-                cells[0].parentNode.removeChild(cells[0]);
-                console.log(cells.length)
-            }
+            RemoveAllTiles();
 
+            offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
             mapLength = audio.duration
 
+            AppendTiles(BPM*mapLength);
             // Create the grid cells
-            for (let i = 0; i < mapLength*BPM; i++) {
+        }
+
+        function JsonToChart() {
+            Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
+
+            document.getElementById("MDChartName").value = Json["1"]["Name"];
+            document.getElementById("MDArtist").value = Json["1"]["SongArtist"];
+            document.getElementById("MDCreator").value = Json["1"]["Creator"];
+            document.getElementById("MDBPM").value = Json["1"]["BPM"];
+            document.getElementById("MDOffset").value = Json["1"]["4Rows"]["Difficulty1"]["Offset"];
+            ReloadChart();
+
+            LoadNotes(Json["1"]["4Rows"]["Difficulty1"]["Notes"])
+        }
+
+        function RemoveAllTiles() {
+            var cells = document.getElementsByClassName('grid-cell');
+
+            while(cells[0]) {
+                cells[0].parentNode.removeChild(cells[0]);
+            }
+        }
+
+        function AppendTiles(_AMNT) {
+            for (let i = 0; i < _AMNT; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('grid-cell');
                 cell.addEventListener('click', toggleNote);
@@ -169,9 +275,30 @@
                 }
                 mapEditor.appendChild(cell);
             }
+            UpdateTileHeight(BPM)
+        }
+
+        function LoadNotes(_Rows) {
+            for (let r = 0; r < _Rows.length; r++) {
+                const rows = _Rows[r];
+                for (let i = 0; i < rows.length; i++) {
+                    const col = rows[i];
+                    console.log()
+                    //let tile = document.querySelectorAll("[data-row=" + rows + "],[data-col=" + col + "]")
+                    //tile.classList.contains('note') ? 'on' : 'off';
+                }
+            }
+        }
+
+        function UpdateTileHeight(_BPM) {
+            var _Tiles = document.getElementsByClassName("grid-cell");
+            for (let i = 0; i < _Tiles.length; i++) {
+                _Tiles[i].style.height = 7000/_BPM+"px"
+                
+            }
         }
     </script>
-    <div id="MappingInfo" class = "UIContainer" style="width:20%; position: absolute;">
+    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left;">
         <div id="Header">
             <p>
                 Mapping
@@ -184,20 +311,46 @@
                 </a>
             </div>
             <label>Song: </label>
-            <input id="MDAudio" type="file" accept="audio/mp3"><br>
+
+            <div class="UIContainer">
+                <label for="songs">Pre-Songs:</label>
+
+                <select id="MDPreAudio" name="songs" onchange="UpdateChartJson()" id="songs">
+                    <option value="Custom">Custom</option>
+                    <option value="Audio/Inaji-The_Pathbreaking.mp3">Inaji - The Pathbreaking</option>
+                    <option value="Audio/Cyberspace Abyss.mp3">Cyphe Mercury - Cyberspace Abyss</option>
+                </select>
+                <input id="MDAudio" onchange="UpdateChartJson()" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
+            </div>
+
             <label>Chart Title: </label>
-            <input id="MDChartName" type="text"> <br>
+            <input id="MDChartName" onchange="UpdateChartJson()" type="text"> <br>
             <label>BPM: </label>
-            <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>
+            <input id="MDBPM" onchange="{ReloadChart(); UpdateChartJson()}" type="number" value="60"> <br>
             <label>Offset: </label>
-            <input id="MDOffset" type="text"> <br>
+            <input id="MDOffset" onchange="{ReloadChart(); UpdateChartJson()}" type="text"> <br>
             <label>Artist: </label>
-            <input id="MDArtist" type="text"> <br>
+            <input id="MDArtist" onchange="UpdateChartJson()" type="text"> <br>
             <label>Creator: </label>
-            <input id="MDCreator" type="text"> <br>
+            <input id="MDCreator" onchange="UpdateChartJson()" type="text"> <br>
         </div>
     </div>
     
-    <audio id="audio" style="position: absolute; bottom: 0; float: right;" controls></audio><br>
+    <div id="MappingData" class="UIContainer"  style="width:20%; float: right;">
+        <div>
+            <p>
+                Map JSON:
+            </p>
+            <hr>
+            Loading maps into editor not supported yet
+        </div>
+        <span id="OptionChartData" class="textarea" role="textbox">
+            
+        </span>
+        <!--<button onclick="JsonToChart()">Load</button>-->
+        <button onclick="{navigator.clipboard.writeText(getElementById('OptionChartData').innerHTML)}">Copy</button>
+    </div>
+    
+    <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
   </body>
 </html>
