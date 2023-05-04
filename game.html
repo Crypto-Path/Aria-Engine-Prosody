@@ -909,15 +909,15 @@
                                 Key Bindings:
                             </p>
                         </div>
-                    <label>Keys: (Uses key codes)</label> <br>
+                    <label>Keys: (Key Code) (Key Char)</label> <br>
                     <label>1 -</label>
-                    <input id="KeyCheck1" type="number" onchange="SaveOptions()" style="width:2.5rem" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
+                    <input id="KeyCheck1" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter1').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="68"> <input id="KeyLetter1" type="text" onchange="{document.getElementById('KeyCheck1').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem" value="D"> <br>
                     <label>2 -</label>
-                    <input id="KeyCheck2" type="number" onchange="SaveOptions()" style="width:2.5rem" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
+                    <input id="KeyCheck2" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter2').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="70"> <input id="KeyLetter2" type="text" onchange="{document.getElementById('KeyCheck2').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem" value="F"> <br>
                     <label>3 -</label>
-                    <input id="KeyCheck3" type="number" onchange="SaveOptions()" style="width:2.5rem" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
+                    <input id="KeyCheck3" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter3').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="74"> <input id="KeyLetter3" type="text" onchange="{document.getElementById('KeyCheck3').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem" value="J"> <br>
                     <label>4 -</label>
-                    <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:2.5rem" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
+                    <input id="KeyCheck4" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter4').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="75"> <input id="KeyLetter4" type="text" onchange="{document.getElementById('KeyCheck4').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem" value="K"> <br>
                     </div>
                 </div>
 
