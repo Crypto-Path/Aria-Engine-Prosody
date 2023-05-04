@@ -55,7 +55,28 @@
     </style>
   </head>
   <body>
-    
+    <div id="ExitMenu" class="modal" style="display:none; position: absolute; width: 100%;">
+        <div class="modal-content">
+            <div class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8); width: 97.5%;">
+                <a>
+                    Are you sure you want to exit?
+                </a>
+                <br>
+                <p>
+                    Press 'esc' to close this window.
+                <br>
+                    Make sure you copy your JSON code for your map and save it into a file so you don't lose it.
+                <br>
+                    Currently you can only load charts in the JSON expirimental features in the game
+                </p>
+                <div class="UIContainer" style="background-color: rgba(56, 56, 56, 0.4);">
+                    <button onclick="{location.href = 'index.html'}" style=" width: 5rem; height: 3rem;">
+                        Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
         <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
@@ -295,6 +316,18 @@
             for (let i = 0; i < _Tiles.length; i++) {
                 _Tiles[i].style.height = 7000/_BPM+"px"
                 
+            }
+        }
+        window.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 27: 
+                    document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+                    //location.href = 'index.html';
+                    break
+            
+                default:
+                    console.log(e.keyCode)
+                    break;
             }
         }
     </script>
