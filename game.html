@@ -417,11 +417,14 @@
                             }
                             break;
                         
-                        case 27: // Pause
+                        case 27: // Pause & Exit
                             if (pause[0] && playing) {
                                 Pause(true)
                                 document.getElementById("PauseMenu").style.display = "block";
                                 return;
+                            }
+                            if (!playing) {
+                                location.href = 'index.html';
                             }
                             break
                         case 192: // RESTART MAP
