@@ -55,7 +55,7 @@ class Chart {
      * Returns map data (Map Name, Map Create, Etc.)
      */
     Get_MetaData() {
-        return [this.map["Name"],this.map["Creator"],this.map["BPM"]]
+        return [this.map["Name"],this.map["SongArtist"],this.map["Creator"],this.map["BPM"],this.map["4Rows"]["Difficulty1"]["Map Name"]]
     }
 
     /**

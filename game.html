@@ -511,6 +511,13 @@
                 document.getElementById("ResultGAmount").innerText = Judgements[2] + " (x" + HighestCombos[2] + ")";
                 document.getElementById("ResultBAmount").innerText = Judgements[3];
                 document.getElementById("ResultMAmount").innerText = Judgements[4];
+
+                document.getElementById("ResultMapName").innerText = `${chartMetaData[0]}`;
+                document.getElementById("ResultArtist").innerText = `Artist: ${chartMetaData[1]}`;
+                document.getElementById("ResultCreator").innerText = `Creator: ${chartMetaData[2]}`;
+                document.getElementById("ResultDiff").innerText = `Difficulty [${chartMetaData[4]}]`;
+                var _date = new Date()
+                document.getElementById("ResultDate").innerText = `Date: ${_date.getHours()}:${_date.getMinutes()}:${_date.getSeconds()} - ${_date.getDay()}/${_date.getMonth()}/${_date.getFullYear()}`;
                 
                 document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos));  console.log("Showing Score Results");
                 document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights)*100000)/1000 + "%";  console.log("Showing Acc Results");
@@ -741,21 +748,21 @@
             <div class="modal-content">
                 <p style="font-size: x-large;" >Results Menu</p>
                 <div id="MapName" style="display:flex">
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                    <div id="ResultMapName" class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         Map Name
                     </div>
                 </div>
                 <div id="MapMetaData" class="UIContainer" style="display:flex">
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                    <div id="ResultArtist" class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         Artist: Inaji
                     </div>
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                    <div id="ResultCreator" class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         Creator: Cyphe Mercury
                     </div>
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                    <div id="ResultDiff" class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         Difficulty: [Test Diff]
                     </div>
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
+                    <div id="ResultDate" class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
                         Date: Today, Now
                     </div>
                 </div>
