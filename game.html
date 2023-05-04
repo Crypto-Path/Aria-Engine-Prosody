@@ -50,7 +50,7 @@
 
             /*Modifiers*/
             scrollSpeed = 15; // VISUAL: how fast the notes go by
-            auto = true; // The game plays itself
+            auto = false; // The game plays itself
             rate = 1; // How fast the map plays
             hitRange = 0.416666666667; // Judgement range of notes
 
@@ -390,22 +390,22 @@
                     }
                     switch (e.keyCode) {
                         case hitKeys[0]:
-                            if (!pause[1]) {
+                            if (!pause[1] & !auto) {
                                 KeyDown(0);
                             }
                             break;
                         case hitKeys[1]:
-                            if (!pause[1]) {
+                            if (!pause[1] & !auto) {
                                 KeyDown(1);
                             }
                             break;
                         case hitKeys[2]:
-                            if (!pause[1]) {
+                            if (!pause[1] & !auto) {
                                 KeyDown(2);
                             }
                             break;
                         case hitKeys[3]:
-                            if (!pause[1]) {
+                            if (!pause[1] & !auto) {
                                 KeyDown(3);
                             }
                             break;
