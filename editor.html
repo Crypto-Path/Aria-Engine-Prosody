@@ -33,6 +33,7 @@
 
         .grid-cell {
             border: 1px solid #ccc;
+            margin-top: -2px;
         }
 
         .note {
@@ -130,7 +131,7 @@
             const row = cell.getAttribute('data-row');
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
-            cell.classList.contains('note') ? Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)) : Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].pop(parseInt(row));
+            cell.classList.contains('note') ? Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].pop(parseInt(row)/4);
             console.log(cell)
 
             Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
@@ -172,7 +173,7 @@
             function Update() {
                 if (audio != null) {
                     //mapEditor.style.transform = `rotate(180deg) translateY(${(-audio.currentTime*BPM*4+BPM*offset)/16}rem)`;
-                    mapEditor.style.bottom = `${(-audio.currentTime*466.6+BPM*offset)/16}rem`;
+                    mapEditor.style.bottom = `${(-audio.currentTime*468+BPM*offset*4)/16}rem`;
                     //document.getElementById("HitBar").style.transform = `translateY(${(audio.currentTime*BPM*4)/16}rem)`;
                 }
             }
@@ -212,7 +213,7 @@
                             document.getElementById("MDChartName").value = "The Pathbreaking"
                             document.getElementById("MDBPM").value = 120;
                             BPM = 120;
-                            document.getElementById("MDOffset").value = 2.13;
+                            document.getElementById("MDOffset").value = 2.07;
                         break;
                     case "Cyberspace Abyss.mp3":
                             document.getElementById("MDChartName").value = "Cyberspace Abyss"
@@ -314,7 +315,7 @@
         function UpdateTileHeight(_BPM) {
             var _Tiles = document.getElementsByClassName("grid-cell");
             for (let i = 0; i < _Tiles.length; i++) {
-                _Tiles[i].style.height = 7000/_BPM+"px"
+                _Tiles[i].style.height = 7030/_BPM+"px"
                 
             }
         }
