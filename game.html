@@ -539,7 +539,11 @@
             // When site loads
             window.onload = function() {
                 LoadSettings() // Loads settings if they were saved
-                document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
+
+                //Map data retrieval
+                document.getElementById("OptionChartData").innerHTML = localStorage["Chart"]; 
+
+
                 // Makes sure the map doesn't go too far offscreen
                 if (document.getElementById("OptionPlayfieldXOffset").value > 100) {
                     document.getElementById("OptionPlayfieldXOffset").value = 46.9;
