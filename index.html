@@ -1,948 +1,140 @@
-
-<html>
+<html> 
     <head>
-        <title> Prosody </title>
-        <link rel="shortcut icon" type="image/png" href="Sprites/Icon.png"/>
-        <link rel="stylesheet" href="CSS/Modal.css">
+        <title>
+            Prosody - Menu
+        </title>
         <link rel="stylesheet" href="CSS/UI.css">
-        <script src = "Scripts/IframeAutoFitter.js" ></script>
+        <link rel="stylesheet" href="CSS/BG.css">
         <style>
-
-            .note {
-                position: absolute;
-                width: 8rem;
+            a {
+                font-size: 2rem;
             }
 
-            .hitter {
-                position: inherit;
-                width: 8rem;
-                height: 8rem;
-                top: 0;
+            p {
+                font-size: 1rem;
             }
 
-            .hitError {
-                position: inherit;
-                width: 0.125rem;
-                height: 0.9375rem;
-                top:-0.3125rem;
-                border-radius: 0.3125rem;
-                opacity: 0.825;
+            .SongSelector {
+                display: block;
+                background-color: rgba(0, 0, 0, 0.5);
+                width: 20rem;
+                max-width: 45%;
+                cursor: pointer;
+            }
+            .SongSelector:hover {
+                background-color: rgba(0, 0, 0, 0.75);
+            }
+
+            .miniIcon {
+                background-color: rgba(62, 86, 114, 0.5);
+                border-radius: 15%;
+                width: 0.875rem;
+            }
+
+            .SongBanner {
+                background-image: url('Sprites/Background/BG.png');
+                background-size: 100%;
+                height: 6rem;
+                background-position: center;
+                text-align: left;
+                border-radius: 0 0 1rem 1rem;
+            }
+
+            .BannerImg {
+                margin-top: 2rem;
+            }
+
+            ::-webkit-scrollbar {
+                -webkit-appearance: scrollbartrack-vertical;
+                -webkit-appearance: scrollbarthumb-vertical;
+            }   
+
+            .chartContainer {
+                display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
             }
         </style>
     </head>
     <body>
-        <script src = "Data/Maps.js"> </script>
-        <script src = "Scripts/note.js" ></script>
-        <script src = "Scripts/chart.js" ></script>
-        <script src = "Scripts/savingAndLoading.js" ></script>
-        <script src = "Scripts/statCalculations.js" ></script>
-        <script src = "Scripts/noteRenderer.js" ></script>
+        <script src="Data/Maps.js"></script>
+        <div class="bg"></div>
+        <div class="bg bg2"></div>
+        <div class="bg bg3"></div>
+        <div id="Container" class = "UIContainer" style="height: 95%;">
+            <div id="TitleMenuContainer" class="UIContainer">
+                <a>
+                    Song Select
+                </a>
+                <div class="UIContainer" style="display: flex;">
+                    <div class="UIContainer" style="float:left; width: 20%;">
+                        <button style="width: 75%; height: 3rem; font-size: 32px; display: inline-flex;" onclick="window.location.href='editor.html'">
+                            <img src="Sprites/Notes/Note_Hit_4.png" style="width:30%" />
+                            Editor
+                        </button>
+                    </div> 
+                    <div class="UIContainer">
+                        <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
+                        <button>
+                            Search
+                        </button>
+                    </div> 
+                    <div class="UIContainer" style="float:right; width: 20%;">
+                        <button>
+                            Profile
+                        </button>
+                    </div> 
+                </div>
+            </div>
+            <div id="SongsContainer" class="UIContainer chartContainer">
+            </div>
+        </div>
         <script>
-            chart = null; // The chart itself
-            chartData = null; // TODO: Get map data from location
-            chartMetaData = null; // Chart name and stuff the user would see
 
-            siteLoaded = false; // Makes sure the site is loaded before user can do anything
-            playing = false; // Chart playing or not
-            audio = null; // Music
+            function CreateButton(_mapId) {
+                console.log(`Loading map: ${_mapId}`)
+                var main = document.createElement("button")
 
-            /*Modifiers*/
-            scrollSpeed = 15; // VISUAL: how fast the notes go by
-            auto = true; // The game plays itself
-            rate = 1; // How fast the map plays
-            hitRange = 0.416666666667; // Judgement range of notes
-
-            /*Input & Notes*/
-            hitKeys = [68,70,74,75]; // Key bindings for gameplay
-            StartPos = [0,0] // Where the notes heading
-            notes = []; // List of all the visual note objects
-            hitters = []; // List of the hittters
-            key = [false,false,false,false]; // Whether key is held or not
-            keys = [false,false,false,false]; // Whether key is just pressed or not
-            released = [true,true,true,true]; // Whether key has been released after last press
-            idProgress = [0,0,0,0]; // Progress of notes for notelock
-            releasedIdProgress = [0,0,0,0]; // Release progress of notes for notelock that only changes after key released
-            input = null; // For Detection
-            inputBox = null; // For Detection
-            inputIndex = null; // For Detection
-            waitingForInput = false; // For Detection, or possibly other uses
-
-            /*Score Calculation*/
-            Judgements = [0, 0, 0, 0, 0];
-            JudgementWeights = [1, 1.010101, 1.111111, 1.5, 3];
-            JudgementRanges = [32, 8, 4, 2];
-            Combos = [0, 0, 0]; // P+, Perfect, Full combo
-            HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
-
-            /*Settings*/
-            HitErrorTime = 1000; // How long until Hit Errors fade completely
-
-            /*Misc & Results*/
-            exited = false
-            tempNoteId = 0 
-            hitErrors = [];
-            rotation = [0,0,0,0];
-            rotateProgress = 0
-            pause = [true, false, 0] // Can pause, Is paused, Paused amount
-            //StartTime = null;
-            //FinalNoteTime = null;
-
-            function LoadChart(_chart, _mapId) {
-                try { // TFGo avoid error 
-                    _chartJSON = JSON.parse(_chart);
-                    _mapId = (_mapId).toString();
-                } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
-                return new Chart(_chartJSON[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
-            }
-            
-            // Removes next note in row
-            function RemoveNote(_row) {
-                chart.Remove(_row); // Removes the note behind the scene
-                let _removedNote = notes[_row].pop(); // Removes visual note from the notes array and gets that same visual object
-                _removedNote.remove() // Removes the visual note
-
-                idProgress[_row]++; // Increases idProgress so next note in row can be hit
-            }
-
-            // Creates a hit error object, showing their offset, which fades over time
-            function HitError(_offset, _length, _color) {
-
-                hitErrors.push([_offset, chart.Get_Audio_Time_Left(), _color])
-
-                hitError = document.createElement("div"); // Creates the hit object visual
-                hitError.classList.add("hitError"); // Adds the class for the CSS
-                hitError.style.left = ((_offset*(128/(hitRange))+64)/9) * (window.innerWidth / 1920) + "rem"; // Sets the position
-
-                hitError.style.backgroundColor = _color;
-                hitError.style.opacity = "0.5";
-
-                document.getElementById("HitErrorBar").appendChild(hitError) // Appedns the hit error object to the hit error bar
-
-                // Fade the hit error over time
-                let _object = hitError //document.getElementById("HitErrorBar").children[3]
-                setTimeout(function() {
-                    _object.style.opacity = "0.5";
-                    setTimeout(function() {
-                        _object.style.opacity = "0.25";
-                        setTimeout(function() {
-                            _object.style.opacity = "0.2";
-                            setTimeout(function() {
-                                _object.remove();
-                            }, _length / 8); // 125ms
-                        }, _length / 8); // 125ms
-                    }, _length / 4); // 250ms
-                }, _length / 2); // 500ms
-            }
-            
-            function Create_Result_Hit_Errors() {
-                console.log("Creating Hit errors");
-                for (let i = 0; i < hitErrors.length; i++) { 
-                    if (i % 50 == 0) {
-                        console.log("Progress: " +  Math.round((i / Get_TotalNotes(Judgements))*100)/100 + "%");
-                    }
-                    const _hitError = hitErrors[i];
-                    let _hitObject = document.createElement("div"); // Creates the hit object visual
-                    _hitObject.classList.add("hitError"); // Adds the class for the CSS
-                    _hitObject.style.top = (_hitError[0] * 18 + 5.66) + "rem"; // Sets the position
-                    _hitObject.style.left = (-(_hitError[1] * 100 / chart.Get_Audio_Length()) + 100) +"%"; // Sets the position
-                    _hitObject.style.position = "absolute";
-
-                    _hitObject.style.backgroundColor = _hitError[2];
-                    _hitObject.style.opacity = "0.75";
-
-                    document.getElementById("ResultErrorContainer").appendChild(_hitObject);
-                }
-                console.log("Progress: 100%");
-            }
-
-            // Creates hit error and removes a note
-            function HitNote(_PosY, _ErrorTime, _row, _color = "rgb(255,95,127)") {
-                HitError(_PosY, _ErrorTime, _color); // Creates hit error
-                RemoveNote(_row); // Removes note by row
-            }
-
-            // For score calculation
-            function IncreaseCombo(_id) {
-                Judgements[_id]++; // For acc calculation
-                switch (_id) {
-                    case 0:
-                        Combos[0]++;
-                        Combos[1]++;
-                        Combos[2]++;
-                        break;
-
-                    case 1:
-                        Combos[0] = 0;
-                        Combos[1]++;
-                        Combos[2]++;
-                        break;
-
-                    case 2:
-                        Combos[0] = 0;
-                        Combos[1] = 0;
-                        Combos[2]++;
-                        break;
+                var banner = document.createElement("div")
+                var bannerImg = document.createElement("img")
+                var bannerTitle = document.createElement("a")
                 
-                    default:
-                        Combos[0] = 0;
-                        Combos[1] = 0;
-                        Combos[2] = 0;
-                        break;
-                }
-                for (let i = 0; i < Combos.length; i++) {
-                    const _combo = Combos[i];
-                    if (_combo > HighestCombos[i]) {
-                        HighestCombos[i] = _combo;
-                    }
-                }
-                document.getElementById("ComboText").innerText = "x" + Combos[2];
-                document.getElementById("AccText").innerHTML = Get_Acc(Judgements, JudgementWeights).toFixed(5)*100 + "%"; // Shows user their accuracy
-            }
+                var info = document.createElement("div")
+                var infoStats = document.createElement("p")
 
-            // Checks the judgement position of the next note of each row and if the user has pressed the dedicated key
-            function HitCheck() {
-                if (playing) { // Checks if the map is playing to avoid being able to hit notes before the game is started
-                    for (let i = 0; i < notes.length; i++) { // Checks each row
-                        for (let j = 0; j < notes[i].length; j++) { // Checks each note
-                            note = chart.Get_Poss(i)[j]
-                            PosY = note.Get_Pos()[1];
-                            if (auto) {
-                                if (PosY >= -(hitRange / 120)) { // Aut0 hit range
-                                    if (PosY <= (hitRange)) {
-                                    hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
-                                    if (document.getElementById("OptionRB").checked) {
-                                        Set_BG_Rotation(i)
-                                    }
-                                    HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
-                                    IncreaseCombo(0)
-                                    setTimeout(function() {
-                                        if (document.getElementById("OptionRB").checked) {
-                                            Set_BG_Rotation(i, false)
-                                        }
-                                        hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
-                                    }, 16000 / ( chart.map["BPM"] * rate));
-                                    }
-                                    return;
-                                }
-                            }
-                            if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-                                if (PosY >= - (hitRange / 1.5)) {
-                                    
-                                    if (PosY >= -(hitRange / JudgementRanges[0])) { // Perfect hit range
-                                        if (PosY <= (hitRange / JudgementRanges[0])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
-                                                IncreaseCombo(0)
-                                                return;
-                                            }
-                                        }
-                                    }
+                info.appendChild(infoStats);
 
-                                    if (PosY >= -(hitRange / JudgementRanges[1])) { // Perfect hit range
-                                        if (PosY <= (hitRange / JudgementRanges[1])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(155,206,215)");
-                                                IncreaseCombo(1)
-                                                return;
-                                            }
-                                        }
-                                    }
+                banner.appendChild(bannerImg);
+                banner.appendChild(bannerTitle);
 
-                                    if (PosY >= -(hitRange / JudgementRanges[2])) { // Good hit range
-                                        if (PosY <= (hitRange / JudgementRanges[2])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(175,206,195)");
-                                                IncreaseCombo(2)
-                                                return;
-                                            }
-                                        }
-                                    }
+                main.appendChild(banner);
+                main.appendChild(info);
 
-
-                                    if (PosY >= -(hitRange / JudgementRanges[3])) { // Good hit range
-                                        if (PosY <= (hitRange / JudgementRanges[3])) {
-                                            if (keys[i]) { // Bad hit range
-                                                HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
-                                                IncreaseCombo(3);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    
-                                    if (keys[i]) { // Miss hit range
-                                        HitNote(PosY, HitErrorTime, i);
-                                        IncreaseCombo(4)
-                                        return;
-                                    }
-                                }
-                            } 
-                            if (PosY > (hitRange / 2)) { // If no notes are hit in any of the hit ranges the note misses
-                                HitNote(PosY, HitErrorTime, i);
-                                releasedIdProgress[i] = idProgress[i];
-                                IncreaseCombo(4)
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            function InitChart(ChartData, mapId) {
-                chart = LoadChart(chartData, mapId);
-                chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
-                notes = InitNotes(chart, notes) // Create original note objects and assigns them to the note var
-            }
-
-            function Start(chartData, mapId) {
-                InitChart(chartData, mapId)
-                console.log("Map: " + mapId + " - " + chartMetaData);
-            }
-
-            function Set_BG_Rotation(_index, _set = true) {
-                if (_set) {
-                let v = 0
-                    switch (_index) {
-                        case 0:
-                            v = -document.getElementById("OptionRIL").value;
-                            break;
-                        case 1:
-                            v = -document.getElementById("OptionRIS").value;
-                            break;
-                        case 2:
-                            v = document.getElementById("OptionRIS").value;
-                            break;
-                        case 3:
-                            v = document.getElementById("OptionRIL").value;
-                            break;
-                        default:
-                            break;
-                    }
-                    rotation[_index] = v;
-                    return;
-                }
-                rotation[_index] = 0;
-            }
-
-            function BG_Rotate() {
-                let _r = 0 // Rotation
-                for (let i = 0; i < rotation.length; i++) { _r += rotation[i] / 4; } // Finds average rotation amount
-                if (Math.round(rotateProgress) != Math.round(_r)) { // To avoid wiggling
-                    if (rotateProgress <  _r) { // If rotation is smaller
-                        rotateProgress += 0.1;
-                    } else { // If rotation is larger
-                        rotateProgress -= 0.1;
-                    }
-                }
-                document.getElementById("BGPattern").style.transform = "rotate(" + rotateProgress + "deg)";
-                document.getElementById("BGCenter").style.transform = "rotate(" + rotateProgress * 3 + "deg)";
-            }
-
-            function KeyDown(_index) {
-                key[_index] = true
-                hitters[_index].src = "Sprites/Notes/Hitter_Lit_1.png";
-
-                Set_BG_Rotation(_index)
-
-                if (released[_index] == true) {
-                    keys[_index] = true
-                    released[_index] = false;
-                }
-                setTimeout(function() {
-                    keys[_index] = false
-                },1000/120);
-            }
-            
-            function KeyUp(_index) {
-                key[_index] = false;
-                hitters[_index].src = "Sprites/Notes/Hitter_Unlit_1.png";
-
-                Set_BG_Rotation(_index, false)
-
-                released[_index] = true;
-                releasedIdProgress[_index] = idProgress[_index];
-            }
-
-            function Pause() {
-                pause[0] = false;
-                pause[1] = true;
-                pause[2]++;
-                chart.Pause();
-            }
-
-            function Resume() {
-                pause[1] = false;
-                chart.Resume()
-            }
-
-            window.onkeydown = function(e) {
-                if (siteLoaded) {
-                    if (waitingForInput) {
-                        Set_Input_Key(e.keyCode);
-                    }
-                    switch (e.keyCode) {
-                        case hitKeys[0]:
-                            if (!pause[1]) {
-                                KeyDown(0);
-                            }
-                            break;
-                        case hitKeys[1]:
-                            if (!pause[1]) {
-                                KeyDown(1);
-                            }
-                            break;
-                        case hitKeys[2]:
-                            if (!pause[1]) {
-                                KeyDown(2);
-                            }
-                            break;
-                        case hitKeys[3]:
-                            if (!pause[1]) {
-                                KeyDown(3);
-                            }
-                            break;
-
-                        case 32: // START MAP
-                            if (!playing) {
-                                //StartTime = Date.now();
-                                startMap();
-                            }
-                            break;
-                        
-                        case 27: // Pause
-                            if (pause[0] && playing) {
-                                Pause(true)
-                                document.getElementById("PauseMenu").style.display = "block";
-                                return;
-                            }
-                            break
-                        case 192: // RESTART MAP
-                            Reload_Chart()
-                            break;
-                    
-                        default:
-                            console.log(e.keyCode)
-                            break;
-                    }
-                }
-            }
-
-            window.onkeyup = function(e) { 
-                if (siteLoaded) {
-                    switch (e.keyCode) {
-                        case hitKeys[0]:
-                            KeyUp(0);
-                            break;
-                        case hitKeys[1]:
-                            KeyUp(1);
-                            break;
-                        case hitKeys[2]:
-                            KeyUp(2);
-                            break;
-                        case hitKeys[3]:
-                            KeyUp(3);
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            function Set_Score_Rank_Image() {
-                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_F.png"
-                if (Get_Acc(Judgements, JudgementWeights) <  0.7) return;
-
-                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
-                if (Judgements[4] != 0) return;
-
-                if (Judgements[3] == 0) {
-                    if (Judgements[2] == 0) {
-                        if (Judgements[1] == 0) {
-                            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC+.png"
-                            return;
-                        }
-                        document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC.png"
-                        return;
-                    }
-                    document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_FC.png"
-                    return;
-                }
-                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
-            }
-
-            function Set_Acc_Rank_Image() {
-                const _acc = Get_Acc(Judgements, JudgementWeights);
-
-                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_F.png"
-                if (_acc < 0.7) return;
-
-                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_C.png"
-                if (_acc < 0.8) return;
-
-                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_B.png"
-                if (_acc < 0.9) return;
-
-                document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_A.png"
-                if (_acc < 0.95) return;
-                
-                if (_acc == 1) document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_EX.png";
-            }
-
-            function Show_Results() {
-                console.log("Setting Results")
-                playing = false;
-                console.log("Ending Play");
-                document.getElementById("StatsMenu").style.display = "block"; console.log("Showing Results");
-                document.getElementById("PauseMenu").style.display = "none";
-                document.getElementById("ResultPPAmount").innerText = Judgements[0] + " (x" + HighestCombos[0] + ")"; console.log("Showing Judgement & Combo Results");
-                document.getElementById("ResultPAmount").innerText = Judgements[1] + " (x" + HighestCombos[1] + ")";
-                document.getElementById("ResultGAmount").innerText = Judgements[2] + " (x" + HighestCombos[2] + ")";
-                document.getElementById("ResultBAmount").innerText = Judgements[3];
-                document.getElementById("ResultMAmount").innerText = Judgements[4];
-                
-                document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos));  console.log("Showing Score Results");
-                document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights)*100000)/1000 + "%";  console.log("Showing Acc Results");
-                document.getElementById("ResultValue").innerText = "WIP";  console.log("Showing Value Results");
-                
-                document.getElementById("ResultAuto").innerText = document.getElementById("OptionModAuto").checked;  console.log("Showing Mods");
-                document.getElementById("ResultRate").innerText = "x" + document.getElementById("OptionModRate").value;
-                document.getElementById("ResultSwitcher").innerText = document.getElementById("OptionSwitcher").checked;
-                
-                console.log("Base Results Done");
-
-                Create_Result_Hit_Errors(); console.log("Showing Hit Error Results");
-                pause = [true, false, 0]
-
-                Set_Score_Rank_Image()
-                Set_Acc_Rank_Image()
-            }
-            
-            // When site loads
-            window.onload = function() {
-                LoadSettings() // Loads settings if they were saved
-                document.getElementById("OptionChartData").innerHTML = JSON.stringify(charts); 
-                // Makes sure the map doesn't go too far offscreen
-                if (document.getElementById("OptionPlayfieldXOffset").value > 100) {
-                    document.getElementById("OptionPlayfieldXOffset").value = 46.9;
+                main.classList.add("UIContainer")
+                main.classList.add("SongSelector")
+                main.onclick = function name(params) {
+                    localStorage['Chart'] = JSON.stringify(charts[_mapId])
+                    window.location.href='game.html'
                 }
 
-                // Updates the game, basically the play
-                function Update(_chart) {
-                    HitCheck()
-                    UpdateNotes(chart); // Update the notes position the user will see onscreen
-                    if (playing) { // Checks if chart is playing or not
-                        if (chart.Get_Audio_Time_Left() <= 0) {
-                            document.getElementById("AccText").innerHTML = "&lt;Waiting for Song to end&gt;";
-                            Show_Results()
-                        }
-                        chart.Update_Progress(rate); // Updates note behind the scene based on song position
-                        for (let i = 0; i < hitters.length; i++) {
-                            const element = hitters[i];
-                            element.innerHTML = key[i]+" "+idProgress[i]+"<br>"+keys[i]+" "+releasedIdProgress[i];
-                        }
-                        //lastUpdate = Date.now() // Sets start date for delta time calculation
-                        if (document.getElementById("OptionSwitcher").checked) {
-                            if (Math.round(chart.progress) % 2 == 0) {
-                                document.getElementById("OptionUpscroll").checked = true;
-                                UpdateScrollDirection();
-                            } else {
-                                document.getElementById("OptionUpscroll").checked = false;
-                                UpdateScrollDirection();
-                            }
-                        }
-                    }
-                    
-                    if (document.getElementById("OptionRB").checked) {
-                        BG_Rotate()
-                    }
-                }
-                for (let i = 0; i < document.getElementsByClassName("hitter").length; i++) {
-                    const element = document.getElementsByClassName("hitter")[i];
-                    hitters[i] = element;
-                }
-                Reload_Chart(); // First reload to avoid errors
-                document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;";
-                setInterval(Update, 1000/240)
-                siteLoaded = true;
-                setTimeout(Reload_Chart, 100) // Second reload to fix faults in the first
+                banner.classList.add("SongBanner", "UIContainer")
+                bannerImg.classList.add("BannerImg")
+
+                bannerImg.src = "Sprites/Icon.png";
+                bannerTitle.innerText = charts[_mapId]["Name"]
+
+                var au = document.createElement('audio');
+                au.src = charts[_mapId]["Audio"]
+                au.addEventListener('loadedmetadata', function(){
+                    infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
+                })
+
+                info.classList.add("UIContainer")
+
+                document.getElementById("SongsContainer").appendChild(main);
             }
 
-            function startMap() {
-                auto = document.getElementById("OptionModAuto").checked; // Check if auto mod is active
-
-                playing = true; // For the update function to know it can start
-                chart.Play_Audio(rate) // Starts the song
-
-                document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHidingRight");
-                document.getElementById("ScoreBoard").classList.add("delay-1", "UIHidingLeft");
+            for (var i in charts) {
+                CreateButton(i)
             }
-
-            function Set_Input_Key(input) {
-                waitingForInput = false;
-                inputBox.value=input
-                hitKeys[inputIndex-1] = input;
-            }
-
-            function Set_Input_Box(index) {
-                waitingForInput = true;
-                inputBox=document.getElementById("KeyCheck"+index);
-                inputBox.value = null;
-                inputIndex = index;
-            }
-
-            function Reload_Chart(_object = null, _playing = false) {
-                clearInterval(0); // Stops Update from being called every ms
-                playing = false; // Keeps Update function from doing anything just incase
-                pause = [true, false, 0];
-                if (chart != null) // Makes sure thare IS audio that can be disable
-                    chart.Stop_Audio(); // Stops the music from playing
-
-                if (_object != null) {
-                    _object.blur()
-                }
-
-                SaveOptions(); // Gets and Sets the Options
-                document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
-                document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
-                document.getElementById("StatsMenu").style.display = "none"; // Hides result screen
-                document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
-
-                document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
-                document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
-
-                // Removes ALL Notes
-                for (let i = 0; i < notes.length; i++) {
-                    for (let j = 0; j < notes[i].length; j++) {
-                        RemoveNote(i, 0)
-                    }
-                }
-
-                // Removes All Visual Notes
-                while (document.getElementById("NoteContainer").children.length > 0) {
-                    document.getElementById("NoteContainer").children[0].remove();
-                }
-                
-                // Removes all hit errors in results menu
-                _delete = document.getElementById("ResultErrorContainer").children;
-                while (_delete.length > 0) {
-                    _delete[0].remove();
-                }
-
-                while (hitErrors.length > 0) {
-                    hitErrors.pop(0);
-                }
-
-                // Now that all notes are go, notelock gets reset.
-                for (let i = 0; i < idProgress.length; i++) {
-                    idProgress[i] = 0;
-                    releasedIdProgress[i] = 0;
-                }
-
-                // Resets play information
-                Judgements = [0, 0, 0, 0, 0];
-                Combos = [0, 0, 0];
-                HighestCombos = [0, 0, 0];
-
-                // For map Changes
-                chartData = document.getElementById("OptionChartData").innerHTML; 
-                rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
-                chart = null // So chart can be set later and so the previous doesn't interfere with anything
-                Start(chartData, 1); // Generates the map
-                Resize()
-                playing =  _playing;
-                
-            }
-
-            function UpdateScrollDirection () {
-                scrollSpeed = Math.abs(document.getElementById("OptionScrollSpeed").value) * (document.getElementById("OptionUpscroll").checked ? -1 : 1);
-                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value + "rem";
-
-                localStorage['ScrollSpeed'] = scrollSpeed;
-
-                array = document.getElementsByClassName("hitter")
-                if (document.getElementById("OptionUpscroll").checked) {
-                    for (let i = 0; i < array.length; i++) {
-                        const element = array[i];
-                        element.style.top = ""
-                    }
-                    StartPos[1] = 0
-                } else {
-                    let s = 58 * window.innerHeight / 1080 // rem location of visual hitters || *16 is location of notes to be hit
-                    for (let i = 0; i < array.length; i++) {
-                        const element = array[i];
-                        element.style.top = s + "rem"
-                    }
-                    StartPos[1] = -s * 16
-                }
-            }
-
-            function Resize() {
-                UpdateScrollDirection()
-                document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * window.innerWidth / 1920 + "rem"
-                document.getElementById("ChartContainer").style.width = 26.75 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBar").style.left = 6 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBar").style.width = 15 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBarExtension").style.left = 6.66 * window.innerWidth / 1920 + "rem"
-                document.getElementById("HitErrorBarExtension").style.width = window.innerWidth / 1920 + "rem"
-                for (let i = 0; i < hitters.length; i++) {
-                    const _hit = hitters[i];
-                    _hit.style.left = (6 * i) * window.innerWidth / 1920 + "rem"
-                    _hit.style.width = 8 * window.innerWidth / 1920 + "rem"
-                    _hit.style.height = _hit.style.width
-                    //hitters[i] = _hit
-                }
-            }
-
-            window.onresize = function() {
-                Resize()
-            }
-
         </script>
-        <div id="PauseMenu" class="modal">
-            <div class="modal-content">
-                <p style="font-size: x-large;" >Pause Menu</p>
-                <div class="UIContainer" style="width: 97.5%;">
-                    <button onclick="{
-                        document.getElementById('PauseMenu').style.display = 'none';
-                        setTimeout(function() {
-                            Resume();
-                            setTimeout(function() {
-                                pause[0] = true;
-                            }, 3000)
-                        }, 1000)
-                    }" style="width: 5rem; height: 3rem;">
-                        Resume
-                    </button>
-                    <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
-                        Restart
-                    </button>
-                    <button onclick="{
-                        exited = true;
-                        Show_Results()
-                        }" style="width: 5rem; height: 3rem;">
-                        Exit
-                    </button>
-                    
-                </div>
-            </div>
-        </div>
-        <div id="StatsMenu" class="modal">
-            <div class="modal-content">
-                <p style="font-size: x-large;" >Results Menu</p>
-                <div id="ResultsSScoreContainer" style="display:flex">
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
-                        <a>Score: </a><a id="ResultScore">0</a>
-                        <div class = "UIContainer">
-                            <img id="ResultRankScore" src = "Sprites/Ranks/Rank_FC.png" style="width: 10rem; margin: 5%; "/>
-                        </div>
-                    </div>
-                    <div class="UIContainer" style="flex-direction: column; display: flex; align-items: center;">
-                        <a>Accuracy: </a><a id="ResultAcc">0</a>
-                        <div class = "UIContainer">
-                            <img id = "ResultRankAcc" src = "Sprites/Ranks/Rank_EX.png" style="width: 10rem; margin: 5%; "/>
-                        </div>
-                    </div>
-                    <div class="UIContainer">
-                        <a>Value: </a><a id="ResultValue">0</a>
-                    </div>
-                </div>
-                <div id="ResultsContainer" style="display:flex">
-                    <div class="UIContainer" style="max-width: 20%; display: flex;">
-                        <div id="ResultData" style="float:left;width: 50%">
-                            <p>Mods</p>
-                            <div class="UIContainer">
-                                <br>
-                                <a>Auto - </a>
-                                <a id="ResultAuto">False</a>
-                                <br>
-                                <a>Rate - </a>
-                                <a id="ResultRate">x1.0</a>
-                                <br>
-                                <a>Swticher - </a>
-                                <a id="ResultSwitcher">False</a>
-                            </div>
-                        </div>
-                        <div id="ResultData" style="float:left;width: 50%">
-                            <p>Judgements</p>
-                            <div class="UIContainer">
-                                <br>
-                                <a>Perfect+ - </a>
-                                <a id="ResultPPAmount">0</a>
-                                <br>
-                                <a>Prefect - </a>
-                                <a id="ResultPAmount">0</a>
-                                <br>
-                                <a>Good - </a>
-                                <a id="ResultGAmount">0</a>
-                                <br>
-                                <a>Bad - </a>
-                                <a id="ResultBAmount">0</a>
-                                <br>
-                                <a>Miss - </a>
-                                <a id="ResultMAmount">0</a>
-                                <br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="UIContainer" style="max-width: 80%; height: 11.5rem;">
-                        <div id="ResultError" style="float:left">
-                            <div id="ResultHitErrorBar"style="position: relative; top: 2rem; width:0.3125rem; height: 8.3125rem; background-color: blue;" >
-                                <div id="ResultHitErrorBarExtension" style="position: inherit; top:4rem; left: 0rem; width:0.625rem; height: 0.325rem; background-color: blue;" >
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ResultError" style="float:right">
-                            <div id="ResultHitErrorBar"style="position: relative; top: 2rem; width:0.3125rem; height: 8.3125rem; background-color: blue;" >
-                                <div id="ResultHitErrorBarExtension" style="position: inherit; top:4rem; left: -0.5rem; width:0.625rem; height: 0.325rem; background-color: blue;" >
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ResultErrorContainer" style="position:relative; width: 100%; height: 100%">
-                        </div>
-                    </div>
-                </div>
-                <div class="UIContainer" style="width: 97.5%;">
-                    <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
-                        Restart
-                    </button>
-                </div>
-            </div>
-        </div> <!-- End of modal HTML -->
-        <div id="EverythingContainer" >
-            <div id = "ScoreBoard" class = "UIContainer MainUIContainer" style="float:left; width:20%; max-width: 25%; height: 97%;">
-                <div>
-                    <p>
-                        SCORES (WIP)
-                    </p> 
-                </div>
-                <div style="width:100%; height: 0.625rem;">
-
-                </div>
-                <div id="ScoreContainer" class="UIContainer">
-                    <div class="Score">
-                        <img class="scorePFP" src="Sprites/Notes/Hitter_Unlit_1.png" />
-                        <div>
-                            <a>Test Score</a> <br>
-                            <a>Test Score: 100%</a> <br>
-                            <a>Date: 3/8/2023 11:35PM (GMT-8)</a> <br>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 120%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
-                <div id="HitErrorBar"style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;" >
-                    <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; text-align: center;"></a>
-                    <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; text-align: center;">Loading...</a>
-                    <div id="HitErrorBarExtension" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;" >
-                    </div>
-                </div>
-                <div id="HitterContainer" style="position: absolute; width:100%;height:100%">
-                    <img id="Hitter1" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 0;" ></img>
-                    <img id="Hitter2" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 6.25rem;" ></img>
-                    <img id="Hitter3" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 12.5rem;" ></img>
-                    <img id="Hitter4" class="hitter" src="Sprites/Notes/Hitter_Unlit_1.png" style="left: 18.75rem;" ></img>
-                </div>
-                <div id="NoteContainer" style="overflow:hidden;"></div>
-            </div>
-            <div id="MapsSettingContainer" class = "UIContainer MainUIContainer" style="float:right; width:20%; max-width: 25%; height: 97%; align-items: center; justify-content: center;">
-
-                <div class = "UIContainer">
-                    <div>
-                        <p>
-                            MODS:
-                        </p>
-                    </div>
-                    <label>Auto: </label>
-                    <input id="OptionModAuto" onchange="Reload_Chart(this)" type="checkbox"> <br>
-                    <label>Rate: </label>
-                    <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
-                    <label>Switcher: </label>
-                    <input id="OptionSwitcher" onchange="Reload_Chart()" type="checkbox"> <br>
-                </div>
-
-                <div class = "UIContainer">
-                    <div>
-                        <p>
-                            GamePlay:
-                        </p>
-                    </div>
-                    <label>Upscroll: </label>
-                    <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <br>
-                    <label>Scroll Speed: </label>
-                    <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <br>
-                    <label>Playfield X Offset: </label>
-                    <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <br>
-                    <div class = "UIContainer">
-                        <div>
-                            <p>
-                                Key Bindings:
-                            </p>
-                        </div>
-                    <label>Keys: (Uses key codes)</label> <br>
-                    <label>1 -</label>
-                    <input id="KeyCheck1" type="number" onchange="SaveOptions()" style="width:2.5rem" value="68"> <button onclick="Set_Input_Box(1)">Detect</button> <br>
-                    <label>2 -</label>
-                    <input id="KeyCheck2" type="number" onchange="SaveOptions()" style="width:2.5rem" value="70"> <button onclick="Set_Input_Box(2)">Detect</button> <br>
-                    <label>3 -</label>
-                    <input id="KeyCheck3" type="number" onchange="SaveOptions()" style="width:2.5rem" value="74"> <button onclick="Set_Input_Box(3)">Detect</button> <br>
-                    <label>4 -</label>
-                    <input id="KeyCheck4" type="number" onchange="SaveOptions()" style="width:2.5rem" value="75"> <button onclick="Set_Input_Box(4)">Detect</button> <br>
-                    </div>
-                </div>
-
-                <div class = "UIContainer">
-                    <label>Background Dim: </label>
-                    <input id="OptionBGDim" oninput="{
-                        this.nextElementSibling.value = this.value
-                        document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')'
-                        }" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
-                    <label>Rotate Background: </label>
-                    <input id="OptionRB" onchange="SaveOptions()" type="checkbox"> <br>
-                    <label>Rotation Intesity: </label> <br>
-                    <!--
-                        RI - Rotation Intesite
-                        S - Small (Inner)
-                        L - Large (Outer)
-                    -->
-                    <label>Pattern (Outer, Inner): </label>
-                    <input id="OptionRIS" oninput="{ rotationIntesitySP = this.value }" type="number" min="1" max="100" value="5" style="width: 2rem;"> <label>deg</label> <input id="OptionRIL" oninput="{ rotationIntesitySP = this.value }" type="number" min="1" max="100" value="10" style="width: 2rem;"> <label>deg</label> <br>
-                </div>
-                
-                <div class = "UIContainer">
-                    <div>
-                        <p>
-                            Expirimental:
-                        </p>
-                    </div>
-                    <div class = "UIContainer">
-                        <label>
-                            <div>
-                                <a> Will reset all saved </a> <br>
-                                <a> settings if site isn't </a> <br>
-                                <a> done loading. </a> 
-                            </div>
-                        </label>
-                        <button onclick="Reload_Chart()" style="background-color: rgba(240, 100, 100, 0.5); width: 5rem;">Force Reload Chart</button>
-                    </div><br>
-                    <div class="UIContainer">
-                        <div>
-                            <p>
-                                Map JSON:
-                            </p>
-                        </div>
-                        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>
-                            
-                        </span>
-                    </div>
-                </div>
-                <iframe id='iFrame1' src="SettingsPanel/Other.htm" style="width: 100%; height:77.5rem" frameborder="0" scrolling="no" onload="" seamless></iframe>
-            </div>
-        </div>
-        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
-            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" src="Sprites/Background/Pattern.png" />
-            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
-        </div>
     </body>
 </html>

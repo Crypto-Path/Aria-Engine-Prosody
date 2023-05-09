@@ -14,6 +14,13 @@ function SaveOptions() {
     document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
     document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
     UpdateScrollDirection();
+    
+    hitKeys = [ 
+        parseInt(document.getElementById("KeyCheck1").value),
+        parseInt(document.getElementById("KeyCheck2").value),
+        parseInt(document.getElementById("KeyCheck3").value),
+        parseInt(document.getElementById("KeyCheck4").value)
+    ];
 }
 
 // Loads settings from localStorage
