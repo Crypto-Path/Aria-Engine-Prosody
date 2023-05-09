@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="CSS/BG.css">
         <style>
             a {
-                font-size: 3rem;
+                font-size: 2rem;
             }
 
             p {
@@ -40,13 +40,22 @@
                 border-radius: 0 0 1rem 1rem;
             }
 
+            .BannerImg {
+                margin-top: 2rem;
+            }
+
             ::-webkit-scrollbar {
                 -webkit-appearance: scrollbartrack-vertical;
                 -webkit-appearance: scrollbarthumb-vertical;
-            }    
+            }   
+
+            .chartContainer {
+                display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
+            }
         </style>
     </head>
     <body>
+        <script src="Data/Maps.js"></script>
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
@@ -75,23 +84,57 @@
                     </div> 
                 </div>
             </div>
-            <div id="SongsContainer" class="UIContainer" style="display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;">
-                <button id="Song" class="UIContainer SongSelector" onclick="window.location.href='game.html'">
-                    <div class = "UIContainer SongBanner">
-                        <img src="Sprites/Icon.png" style="margin-top: 2rem;">
-                        <a>
-                            Song
-                        </a>
-                    </div>
-                    <div class = "UIContainer" >
-                        <p>
-                            Length: 1:00<br>
-                            Difficulty: 12<br>
-                            Score: 1000000 <img src = "Sprites/Ranks/Rank_PC+.png" class="miniIcon"> <img src = "Sprites/Ranks/Rank_EX.png" class="miniIcon">
-                        </p>
-                    </div>
-                </button>
+            <div id="SongsContainer" class="UIContainer chartContainer">
             </div>
         </div>
+        <script>
+
+            function CreateButton(_mapId) {
+                console.log(`Loading map: ${_mapId}`)
+                var main = document.createElement("button")
+
+                var banner = document.createElement("div")
+                var bannerImg = document.createElement("img")
+                var bannerTitle = document.createElement("a")
+                
+                var info = document.createElement("div")
+                var infoStats = document.createElement("p")
+
+                info.appendChild(infoStats);
+
+                banner.appendChild(bannerImg);
+                banner.appendChild(bannerTitle);
+
+                main.appendChild(banner);
+                main.appendChild(info);
+
+                main.classList.add("UIContainer")
+                main.classList.add("SongSelector")
+                main.onclick = function name(params) {
+                    localStorage['Chart'] = JSON.stringify(charts[_mapId])
+                    window.location.href='game.html'
+                }
+
+                banner.classList.add("SongBanner", "UIContainer")
+                bannerImg.classList.add("BannerImg")
+
+                bannerImg.src = "Sprites/Icon.png";
+                bannerTitle.innerText = charts[_mapId]["Name"]
+
+                var au = document.createElement('audio');
+                au.src = charts[_mapId]["Audio"]
+                au.addEventListener('loadedmetadata', function(){
+                    infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
+                })
+
+                info.classList.add("UIContainer")
+
+                document.getElementById("SongsContainer").appendChild(main);
+            }
+
+            for (var i in charts) {
+                CreateButton(i)
+            }
+        </script>
     </body>
 </html>
