@@ -9,6 +9,9 @@
  + Chart loads from JSON
  + Playable chart
  + Adjustable Keybinds
+ + Mods for adjustable difficulty
+ + Mapping/Editor system
+ + Main menu listing all charts
 
 ## Goals
  - [x] Audio
@@ -19,9 +22,9 @@
    - [x] Switcher
    - [ ] Timing
  - [x] Option Saving
- - [ ] Map selection
+ - [x] Map selection
  - [ ] Maps loaded from a server 
- - [ ] Mapping 
+ - [x] Mapping 
  - [ ] Uploading maps
  - [ ] Profiles/Accounts
  - [ ] Leaderboards
