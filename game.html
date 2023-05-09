@@ -33,7 +33,6 @@
     </head>
     <body>
         <script src = "Scripts/antiContext.js" ></script>
-        <script src = "Data/Maps.js"> </script>
         <script src = "Scripts/note.js" ></script>
         <script src = "Scripts/chart.js" ></script>
         <script src = "Scripts/savingAndLoading.js" ></script>
@@ -89,13 +88,12 @@
             //StartTime = null;
             //FinalNoteTime = null;
 
-            function LoadChart(_chart, _mapId) {
+            function LoadChart(_chart) {
                 try { // TFGo avoid error 
                     _chartJSON = JSON.parse(_chart);
-                    _mapId = (_mapId).toString();
                 } catch (error) { console.error("Invalid chart or map!\n" + error); return; }
 
-                return new Chart(_chartJSON[_mapId], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
+                return new Chart(_chartJSON, 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
             }
             
             // Removes next note in row
@@ -292,14 +290,14 @@
                 }
             }
 
-            function InitChart(_chartData, _mapId) {
-                chart = LoadChart(_chartData, _mapId);
+            function InitChart(_chartData) {
+                chart = LoadChart(_chartData);
                 chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
                 notes = InitNotes(chart, notes) // Create original note objects and assigns them to the note var
                 
-                document.getElementById("BGGradient").src = _chartJSON[_mapId]["BG"]["Gradient"];
-                document.getElementById("BGPattern").src = _chartJSON[_mapId]["BG"]["Pattern"];
-                document.getElementById("BGCenter").src = _chartJSON[_mapId]["BG"]["Center"];
+                document.getElementById("BGGradient").src = _chartJSON["BG"]["Gradient"];
+                document.getElementById("BGPattern").src = _chartJSON["BG"]["Pattern"];
+                document.getElementById("BGCenter").src = _chartJSON["BG"]["Center"];
             }
 
             function Start(chartData, mapId) {
