@@ -293,28 +293,15 @@
 
         function LoadNotes(_Notes) {
             console.log("Loading chart")
-            // console.log(_Notes)
-            // for (let _NoteX = 0; _NoteX < _Notes.length; _NoteX++) {
-            //     const _XNotes = document.querySelectorAll(`div[data-col='${-_NoteX+3}']`)
-            //     for (let _NoteY = 0; _NoteY < _Notes[_NoteX].length; _NoteY++) {
-            //         if (_XNotes[_NoteY].getAttribute("data-row") == _Notes[_NoteX][_NoteY]) {
-            //             toggleCell(_XNotes[_NoteY])
-            //         }
-            //     }
-            // }
-
-            
-            for (let _row = 0; _row < _Notes.length; _row++) {
-                const row = _Notes[_row];
-                for (let i = 0; i < row.length; i++) {
-                    const index = row[i];
-                    let RowNotes = document.querySelectorAll(`div[data-col='${-_row+3}']`)
-                    console.log(`${_row}:${i}`)
-                    for (let j = 0; j < RowNotes.length; j++) {
-                        const element = RowNotes[j];
-                        if (element.getAttribute("data-row") == index) {
-                            toggleCell(element, true)
-                            console.log(RowNotes)
+            console.log(_Notes)
+            for (let _NoteX = 0; _NoteX < _Notes.length; _NoteX++) { // Cycles threw each lane [],[],[],[]
+                const _XNotes = document.querySelectorAll(`div[data-col='${-_NoteX+3}']`) // Gets all the editor tiles with that lane
+                for (let _NoteY = 0; _NoteY < _Notes[_NoteX].length; _NoteY++) { // Cycles threw all the notes
+                    for (let i = 0; i < _XNotes.length; i++) {
+                        const element = _XNotes[i];
+                        if (element.getAttribute("data-row") == _Notes[_NoteX][_NoteY]*4) {
+                            toggleCell(element)
+                            break;
                         }
                     }
                 }
