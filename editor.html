@@ -80,24 +80,22 @@
         let file;
 
         let Json = {
-            "1": {
-                "Name": "???",
-                "Audio": "???",
-                "SongArtist": "???",
-                "Creator": "???",
-                "BPM": 60,
-                "BG": {
-                    "BG":"Sprites/Background/BG.png",
-                    "Gradient":"Sprites/Background/Gradient.png",
-                    "Pattern":"Sprites/Background/Pattern.png",
-                    "Center":"Sprites/Background/Center.png"
-                },
-                "4Rows": {
-                    "Difficulty1": {
-                        "Map Name": "???",
-                        "Offset": 0,
-                        "Notes":[[],[],[],[]]
-                    }
+            "Name": "???",
+            "Audio": "???",
+            "SongArtist": "???",
+            "Creator": "???",
+            "BPM": 60,
+            "BG": {
+                "BG":"Sprites/Background/BG.png",
+                "Gradient":"Sprites/Background/Gradient.png",
+                "Pattern":"Sprites/Background/Pattern.png",
+                "Center":"Sprites/Background/Center.png"
+            },
+            "4Rows": {
+                "Difficulty1": {
+                    "Map Name": "???",
+                    "Offset": 0,
+                    "Notes":[[],[],[],[]]
                 }
             }
         }
@@ -105,29 +103,37 @@
         // Toggle note placement on click
         function toggleNote(event) {
             const cell = event.target;
+            toggleCell(cell);
+        }
+
+        function toggleCell(cell, _loaded = false) {
             cell.classList.toggle('note');
+
             const row = cell.getAttribute('data-row');
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
-            cell.classList.contains('note') ? Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].pop(parseInt(row)/4);
-            console.log(cell)
 
-            Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
-                return a - b;
-            });
+            if (_loaded) {
+                const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row)/4);
+                cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index,1);
+
+                Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
+                    return a - b;
+                });
+            }
 
             UpdateChartJson()
         }
 
         function UpdateChartJson() {
             try {
-                Json["1"]["Audio"] = document.getElementById("MDPreAudio").value;
+                Json["Audio"] = document.getElementById("MDPreAudio").value;
             } catch (error) { }
-            Json["1"]["Name"] = document.getElementById("MDChartName").value;
-            Json["1"]["SongArtist"] = document.getElementById("MDArtist").value;
-            Json["1"]["Creator"] = document.getElementById("MDCreator").value;
-            Json["1"]["BPM"] = document.getElementById("MDBPM").value;
-            Json["1"]["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
+            Json["Name"] = document.getElementById("MDChartName").value;
+            Json["SongArtist"] = document.getElementById("MDArtist").value;
+            Json["Creator"] = document.getElementById("MDCreator").value;
+            Json["BPM"] = document.getElementById("MDBPM").value;
+            Json["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
 
             document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
         }
@@ -244,17 +250,22 @@
             // Create the grid cells
         }
 
-        function JsonToChart() {
+        function LoadJson() {
             Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
 
-            document.getElementById("MDChartName").value = Json["1"]["Name"];
-            document.getElementById("MDArtist").value = Json["1"]["SongArtist"];
-            document.getElementById("MDCreator").value = Json["1"]["Creator"];
-            document.getElementById("MDBPM").value = Json["1"]["BPM"];
-            document.getElementById("MDOffset").value = Json["1"]["4Rows"]["Difficulty1"]["Offset"];
-            ReloadChart();
+            document.getElementById("MDChartName").value = Json["Name"];
+            document.getElementById("MDArtist").value = Json["SongArtist"];
+            document.getElementById("MDCreator").value = Json["Creator"];
+            document.getElementById("MDBPM").value = Json["BPM"];
+            document.getElementById("MDOffset").value = Json["4Rows"]["Difficulty1"]["Offset"];
+            document.getElementById('audio').src = Json["Audio"];
 
-            LoadNotes(Json["1"]["4Rows"]["Difficulty1"]["Notes"])
+            setTimeout(() => {
+                ReloadChart()
+                setTimeout(() => {
+                    LoadNotes(Json["4Rows"]["Difficulty1"]["Notes"])
+                }, 3000);
+            }, 100);
         }
 
         function RemoveAllTiles() {
@@ -280,14 +291,32 @@
             UpdateTileHeight(BPM)
         }
 
-        function LoadNotes(_Rows) {
-            for (let r = 0; r < _Rows.length; r++) {
-                const rows = _Rows[r];
-                for (let i = 0; i < rows.length; i++) {
-                    const col = rows[i];
-                    console.log()
-                    //let tile = document.querySelectorAll("[data-row=" + rows + "],[data-col=" + col + "]")
-                    //tile.classList.contains('note') ? 'on' : 'off';
+        function LoadNotes(_Notes) {
+            console.log("Loading chart")
+            // console.log(_Notes)
+            // for (let _NoteX = 0; _NoteX < _Notes.length; _NoteX++) {
+            //     const _XNotes = document.querySelectorAll(`div[data-col='${-_NoteX+3}']`)
+            //     for (let _NoteY = 0; _NoteY < _Notes[_NoteX].length; _NoteY++) {
+            //         if (_XNotes[_NoteY].getAttribute("data-row") == _Notes[_NoteX][_NoteY]) {
+            //             toggleCell(_XNotes[_NoteY])
+            //         }
+            //     }
+            // }
+
+            
+            for (let _row = 0; _row < _Notes.length; _row++) {
+                const row = _Notes[_row];
+                for (let i = 0; i < row.length; i++) {
+                    const index = row[i];
+                    let RowNotes = document.querySelectorAll(`div[data-col='${-_row+3}']`)
+                    console.log(`${_row}:${i}`)
+                    for (let j = 0; j < RowNotes.length; j++) {
+                        const element = RowNotes[j];
+                        if (element.getAttribute("data-row") == index) {
+                            toggleCell(element, true)
+                            console.log(RowNotes)
+                        }
+                    }
                 }
             }
         }
@@ -358,11 +387,12 @@
             <hr>
             Loading maps into editor not supported yet
         </div>
-        <span id="OptionChartData" class="textarea" role="textbox">
+        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>
             
         </span>
         <!--<button onclick="JsonToChart()">Load</button>-->
         <button onclick="{navigator.clipboard.writeText(getElementById('OptionChartData').innerHTML)}">Copy</button>
+        <button onclick="{LoadJson(getElementById('OptionChartData').innerHTML)}">Load Json</button>
     </div>
     
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
