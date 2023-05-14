@@ -113,14 +113,12 @@
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
 
-            if (_loaded) {
-                const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row)/4);
-                cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index,1);
+            const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row)/4);
+            cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index,1);
 
-                Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
-                    return a - b;
-                });
-            }
+            Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
+                return a - b;
+            });
 
             UpdateChartJson()
         }
@@ -135,7 +133,8 @@
             Json["BPM"] = document.getElementById("MDBPM").value;
             Json["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
 
-            document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
+            //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
+            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
         }
 
         function play() {
@@ -145,12 +144,6 @@
         function pause() {
             audio.pause();
         }
-
-        // Move the grid up or down on scroll
-        document.addEventListener('scroll', function(event) {
-            const deltaY = event.deltaY;
-            offsetY += deltaY/BPM;
-        });
 
         window.onload = function() {
             // Updates the game, basically the play
@@ -228,7 +221,7 @@
         }
 
         addEventListener("wheel", (event) => {
-            audio.currentTime += event.deltaY/50;
+            audio.currentTime += event.deltaY/BPM/audio.duration*10;
         });
         
 
@@ -241,6 +234,7 @@
             audio = document.getElementById("audio");
 
             RemoveAllTiles();
+            Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
@@ -251,7 +245,10 @@
         }
 
         function LoadJson() {
-            Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
+
+            //Conver file Json to editor Json
+
+            //Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
 
             document.getElementById("MDChartName").value = Json["Name"];
             document.getElementById("MDArtist").value = Json["SongArtist"];
@@ -327,6 +324,22 @@
                     break;
             }
         }
+
+        function convertImageToBase64(imgUrl, loc) {
+            const image = new Image();
+            image.crossOrigin='anonymous';
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = image.naturalHeight;
+                canvas.width = image.naturalWidth;
+                ctx.drawImage(image, 0, 0);
+                const dataUrl = canvas.toDataURL();
+                //callback && callback(dataUrl)
+                Json['BG'][loc] = dataUrl;
+            }
+            image.src = imgUrl;
+        }
     </script>
     <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left;">
         <div id="Header">
@@ -345,41 +358,79 @@
             <div class="UIContainer">
                 <label for="songs">Pre-Songs:</label>
 
-                <select id="MDPreAudio" name="songs" onchange="UpdateChartJson()" id="songs">
+                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]] }" id="songs">
                     <option value="Custom">Custom</option>
                     <option value="Audio/Inaji-The_Pathbreaking.mp3">Inaji - The Pathbreaking</option>
                     <option value="Audio/Cyberspace Abyss.mp3">Cyphe Mercury - Cyberspace Abyss</option>
                 </select>
-                <input id="MDAudio" onchange="UpdateChartJson()" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
+                <input id="MDAudio" onchange="{Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
             </div>
 
             <label>Chart Title: </label>
             <input id="MDChartName" onchange="UpdateChartJson()" type="text"> <br>
             <label>BPM: </label>
-            <input id="MDBPM" onchange="{ReloadChart(); UpdateChartJson()}" type="number" value="60"> <br>
+            <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>
             <label>Offset: </label>
-            <input id="MDOffset" onchange="{ReloadChart(); UpdateChartJson()}" type="text"> <br>
+            <input id="MDOffset" onchange="ReloadChart()" type="text"> <br>
             <label>Artist: </label>
             <input id="MDArtist" onchange="UpdateChartJson()" type="text"> <br>
             <label>Creator: </label>
             <input id="MDCreator" onchange="UpdateChartJson()" type="text"> <br>
+        </div>
+        <div class = "UIContainer">
+            <div>
+                <a>
+                    Background:
+                </a>
+            </div>
+            <label>Main Background:
+                <input id="BGBG" onchange="UpdateChartJson()" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+            </label>
+            <label>BG Twist: (Optional)</label>
+            <div class="UIContainer">
+                (Feature may be removed in the future)
+                <br>
+                <label>
+                    Center: 
+                    <input id="BGBGCenter" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+                <label>
+                    Pattern: 
+                    <input id="BGBGPattern" onchange="{var BGPattern = blob.createObjectURL(this.files[0]); document.getElementById('BGPattern').src = BGPattern; convertImageToBase64(BGPattern, 'Pattern'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+                <label>
+                    Gradient: 
+                    <input id="BGBGGradient" onchange="{var BGGradient = blob.createObjectURL(this.files[0]); document.getElementById('BGGradient').src = BGGradient; convertImageToBase64(BGGradient, 'Gradient'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <div>
+                <a>
+                    Difficulty:
+                </a>
+            </div>
+            <br>
+            <label id="ChartDiff"></label>
         </div>
     </div>
     
     <div id="MappingData" class="UIContainer"  style="width:20%; float: right;">
         <div>
             <p>
-                Map JSON:
+                Export/Import:
             </p>
-            <hr>
-            Loading maps into editor not supported yet
         </div>
-        <span id="OptionChartData" class="textarea" role="textbox" contenteditable>
-            
-        </span>
         <!--<button onclick="JsonToChart()">Load</button>-->
-        <button onclick="{navigator.clipboard.writeText(getElementById('OptionChartData').innerHTML)}">Copy</button>
-        <button onclick="{LoadJson(getElementById('OptionChartData').innerHTML)}">Load Json</button>
+        <label>
+            Import chart: 
+            <input type="file" accept=".psdc"></input>
+        </label>
+        <hr>
+        <label>
+            Export chart:
+            <button onclick="download(`Chart_${Date.now()}.psdc`,JSON.stringify(Json))">Download Chart</button>
+        </label>
     </div>
     
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
@@ -406,5 +457,54 @@
             </div>
         </div>
     </div>
+    <script>
+        const fileInput = document.getElementById("MDAudio");
+
+        // Listen for the change event so we can capture the file
+        fileInput.addEventListener('change', (e) => {
+            // Get a reference to the file
+            const file = e.target.files[0];
+
+            // Encode the file using the FileReader API
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                Json["Audio"] = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+    </script>
+    <script>
+    function calculateDifficulty(chart, rate) {
+        const bpm = chart.BPM * rate;
+        const notes = chart["4Rows"]["Difficulty1"]["Notes"];
+        const numNotes = notes.reduce((acc, laneNotes) => acc + laneNotes.length, 0);
+        const chartLength = notes.reduce((acc, laneNotes) => {
+            if (laneNotes.length === 0) return acc;
+            const lastNote = laneNotes[laneNotes.length - 1];
+            return Math.max(acc, lastNote / bpm);
+        }, 0);
+        const avgNoteSpacing = numNotes > 0 ? chartLength / numNotes : chartLength;
+        const noteSpacingFactor = Math.exp(-avgNoteSpacing / 2); // decay factor
+        const nps = numNotes / chartLength;
+        const normalizedNps = nps / 16.0;
+        const difficulty = Math.sqrt(normalizedNps * noteSpacingFactor);
+        return difficulty;
+    }
+
+    </script>
   </body>
 </html>
