@@ -244,25 +244,32 @@
             // Create the grid cells
         }
 
-        function LoadJson() {
+        async function LoadJson(_Chart) {
 
             //Conver file Json to editor Json
 
             //Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
+            let reader = new FileReader();
+            reader.readAsText(_Chart);
 
-            document.getElementById("MDChartName").value = Json["Name"];
-            document.getElementById("MDArtist").value = Json["SongArtist"];
-            document.getElementById("MDCreator").value = Json["Creator"];
-            document.getElementById("MDBPM").value = Json["BPM"];
-            document.getElementById("MDOffset").value = Json["4Rows"]["Difficulty1"]["Offset"];
-            document.getElementById('audio').src = Json["Audio"];
+            reader.onload = function() {
+                const _chart = JSON.parse(reader.result)
+                document.getElementById("MDChartName").value = _chart["Name"];
+                document.getElementById("MDArtist").value = _chart["SongArtist"];
+                document.getElementById("MDCreator").value = _chart["Creator"];
+                document.getElementById("MDBPM").value = _chart["BPM"];
+                document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
+                document.getElementById('audio').src = _chart["Audio"];
 
-            setTimeout(() => {
-                ReloadChart()
+                document.getElementById("BGBGCenter").src
+
                 setTimeout(() => {
-                    LoadNotes(Json["4Rows"]["Difficulty1"]["Notes"])
-                }, 3000);
-            }, 100);
+                    ReloadChart()
+                    setTimeout(() => {
+                        LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
+                    }, 3000);
+                }, 100);
+            };
         }
 
         function RemoveAllTiles() {
@@ -424,7 +431,7 @@
         <!--<button onclick="JsonToChart()">Load</button>-->
         <label>
             Import chart: 
-            <input type="file" accept=".psdc"></input>
+            <input type="file" onchange="{var ImportedChart = this.files[0]; LoadJson(ImportedChart); UpdateChartJson();}" accept=".psdc"></input>
         </label>
         <hr>
         <label>
@@ -459,6 +466,7 @@
         </div>
     </div>
     <script>
+        // Set Json audio
         const fileInput = document.getElementById("MDAudio");
 
         // Listen for the change event so we can capture the file
@@ -475,36 +483,50 @@
         });
     </script>
     <script>
-    function download(filename, text) {
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        element.setAttribute('download', filename);
+        // Download the chart shown in editor.
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
 
-        element.style.display = 'none';
-        document.body.appendChild(element);
+            element.style.display = 'none';
+            document.body.appendChild(element);
 
-        element.click();
+            element.click();
 
-        document.body.removeChild(element);
-    }
+            document.body.removeChild(element);
+        }
     </script>
     <script>
-    function calculateDifficulty(chart, rate) {
-        const bpm = chart.BPM * rate;
-        const notes = chart["4Rows"]["Difficulty1"]["Notes"];
-        const numNotes = notes.reduce((acc, laneNotes) => acc + laneNotes.length, 0);
-        const chartLength = notes.reduce((acc, laneNotes) => {
-            if (laneNotes.length === 0) return acc;
-            const lastNote = laneNotes[laneNotes.length - 1];
-            return Math.max(acc, lastNote / bpm);
-        }, 0);
-        const avgNoteSpacing = numNotes > 0 ? chartLength / numNotes : chartLength;
-        const noteSpacingFactor = Math.exp(-avgNoteSpacing / 2); // decay factor
-        const nps = numNotes / chartLength;
-        const normalizedNps = nps / 16.0;
-        const difficulty = Math.sqrt(normalizedNps * noteSpacingFactor);
-        return difficulty;
-    }
+        /*
+        Diff calculator
+
+        Jacks > Streams
+        Chord Jacks < Hand steams
+
+        NPS won't directly translate to difficulty
+        20nps handsteams is a lot harder than 20nps quads, they shouldn't be rated the same
+        */
+
+        //Temp diff calculator
+
+        //TODO: Fix difficulty calculator to match the comments above
+        function calculateDifficulty(chart, rate) {
+            const bpm = chart.BPM * rate;
+            const notes = chart["4Rows"]["Difficulty1"]["Notes"];
+            const numNotes = notes.reduce((acc, laneNotes) => acc + laneNotes.length, 0);
+            const chartLength = notes.reduce((acc, laneNotes) => {
+                if (laneNotes.length === 0) return acc;
+                const lastNote = laneNotes[laneNotes.length - 1];
+                return Math.max(acc, lastNote / bpm);
+            }, 0);
+            const avgNoteSpacing = numNotes > 0 ? chartLength / numNotes : chartLength;
+            const noteSpacingFactor = Math.exp(-avgNoteSpacing / 2); // decay factor
+            const nps = numNotes / chartLength;
+            const normalizedNps = nps / 16.0;
+            const difficulty = Math.sqrt(normalizedNps * noteSpacingFactor);
+            return difficulty;
+        }
 
     </script>
   </body>
