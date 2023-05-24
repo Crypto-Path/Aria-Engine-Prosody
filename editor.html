@@ -348,7 +348,7 @@
             image.src = imgUrl;
         }
     </script>
-    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left;">
+    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left; height: 50rem; max-height: 70%; overflow-y: scroll;">
         <div id="Header">
             <p>
                 Mapping
@@ -357,7 +357,7 @@
         <div class = "UIContainer">
             <div>
                 <a>
-                    MetaData:
+                    Mapping Data:
                 </a>
             </div>
             <label>Song: </label>
@@ -372,17 +372,47 @@
                 </select>
                 <input id="MDAudio" onchange="{Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
             </div>
-
-            <label>Chart Title: </label>
-            <input id="MDChartName" onchange="UpdateChartJson()" type="text"> <br>
             <label>BPM: </label>
             <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>
             <label>Offset: </label>
             <input id="MDOffset" onchange="ReloadChart()" type="text"> <br>
+        </div>
+        <div class = "UIContainer">
+            <div>
+                <a>
+                    Preview:
+                </a>
+            </div>
+            <label>Chart Title: </label>
+            <input id="MDChartName" onchange="UpdateChartJson()" type="text"> <br>
             <label>Artist: </label>
             <input id="MDArtist" onchange="UpdateChartJson()" type="text"> <br>
             <label>Creator: </label>
             <input id="MDCreator" onchange="UpdateChartJson()" type="text"> <br>
+
+            <label>Audio Preview: WIP</label>
+            <input id="ChartPreview" onchange="UpdateChartJson()" type="number"> <button onclick="{document.getElementById('ChartPreview').value = (audio.src != null) ? audio.currentTime : 0}">Set Current Time Stamp</button> <br>
+            <label>Icon: WIP </label>
+            <input id="InpIcon" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+            <div class="UIContainer">
+                <div>
+                    <a>
+                        Info Panel WIP
+                    </a>
+                </div>
+                <label>Banner: </label>
+                <input id="InpBanner" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                <label>Description: </label>
+                <span id="InpDesc" class="textarea" role="textbox" contenteditable>
+                            
+                </span> <br>
+                <label>Tags: (Sepparated by space) </label>
+                <span id="InpTags" class="textarea" role="textbox" contenteditable>
+                            
+                </span> <br>
+                <label>Source: </label>
+                <input id="InpSource" onchange="UpdateChartJson()" type="text"> <br>
+            </div>
         </div>
         <div class = "UIContainer">
             <div>
@@ -497,37 +527,6 @@
             document.body.removeChild(element);
         }
     </script>
-    <script>
-        /*
-        Diff calculator
-
-        Jacks > Streams
-        Chord Jacks < Hand steams
-
-        NPS won't directly translate to difficulty
-        20nps handsteams is a lot harder than 20nps quads, they shouldn't be rated the same
-        */
-
-        //Temp diff calculator
-
-        //TODO: Fix difficulty calculator to match the comments above
-        function calculateDifficulty(chart, rate) {
-            const bpm = chart.BPM * rate;
-            const notes = chart["4Rows"]["Difficulty1"]["Notes"];
-            const numNotes = notes.reduce((acc, laneNotes) => acc + laneNotes.length, 0);
-            const chartLength = notes.reduce((acc, laneNotes) => {
-                if (laneNotes.length === 0) return acc;
-                const lastNote = laneNotes[laneNotes.length - 1];
-                return Math.max(acc, lastNote / bpm);
-            }, 0);
-            const avgNoteSpacing = numNotes > 0 ? chartLength / numNotes : chartLength;
-            const noteSpacingFactor = Math.exp(-avgNoteSpacing / 2); // decay factor
-            const nps = numNotes / chartLength;
-            const normalizedNps = nps / 16.0;
-            const difficulty = Math.sqrt(normalizedNps * noteSpacingFactor);
-            return difficulty;
-        }
-
-    </script>
+    <script src="Scripts/DifficultyCalculator.js"></script>
   </body>
 </html>
