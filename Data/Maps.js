@@ -13,6 +13,7 @@ const charts = {
     },
     "4Rows": {
       "Difficulty1": {
+        "PreviewPoint": "13.2043",
         "Map Name": "Novice",
         "Offset": "2.1",
         "Notes": [
@@ -348,13 +349,14 @@ const charts = {
     "Creator":"Cyphe Mercury",
     "BPM":"170",
     "BG": {
-      "BG":"Sprites/Background/BG.png",
-      "Gradient":"Sprites/Background/Gradient.png",
-      "Pattern":"Sprites/Background/Pattern.png",
-      "Center":"Sprites/Background/Center.png"
+      "BG":"Sprites/Background/Cyberspace-Abyss/BG.png",
+      "Gradient":"Sprites/Background/Cyberspace-Abyss/Gradient.png",
+      "Pattern":"Sprites/Background/Cyberspace-Abyss/Pattern.png",
+      "Center":"Sprites/Background/Cyberspace-Abyss/Center.png"
     },
     "4Rows": {
       "Difficulty1": {
+        "PreviewPoint": "42.421026",
         "Map Name":"Expert",
         "Offset":"0",
         "Notes":[
