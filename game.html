@@ -138,7 +138,7 @@
             function Create_Result_Hit_Errors() {
                 console.log("Creating Hit errors");
                 for (let i = 0; i < hitErrors.length; i++) { 
-                    if (i % 50 == 0) {
+                    if (i / 5 == Math.floor(i/5)) {
                         console.log("Progress: " +  Math.round((i / Get_TotalNotes(Judgements))*100)/100 + "%");
                     }
                     const _hitError = hitErrors[i];
@@ -206,89 +206,87 @@
             function HitCheck() {
                 if (playing) { // Checks if the map is playing to avoid being able to hit notes before the game is started
                     for (let i = 0; i < notes.length; i++) { // Checks each row
-                        for (let j = 0; j < notes[i].length; j++) { // Checks each note
-                            note = chart.Get_Poss(i)[j]
-                            PosY = note.Get_Pos()[1];
-                            if (auto) {
-                                if (PosY >= -(hitRange / 120)) { // Aut0 hit range
-                                    if (PosY <= (hitRange)) {
-                                    hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
-                                    if (document.getElementById("OptionRB").checked) {
-                                        Set_BG_Rotation(i)
-                                    }
+                        CheckRow(i)
+                    }
+                }
+            }
+
+            function CheckRow(i) {
+                for (let j = 0; j < notes[i].length; j++) { // Checks each note
+                    NoteID = chart.Get_Poss(i)[0].Get_Id()
+                    note = chart.Get_Poss(i)[0]
+                    PosY = note.Get_Pos()[1];
+                    if (auto) {
+                        if (PosY >= -(hitRange / 120)) { // Aut0 hit range
+                            if (PosY <= (hitRange)) {
+                            hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
+                            if (document.getElementById("OptionRB").checked) {
+                                Set_BG_Rotation(i)
+                            }
+                            HitNote(PosY, HitErrorTime/4, i, "rgb(135,206,235)");
+                            IncreaseCombo(0)
+                            setTimeout(function() {
+                                if (document.getElementById("OptionRB").checked) {
+                                    Set_BG_Rotation(i, false)
+                                }
+                                hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
+                            }, 16000 / ( chart.map["BPM"] * rate));
+                            }
+                            return;
+                        }
+                    }
+                    if (NoteID == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
+                        if (PosY >= - (hitRange / 1.5)) {
+                            ABSY = Math.abs(PosY);
+                            if (ABSY <= (hitRange / JudgementRanges[0])) { // Perfect Plus hit range
+                                if (keys[i]) {
                                     HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
                                     IncreaseCombo(0)
-                                    setTimeout(function() {
-                                        if (document.getElementById("OptionRB").checked) {
-                                            Set_BG_Rotation(i, false)
-                                        }
-                                        hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
-                                    }, 16000 / ( chart.map["BPM"] * rate));
-                                    }
                                     return;
                                 }
                             }
-                            if (chart.Get_Poss(i)[j].Get_Id() == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-                                if (PosY >= - (hitRange / 1.5)) {
-                                    
-                                    if (PosY >= -(hitRange / JudgementRanges[0])) { // Perfect hit range
-                                        if (PosY <= (hitRange / JudgementRanges[0])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
-                                                IncreaseCombo(0)
-                                                return;
-                                            }
-                                        }
-                                    }
 
-                                    if (PosY >= -(hitRange / JudgementRanges[1])) { // Perfect hit range
-                                        if (PosY <= (hitRange / JudgementRanges[1])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(155,206,215)");
-                                                IncreaseCombo(1)
-                                                return;
-                                            }
-                                        }
-                                    }
-
-                                    if (PosY >= -(hitRange / JudgementRanges[2])) { // Good hit range
-                                        if (PosY <= (hitRange / JudgementRanges[2])) {
-                                            if (keys[i]) {
-                                                HitNote(PosY, HitErrorTime, i, "rgb(175,206,195)");
-                                                IncreaseCombo(2)
-                                                return;
-                                            }
-                                        }
-                                    }
-
-
-                                    if (PosY >= -(hitRange / JudgementRanges[3])) { // Good hit range
-                                        if (PosY <= (hitRange / JudgementRanges[3])) {
-                                            if (keys[i]) { // Bad hit range
-                                                HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
-                                                IncreaseCombo(3);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    
-                                    if (keys[i]) { // Miss hit range
-                                        HitNote(PosY, HitErrorTime, i);
-                                        IncreaseCombo(4)
-                                        return;
-                                    }
+                            if (ABSY <= (hitRange / JudgementRanges[1])) { // Perfect hit range
+                                if (keys[i]) {
+                                    HitNote(PosY, HitErrorTime, i, "rgb(155,206,215)");
+                                    IncreaseCombo(1)
+                                    return;
                                 }
-                            } 
-                            if (PosY > (hitRange / 2)) { // If no notes are hit in any of the hit ranges the note misses
+                            }
+
+                            if (ABSY <= (hitRange / JudgementRanges[2])) { // Good hit range
+                                if (keys[i]) {
+                                    HitNote(PosY, HitErrorTime, i, "rgb(175,206,195)");
+                                    IncreaseCombo(2)
+                                    return;
+                                }
+                            }
+
+
+                            if (ABSY <= (hitRange / JudgementRanges[3])) { // Good hit range
+                                if (keys[i]) { // Bad hit range
+                                    HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
+                                    IncreaseCombo(3);
+                                    return;
+                                }
+                            }
+                            
+                            if (keys[i]) { // Miss hit range
                                 HitNote(PosY, HitErrorTime, i);
-                                releasedIdProgress[i] = idProgress[i];
                                 IncreaseCombo(4)
                                 return;
                             }
                         }
+                    } 
+                    if (PosY > (hitRange / 2)) { // If no notes are hit in any of the hit ranges the note misses
+                        HitNote(PosY, HitErrorTime, i);
+                        releasedIdProgress[i] = idProgress[i];
+                        IncreaseCombo(4)
+                        return;
                     }
                 }
             }
+            
 
             function InitChart(_chartData) {
                 chart = LoadChart(_chartData);
@@ -422,7 +420,7 @@
                                 return;
                             }
                             if (!playing) {
-                                location.href = 'index.html';
+                                location.href = 'menu.html';
                             }
                             break
                         case 192: // RESTART MAP
@@ -669,6 +667,7 @@
                 rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
+                document.title = `Prosody - Playing: ${chartMetaData[0]}`
 
                 Resize()
                 playing =  _playing;
@@ -739,7 +738,7 @@
                     <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
                         Restart
                     </button>
-                    <button onclick="{window.location.href='index.html'}" style="width: 5rem; height: 3rem;">
+                    <button onclick="{window.location.href='menu.html'}" style="width: 5rem; height: 3rem;">
                         Exit
                     </button>
                     
