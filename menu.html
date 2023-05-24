@@ -1,0 +1,167 @@
+<html> 
+    <head>
+        <title>
+            Prosody - Menu
+        </title>
+        <link rel="stylesheet" href="CSS/UI.css">
+        <link rel="stylesheet" href="CSS/BG.css">
+        <style>
+            a {
+                font-size: 1rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .SongSelector {
+                display: block;
+                background-color: rgba(0, 0, 0, 0.5);
+                width: 100%;
+                cursor: pointer;
+            }
+            .SongSelector:hover {
+                background-color: rgba(0, 0, 0, 0.75);
+            }
+
+            .miniIcon {
+                background-color: rgba(62, 86, 114, 0.5);
+                border-radius: 15%;
+                width: 0.875rem;
+            }
+
+            .SongBanner {
+                background-image: url('Sprites/Background/BG.png');
+                background-size: 100%;
+                height: 6rem;
+                background-position: center;
+                text-align: left;
+                border-radius: 0 0 1rem 1rem;
+            }
+
+            .BannerImg {
+                margin-top: 2rem;
+            }
+
+            ::-webkit-scrollbar {
+                -webkit-appearance: scrollbartrack-vertical;
+                -webkit-appearance: scrollbarthumb-vertical;
+            }   
+
+            .chartContainer {
+                display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="Data/Maps.js"></script>
+        <div class="bg"></div>
+        <div class="bg bg2"></div>
+        <div class="bg bg3"></div>
+        <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ;height: 95%; width: 37%; float: right;">
+            <div id="TitleMenuContainer" class="UIContainer">
+                <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
+                <button>
+                    Search
+                </button>
+            </div>
+            <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0)">
+            </div>
+        </div>
+        <script>
+
+            // function CreateButton(_mapId) {
+            //     console.log(`Loading map: ${_mapId}`)
+            //     var main = document.createElement("button")
+
+            //     var banner = document.createElement("div")
+            //     var bannerImg = document.createElement("img")
+            //     var bannerTitle = document.createElement("a")
+                
+            //     var info = document.createElement("div")
+            //     var infoStats = document.createElement("p")
+
+            //     info.appendChild(infoStats);
+
+            //     banner.appendChild(bannerImg);
+            //     banner.appendChild(bannerTitle);
+
+            //     main.appendChild(banner);
+            //     main.appendChild(info);
+
+            //     main.classList.add("UIContainer")
+            //     main.classList.add("SongSelector")
+            //     main.onclick = function name(params) {
+            //         localStorage['Chart'] = JSON.stringify(charts[_mapId])
+            //         window.location.href='game.html'
+            //     }
+
+            //     banner.classList.add("SongBanner", "UIContainer")
+            //     bannerImg.classList.add("BannerImg")
+
+            //     bannerImg.src = "Sprites/Icon.png";
+            //     bannerTitle.innerText = charts[_mapId]["Name"]
+
+            //     var au = document.createElement('audio');
+            //     au.src = charts[_mapId]["Audio"]
+            //     au.addEventListener('loadedmetadata', function(){
+            //         infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
+            //     })
+
+            //     info.classList.add("UIContainer")
+
+            //     document.getElementById("SongsContainer").appendChild(main);
+            // }
+
+            function CreateButton(_mapId) {
+                console.log(`Loading map: ${_mapId}`)
+                var main = document.createElement("button")
+                
+                var info = document.createElement("div")
+                var title = document.createElement("a")
+                var other = document.createElement("a")
+
+                main.appendChild(info);
+                info.appendChild(title);
+                info.appendChild(other);
+
+                other.style.fontSize = "0.66rem"
+                
+                main.classList.add("UIContainer")
+                main.classList.add("SongSelector")
+                main.onclick = function name(params) {
+                    this.style.backgroundColor = "rgba(0,0,0,0.2)"
+                    if(this.id == "Selected") {
+                        localStorage['Chart'] = JSON.stringify(charts[_mapId])
+                        window.location.href='game.html'
+                    }
+                    this.id = "Selected"
+                }
+                title.innerText = charts[_mapId]["Name"];
+                other.innerText = "\nArtist: " + charts[_mapId]["SongArtist"] + "By: " + charts[_mapId]["Creator"]
+
+                info.classList.add("UIContainer")
+
+                document.getElementById("SongsContainer").appendChild(main);
+
+            }
+
+            for (var i in charts) {
+                CreateButton(i)
+            }
+        </script>
+        <script>
+            window.onkeydown = function(e) {
+                switch (e.keyCode) {
+                    case 27: 
+                        location.href = 'index.html';
+                        break
+                
+                    default:
+                        console.log(e.keyCode)
+                        break;
+                }
+            }
+        </script>
+    </body>
+</html>
