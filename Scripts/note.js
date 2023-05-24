@@ -6,14 +6,14 @@ class Note {
      * @param {*} y 
      * @param {*} id 
      */
-    constructor(x, y, id, type = 0, length = 1) {
+    constructor(x, y, id/*, type = 0, length = 1*/) {
         this.start_x = x;
         this.start_y = y;
         this.x = this.start_x;
         this.y = this.start_y;
         this.id = id;
-        this.type = type; // 0 - Standard || 1 - Hold
-        this.length = length;
+        //this.type = type; // 0 - Standard || 1 - Hold
+        //this.length = length;
     }
 
     Get_Start_Pos() {
@@ -34,20 +34,20 @@ class Note {
         this.y = pos[1];
     }
 
-    Change_Pos(change) {
-        this.x += change[0];
-        this.y += change[1];
-    }
+    // Change_Pos(change) {
+    //     this.x += change[0];
+    //     this.y += change[1];
+    // }
 
     Get_Id() {
         return this.id;
     }
     
-    Get_Type() {
-        return this.type;
-    }
+    // Get_Type() {
+    //     return this.type;
+    // }
     
-    Get_Length() {
-        return this.length;
-    }
+    // Get_Length() {
+    //     return this.length;
+    // }
 }
