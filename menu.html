@@ -54,10 +54,16 @@
         </style>
     </head>
     <body>
+        
+    <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
         <script src="Data/Maps.js"></script>
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
+        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
+            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
+            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/BG.png"/>
+        </div>
         <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ;height: 95%; width: 37%; float: right;">
             <div id="TitleMenuContainer" class="UIContainer">
                 <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
@@ -130,12 +136,23 @@
                 main.classList.add("UIContainer")
                 main.classList.add("SongSelector")
                 main.onclick = function name(params) {
+                    document.getElementById("BGContainer").style.display = "flex";
+                    document.querySelectorAll('.bg').forEach(e => e.remove());
                     this.style.backgroundColor = "rgba(0,0,0,0.2)"
                     if(this.id == "Selected") {
                         localStorage['Chart'] = JSON.stringify(charts[_mapId])
                         window.location.href='game.html'
                     }
+                    try {
+                        let Deselect = document.getElementById("Selected")
+                        Deselect.id = ""
+                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
+                    } catch (error) { }
                     this.id = "Selected"
+                    document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
+                    document.getElementById("audio").src = charts[_mapId]["Audio"];
+                    document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"]
+                    document.getElementById("audio").play()
                 }
                 title.innerText = charts[_mapId]["Name"];
                 other.innerText = "\nArtist: " + charts[_mapId]["SongArtist"] + "By: " + charts[_mapId]["Creator"]
