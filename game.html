@@ -517,7 +517,7 @@
                 
                 document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos));  console.log("Showing Score Results");
                 document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights)*100000)/1000 + "%";  console.log("Showing Acc Results");
-                document.getElementById("ResultValue").innerText = "WIP";  console.log("Showing Value Results");
+                document.getElementById("ResultValue").innerText = Math.round(Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, rate)*100)/100;  console.log("Showing Value Results");
                 
                 document.getElementById("ResultAuto").innerText = document.getElementById("OptionModAuto").checked;  console.log("Showing Mods");
                 document.getElementById("ResultRate").innerText = "x" + document.getElementById("OptionModRate").value;
@@ -581,7 +581,7 @@
                 }
                 Reload_Chart(); // First reload to avoid errors
 
-                document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;";
+                //document.getElementById("AccText").innerHTML = `&lt;Space to Start&gt;\n${calculateDifficulty(chart.map, rate)}`;
                 setInterval(Update, 1000/240)
                 siteLoaded = true;
             }
@@ -621,7 +621,6 @@
                 }
 
                 SaveOptions(); // Gets and Sets the Options
-                document.getElementById("AccText").innerHTML = "&lt;Space to Start&gt;"; // Visual so people know how to start
                 document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
                 document.getElementById("StatsMenu").style.display = "none"; // Hides result screen
                 document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
@@ -668,6 +667,7 @@
                 chart = null // So chart can be set later and so the previous doesn't interfere with anything
                 Start(chartData, 1); // Generates the map
                 document.title = `Prosody - Playing: ${chartMetaData[0]}`
+                document.getElementById("AccText").innerHTML = `&lt;Space to Start&gt;\n${calculateDifficulty(chart.map, rate)}`; // Visual so people know how to start
 
                 Resize()
                 playing =  _playing;
@@ -720,6 +720,8 @@
             }
 
         </script>
+        
+        <script src="Scripts/DifficultyCalculator.js"></script>
         <div id="PauseMenu" class="modal">
             <div class="modal-content">
                 <p style="font-size: x-large;" >Pause Menu</p>
