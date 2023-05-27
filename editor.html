@@ -135,6 +135,14 @@
 
             //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
             document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
+
+            setTimeout(() => {
+                document.getElementById("FileSizeText").innerText = `${
+                    ((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 / 1024 >= 1) ? Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 / 1024 * 100 ) / 100 + "mb" : Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 * 100 ) / 100 + "kb"
+                } / 5mb \n(${
+                    Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 5242880 * 10000) / 100
+                }% of the size limit taken up)`;
+            }, 1000)
         }
 
         function play() {
@@ -259,9 +267,9 @@
                 document.getElementById("MDCreator").value = _chart["Creator"];
                 document.getElementById("MDBPM").value = _chart["BPM"];
                 document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
-                document.getElementById('audio').src = _chart["Audio"];
+                Json["Audio"] = _chart["Audio"];
 
-                document.getElementById("BGBGCenter").src
+                document.getElementById("BGBGCenter").src = _chart["BG"]["Center"]
 
                 setTimeout(() => {
                     ReloadChart()
@@ -352,7 +360,7 @@
             try {
                 localStorage['Chart'] = JSON.stringify(Json); window.open('game.html', '_blank');
             } catch (error) {
-                window.alert("Audio file size is too large\nTry reducing the kbps of the audio or finding any other means to reduce the file size\n\nSorry for the inconvenience");
+                window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of images (Background, Banner, Icon)\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
             }
         }
     </script>
@@ -476,6 +484,16 @@
             Export chart:
             <button onclick="download(`Chart_${Date.now()}.psdc`,JSON.stringify(Json))">Download Chart</button>
         </label>
+        <div class="UIContainer">
+            <a>
+                Criteria:
+            </a>
+            <div class="UIContainer">
+                <a>
+                    File size: <a id="FileSizeText"></a> / 5mb
+                </a>
+            </div>
+        </div>
     </div>
     
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
