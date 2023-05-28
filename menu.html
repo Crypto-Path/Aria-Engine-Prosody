@@ -51,18 +51,136 @@
             .chartContainer {
                 display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
             }
+
+            .big {
+                font-size: 2rem;
+            }
+
+            .tag {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 25%;
+                margin: 2px;
+            }
+
+            .tab {
+                color: lightskyblue;
+                text-decoration: underline;
+                cursor:pointer;
+            }
         </style>
     </head>
     <body>
-        
-    <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
+    <div class="UIContainer" style="width: 25%; height: 25%; position: absolute; ">
+        <div style="width: 100%; height: 20%;">
+            <img id="InfoBanner" style="width: 100%; height: 80%;" src=""/>
+            <a class="big">
+                Prosody
+            </a>
+        </div> 
+        <audio id="audio" style="position:sticky;top: 100%; float: left;" controls></audio><br>
+    </div>
+    <div style="width: 20%; display: flex; position: absolute; top: 30%; left: 2rem; justify-content: space-evenly;">
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'block';}">All</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
+    </div>
+    <div  class="UIContainer" style="width: 20%; height: auto; position: absolute; top: 31%; ">
+        <div id="AboutPanel" style="display: block;">
+            <div class="UIContainer">
+                <a>
+                    Description:
+                </a>
+                <p id = "description">
+                    Just a simple browser rhythm game
+                </p>
+            </div>
+            <div class="UIContainer" style="overflow-wrap:normal;">
+                <a>
+                    Tags:
+                </a>
+                <br><br>
+                <div id="TagContainer">
+                    <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
+                </div>
+            </div>
+        </div>
+        <div id="InfoPanel" style="display: none;">
+            <div class="UIContainer" style="overflow-wrap:normal;">
+                <br>
+                <a>
+                    Difficulty: 
+                </a>
+                <a id="ChartDifficulty">
+                    ∞
+                </a>
+                <br><br>
+                <a>
+                    Total Notes: 
+                </a>
+                <a id="ChartTTNotes">
+                    ∞
+                </a>
+                <br><br>
+                <a>
+                    BPM: 
+                </a>
+                <a id="ChartBPM">
+                    ∞
+                </a>
+                <br><br>
+                <a>
+                    NPS: 
+                </a>
+                <a id="ChartNPS">
+                    ∞
+                </a>
+            </div>
+            <div class="UIContainer" style="overflow-wrap:normal;">
+                <a>
+                    Artist:
+                </a>
+                <br>
+                <a>
+                    Creator:
+                </a>
+            </div>
+        </div>
+        <div id="ScoresPanel" style="display: none;">
+            WORK IN PROGRESS
+            <br>
+            <a style="font-size: 0.66rem;">
+                Currently only shows contributers to the development of prosody. (Likely not up to date, this is just a placeholder for now)
+            </a>
+            <div class="UIContainer">
+                <div class="score">
+                    <a>
+                        Cyphe Mercury
+                    </a>
+                    <br>
+                    <a style="font-size: 0.7rem;">
+                        Score: [Lead developer]<br>Accuracy: [Mainly weekends]<br>Value: [UX/UI, Art, Music, Script, Gameplay, Charter]
+                    </a>
+                </div>
+                <div class="score">
+                    <a>
+                        Inaji
+                    </a>
+                    <br>
+                    <a style="font-size: 0.7rem;">
+                        Score: [Producer]<br>Accuracy: [The Pathbreaking]<br>Value: [Music]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
         <script src="Data/Maps.js"></script>
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
         <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
             <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/BG.png"/>
+            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png"/>
         </div>
         <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ;height: 95%; width: 37%; float: right;">
             <div id="TitleMenuContainer" class="UIContainer">
@@ -74,6 +192,8 @@
             <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0)">
             </div>
         </div>
+        <script src = "Scripts/statCalculations.js" ></script>
+        <script src="Scripts/DifficultyCalculator.js"></script>
         <script>
 
             // function CreateButton(_mapId) {
@@ -153,11 +273,26 @@
                     document.getElementById("audio").src = charts[_mapId]["Audio"];
                     document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"]
                     document.getElementById("audio").play()
+
+                    document.getElementById("audio").onended = () => {
+                        setTimeout(() => {
+                            document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"];
+                            document.getElementById("audio").play()
+                        },500)
+                    }
+
+                    document.getElementById("audio").oncanplay = () => {
+                        totalNotes = charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][0].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][1].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][2].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][3].length
+                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId]) * 100) / 100
+                        document.getElementById("ChartTTNotes").innerText = totalNotes
+                        document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
+                        document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
+                    }
                 }
                 title.innerText = charts[_mapId]["Name"];
-                other.innerText = "\nArtist: " + charts[_mapId]["SongArtist"] + "By: " + charts[_mapId]["Creator"]
+                other.innerText = `\nArtist: ${charts[_mapId]["SongArtist"]}, By: ${charts[_mapId]["Creator"]}`
 
-                info.classList.add("UIContainer")
+                //info.classList.add("UIContainer")
 
                 document.getElementById("SongsContainer").appendChild(main);
 
