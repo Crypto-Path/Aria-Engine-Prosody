@@ -369,7 +369,7 @@
             try {
                 localStorage['Chart'] = JSON.stringify(Json); window.open('game.html', '_blank');
             } catch (error) {
-                window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of images (Background, Banner, Icon)\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
+                window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of the Background\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
             }
         }
     </script>
@@ -417,16 +417,12 @@
 
             <label>Audio Preview:</label>
             <input id="ChartPreview" onchange="UpdateChartJson()" type="number"> <button onclick="{document.getElementById('ChartPreview').value = (audio.src != null) ? audio.currentTime : 0}">Set Current Time Stamp</button> <br>
-            <label>Icon: WIP </label>
-            <input id="InpIcon" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
             <div class="UIContainer">
                 <div>
                     <a>
                         Info Panel WIP
                     </a>
                 </div>
-                <label>Banner: WIP</label>
-                <input id="InpBanner" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
                 <label>Description: </label>
                 <span id="InpDesc" class="textarea" role="textbox" contenteditable>
                             
