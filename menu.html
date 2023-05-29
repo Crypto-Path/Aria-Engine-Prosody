@@ -68,121 +68,118 @@
                 cursor:pointer;
             }
         </style>
-    </head>
-    <body>
-    <div class="UIContainer" style="width: 25%; height: 25%; position: absolute; ">
-        <div style="width: 100%; height: 20%;">
-            <img id="InfoBanner" style="width: 100%; height: 80%;" src=""/>
-            <a class="big">
-                Prosody
-            </a>
-        </div> 
-        <audio id="audio" style="position:sticky;top: 100%; float: left;" controls></audio><br>
-    </div>
-    <div style="width: 20%; display: flex; position: absolute; top: 30%; left: 2rem; justify-content: space-evenly;">
-        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'block';}">All</a>
-        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
-        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
-        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
-    </div>
-    <div  class="UIContainer" style="width: 20%; height: auto; position: absolute; top: 31%; ">
-        <div id="AboutPanel" style="display: block;">
-            <div class="UIContainer">
-                <a>
-                    Description:
+        </head>
+        <body>
+        <div class="UIContainer" style="width: 25%; background-color: rgba(0, 0, 0, 0);">
+            <div style="width: 100%; height: 20%;">
+                <img id="InfoBanner" style="width: 100%; aspect-ratio : 16 / 9; border-radius: 10px;" src="Sprites/Game.png"/>
+                <a id="Title" class="big">
+                    Prosody
                 </a>
-                <p id = "description">
-                    Just a simple browser rhythm game
-                </p>
-            </div>
-            <div class="UIContainer" style="overflow-wrap:normal;">
-                <a>
-                    Tags:
-                </a>
-                <br><br>
-                <div id="TagContainer">
-                    <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
+            </div> 
+            <audio id="audio" style="position:sticky;top: 200%; float: left; display:none" controls></audio><br>
+        </div>
+        <div style="width: 20%; display: flex; top: 37%; margin-left: 2rem; justify-content: space-evenly;">
+            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">Basic</a>
+            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
+            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
+            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
+        </div>
+        <div  class="UIContainer" style="width: 20%; height: auto; top: 38%; padding-top: 5px; ">
+            <div id="AboutPanel" style="display: block;">
+                <div class="UIContainer">
+                    <a>
+                        Description:
+                    </a>
+                    <p id = "description">
+                        Just a simple browser rhythm game
+                    </p>
+                </div>
+                <div class="UIContainer" style="overflow-wrap:normal;">
+                    <a>
+                        Tags:
+                    </a>
+                    <br><br>
+                    <div id="TagContainer">
+                        <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="InfoPanel" style="display: none;">
-            <div class="UIContainer" style="overflow-wrap:normal;">
-                <br>
-                <a>
-                    Difficulty: 
-                </a>
-                <a id="ChartDifficulty">
-                    ∞
-                </a>
-                <br><br>
-                <a>
-                    Max combo: 
-                </a>
-                <a id="ChartTTNotes">
-                    ∞
-                </a>
-                <br><br>
-                <a>
-                    BPM: 
-                </a>
-                <a id="ChartBPM">
-                    ∞
-                </a>
-                <br><br>
-                <a>
-                    NPS: 
-                </a>
-                <a id="ChartNPS">
-                    ∞
-                </a>
-            </div>
-            <div class="UIContainer" style="overflow-wrap:normal;">
-                <a>
-                    Artist:
-                </a>
-                <br>
-                <a>
-                    Creator:
-                </a>
-            </div>
-        </div>
-        <div id="ScoresPanel" style="display: none;">
-            WORK IN PROGRESS
-            <br>
-            <a style="font-size: 0.66rem;">
-                Currently only shows contributers to the development of prosody. (Likely not up to date, this is just a placeholder for now)
-            </a>
-            <div class="UIContainer">
-                <div class="score">
+            <div id="InfoPanel" style="display: block;">
+                <div class="UIContainer" style="overflow-wrap:normal;">
+                    <br>
                     <a>
-                        Cyphe Mercury
+                        Difficulty: 
+                    </a>
+                    <a id="ChartDifficulty">
+                        ∞
+                    </a>
+                    <br><br>
+                    <a>
+                        Max combo: 
+                    </a>
+                    <a id="ChartTTNotes">
+                        ∞
+                    </a>
+                    <br><br>
+                    <a>
+                        BPM: 
+                    </a>
+                    <a id="ChartBPM">
+                        ∞
+                    </a>
+                    <br><br>
+                    <a>
+                        NPS: 
+                    </a>
+                    <a id="ChartNPS">
+                        ∞
+                    </a>
+                </div>
+                <div class="UIContainer" style="overflow-wrap:normal;">
+                    <a>
+                        Artist:
                     </a>
                     <br>
-                    <a style="font-size: 0.7rem;">
-                        Score: [Lead developer]<br>Accuracy: [Mainly weekends]<br>Value: [UX/UI, Art, Music, Script, Gameplay, Charter]
-                    </a>
-                </div>
-                <div class="score">
                     <a>
-                        Inaji
-                    </a>
-                    <br>
-                    <a style="font-size: 0.7rem;">
-                        Score: [Producer]<br>Accuracy: [The Pathbreaking]<br>Value: [Music]
+                        Creator:
                     </a>
                 </div>
             </div>
+            <div id="ScoresPanel" style="display: none;">
+                WORK IN PROGRESS
+                <br>
+                <a style="font-size: 0.66rem;">
+                    Currently only shows contributers to the development of prosody. (Likely not up to date, this is just a placeholder for now)
+                </a>
+                <div class="UIContainer">
+                    <div class="score">
+                        <a>
+                            Cyphe Mercury
+                        </a>
+                        <br>
+                        <a style="font-size: 0.7rem;">
+                            Score: [Lead developer]<br>Accuracy: [Mainly weekends]<br>Value: [UX/UI, Art, Music, Script, Gameplay, Charter]
+                        </a>
+                    </div>
+                    <div class="score">
+                        <a>
+                            Inaji
+                        </a>
+                        <br>
+                        <a style="font-size: 0.7rem;">
+                            Score: [Producer]<br>Accuracy: [The Pathbreaking]<br>Value: [Music]
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
         <script src="Data/Maps.js"></script>
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
-        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
-            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png"/>
         </div>
-        <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ;height: 95%; width: 37%; float: right;">
+        <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 37%; right: 0; top: 0;">
             <div id="TitleMenuContainer" class="UIContainer">
                 <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
                 <button>
@@ -192,6 +189,10 @@
             <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0)">
             </div>
         </div>
+        
+        <div id="BGContainer" style="position:absolute; top: 0; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
+            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
+            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png"/>
         <script src = "Scripts/statCalculations.js" ></script>
         <script src="Scripts/DifficultyCalculator.js"></script>
         <script>
@@ -270,6 +271,8 @@
                     } catch (error) { }
                     this.id = "Selected"
                     document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
+                    document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
+                    document.getElementById("Title").innerText = charts[_mapId]["Name"]
 
                     // SECTION: Audio
 
