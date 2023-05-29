@@ -178,7 +178,7 @@
         <div class="bg"></div>
         <div class="bg bg2"></div>
         <div class="bg bg3"></div>
-        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
+        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
             <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
             <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png"/>
         </div>
@@ -270,6 +270,9 @@
                     } catch (error) { }
                     this.id = "Selected"
                     document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
+
+                    // SECTION: Audio
+
                     document.getElementById("audio").src = charts[_mapId]["Audio"];
                     document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"]
                     document.getElementById("audio").play()
@@ -281,12 +284,37 @@
                         },500)
                     }
 
+                    // SECTION: Difficulty stats
+
                     document.getElementById("audio").oncanplay = () => {
                         totalNotes = charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][0].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][1].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][2].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][3].length
                         document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId]) * 100) / 100
                         document.getElementById("ChartTTNotes").innerText = totalNotes
                         document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
                         document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
+                    }
+
+                    // SECTION: Description
+
+                    const Desc = charts[_mapId]["Description"]
+                    document.getElementById("description").innerText = (Desc != undefined) ? Desc : "This chart does not have a description!";
+                    
+                    // SECTION: Tags
+                    var tags = document.getElementsByClassName('tag');
+
+                    while(tags[0]) {
+                        tags[0].parentNode.removeChild(tags[0]);
+                    }
+
+                    for (let i = 0; i < charts[_mapId]["Tags"].length; i++) {
+                        
+                        const element = charts[_mapId]["Tags"][i];
+
+                        let tag = document.createElement("a");
+                        tag.innerText = element;
+                        tag.classList.add("tag")
+
+                        document.getElementById("TagContainer").appendChild(tag);
                     }
                 }
                 title.innerText = charts[_mapId]["Name"];
