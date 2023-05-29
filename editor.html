@@ -98,7 +98,9 @@
                     "Offset": 0,
                     "Notes":[[],[],[],[]]
                 }
-            }
+            },
+            "Tags": [],
+            "Description": "???"
         }
 
         // Toggle note placement on click
@@ -135,6 +137,13 @@
 
             //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
             document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
+
+            Json["Description"] = document.getElementById("InpDesc").innerHTML;
+            
+            for (let i = 0; i < document.getElementById("InpTags").innerHTML.split(' ').length; i++) {
+                const element = document.getElementById("InpTags").innerHTML.split(' ')[i];
+                Json["Tags"].push(element);
+            }
 
             setTimeout(() => {
                 document.getElementById("FileSizeText").innerText = `${
@@ -246,7 +255,7 @@
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
-            mapLength = audio.duration
+            mapLength = audio.durationF
 
             AppendTiles(BPM*mapLength);
             // Create the grid cells
@@ -418,11 +427,11 @@
                 </div>
                 <label>Banner: WIP</label>
                 <input id="InpBanner" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                <label>Description: WIP</label>
+                <label>Description: </label>
                 <span id="InpDesc" class="textarea" role="textbox" contenteditable>
                             
                 </span> <br>
-                <label>Tags: WIP(Sepparated by space) </label>
+                <label>Tags: (Sepparated by space) </label>
                 <span id="InpTags" class="textarea" role="textbox" contenteditable>
                             
                 </span> <br>
