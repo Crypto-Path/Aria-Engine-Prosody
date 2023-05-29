@@ -13,11 +13,30 @@
         flex-direction: column;
     }
 
+    #big {
+        aspect-ratio : 1 / 1;
+        width: 30%;
+        font-size: 24px;
+        margin: auto;
+
+        animation-name: expand;
+        animation-duration: 1.5s;
+        animation-delay: 0ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+
     #big-button {
         aspect-ratio : 1 / 1;
         width: 30%;
         font-size: 24px;
         margin: auto;
+
+        animation-name: ping;
+        animation-duration: 0.5s;
+        animation-delay: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
     }
 
     #big-button:hover {
@@ -25,6 +44,27 @@
         transition-duration: 0.15s;
         width: 34.5%;
         cursor: pointer;
+
+        animation-name: rotate;
+        animation-duration: 8s;
+        animation-delay: 0ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+
+    @keyframes rotate {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+    }
+
+    @keyframes ping {
+        from {transform: scale(0.9);}
+        to {transform: scale(1.1);}
+    }
+
+    @keyframes expand {
+        from {transform: scale(0.5);}
+        to {transform: scale(10);}
     }
 
     #top-buttons, #bottom-buttons {
@@ -51,10 +91,11 @@
     .small-button {
         width: 30%;
         height: 90%;
+        font-size: 26px;
     }
 
     button:hover {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.66);
         cursor: pointer;
     }
   </style>
@@ -69,7 +110,10 @@
         <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Button 3</button>
     </div>
 
-    <img id="big-button" onclick="{location.href = 'menu.html'}" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
+    <img id="big-button" onclick="{
+        this.id = 'big'
+        setTimeout(() => {location.href = 'menu.html'},1000)
+        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
 
     <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
         <button class="small-button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
