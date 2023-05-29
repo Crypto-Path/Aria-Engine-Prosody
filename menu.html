@@ -116,7 +116,7 @@
                 </a>
                 <br><br>
                 <a>
-                    Total Notes: 
+                    Max combo: 
                 </a>
                 <a id="ChartTTNotes">
                     ∞
@@ -339,9 +339,10 @@
                 try {
                     (_dir == 1) ? document.getElementById('Selected').nextSibling.click() : document.getElementById('Selected').previousSibling.click()
                 } catch (error) {
-                    if (document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)] != document.getElementById("Selected")) {
-                        document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)].click()
-                    }
+                    (_dir == 1) ? document.getElementById("SongsContainer").children[0].click() : document.getElementById("SongsContainer").children[document.getElementById("SongsContainer").children.length-1].click()
+                    // if (document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)] != document.getElementById("Selected")) {
+                    //     document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)].click()
+                    // }
                 }
             }
         </script>
