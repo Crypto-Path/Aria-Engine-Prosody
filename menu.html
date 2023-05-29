@@ -138,11 +138,15 @@
                 </div>
                 <div class="UIContainer" style="overflow-wrap:normal;">
                     <a>
-                        Artist:
+                        Artist: 
+                    </a>
+                    <a id="ChartArtist">
                     </a>
                     <br>
+                    <a id="ChartCreator">
+                        Creator: 
+                    </a>
                     <a>
-                        Creator:
                     </a>
                 </div>
             </div>
@@ -273,6 +277,8 @@
                     document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
                     document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
                     document.getElementById("Title").innerText = charts[_mapId]["Name"]
+                    document.getElementById("ChartArtist").innerText = charts[_mapId]["SongArtist"]
+                    document.getElementById("ChartCreator").innerText = charts[_mapId]["Creator"]
 
                     // SECTION: Audio
 
