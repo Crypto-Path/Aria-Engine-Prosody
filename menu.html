@@ -258,7 +258,7 @@
                 main.onclick = function name(params) {
                     document.getElementById("BGContainer").style.display = "flex";
                     document.querySelectorAll('.bg').forEach(e => e.remove());
-                    this.style.backgroundColor = "rgba(0,0,0,0.2)"
+                    this.style.backgroundColor = "rgba(127,127,127,127.2)"
                     if(this.id == "Selected") {
                         localStorage['Chart'] = JSON.stringify(charts[_mapId])
                         window.location.href='game.html'
@@ -331,11 +331,43 @@
             }
         </script>
         <script>
+            function getRandomInt(_max) {
+                return Math.floor(Math.random() * _max);
+            }
+
+            function IncDecRementSelection(_dir) {
+                try {
+                    (_dir == 1) ? document.getElementById('Selected').nextSibling.click() : document.getElementById('Selected').previousSibling.click()
+                } catch (error) {
+                    if (document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)] != document.getElementById("Selected")) {
+                        document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)].click()
+                    }
+                }
+            }
+        </script>
+        <script>
+
+
             window.onkeydown = function(e) {
                 switch (e.keyCode) {
                     case 27: 
                         location.href = 'index.html';
-                        break
+                        break;
+                    case 37: // Move selection up
+                        IncDecRementSelection(-1)
+                        break;
+                    case 38: // Move selection up
+                        IncDecRementSelection(-1)
+                        break;
+                    case 39: // Move selection down
+                        IncDecRementSelection(1)
+                        break;
+                    case 40: // Move selection down
+                        IncDecRementSelection(1)
+                        break;
+                    case 13: // Move selection down
+                        document.getElementById('Selected').click()
+                        break;
                 
                     default:
                         console.log(e.keyCode)
