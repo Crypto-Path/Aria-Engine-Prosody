@@ -342,7 +342,7 @@ const charts = {
       }
     },
     "Tags": ["First","Chart","Original","Song"],
-    "Description":"Final itteration (hopefully) of the first chart!\n\n---[Chart Info]---\nContains a bit of everything (Mini-jacks, streams, Etc.)"
+    "Description":"Final itteration (hopefully) of the first chart!\n\n---[Chart Info]---\nContains easy light hand/jumpstreams and some jack chords"
   },
   "2": {
     "Name":"Cyberspace Abyss",
@@ -369,7 +369,7 @@ const charts = {
         ]
       }
     },
-    "Tags": ["4-Letter","Words","Original","Song"],
-    "Description":"Song originally made for a game called \"4-Letter Words\" that can be found on itch.io"
+    "Tags": ["4-Letter","Words","Original","Song","Awkward"],
+    "Description":"Song originally made for a game called \"4-Letter Words\" that can be found on itch.io\n\n---[Chart Info]---\nContains awkward light handstreams and jack chords with trills and jump trills"
   }
 }
