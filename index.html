@@ -20,6 +20,13 @@
         margin: auto;
     }
 
+    #big-button:hover {
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.15s;
+        width: 34.5%;
+        cursor: pointer;
+    }
+
     #top-buttons, #bottom-buttons {
         display: flex;
         justify-content: center;
@@ -34,6 +41,7 @@
 
     #top-buttons {
         top: 0;
+        margin-top: 0;
     }
 
     #bottom-buttons {
@@ -41,7 +49,13 @@
     }
 
     .small-button {
-        margin: 0 10px;
+        width: 30%;
+        height: 90%;
+    }
+
+    button:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
     }
   </style>
 </head>
@@ -50,17 +64,17 @@
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
     <div id="top-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
-        <button class="small-button">Button 1</button>
-        <button class="small-button">Button 2</button>
-        <button class="small-button">Button 3</button>
+        <button class="small-button" style="border-radius: 0.625rem 0 0 0.625rem;">Button 1</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Button 2</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Button 3</button>
     </div>
 
     <img id="big-button" onclick="{location.href = 'menu.html'}" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
 
     <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
-        <button class="small-button" onclick="location.href = 'editor.html'">Editor</button>
-        <button class="small-button">Button 5</button>
-        <button class="small-button">Button 6</button>
+        <button class="small-button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Button 5</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Button 6</button>
     </div>
     </body>
     <script>
