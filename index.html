@@ -94,8 +94,16 @@
         font-size: 26px;
     }
 
+    .button {
+        width: 30%;
+        height: 90%;
+        font-size: 26px;
+        color: #f0f0f0;
+        background-color: rgba(67, 119, 134, 0.33);
+    }
+
     button:hover {
-        background-color: rgba(255, 255, 255, 0.66);
+        background-color: rgba(127, 127, 127, 0.66);
         cursor: pointer;
     }
   </style>
@@ -105,9 +113,9 @@
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
     <div id="top-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
-        <button class="small-button" style="border-radius: 0.625rem 0 0 0.625rem;">Button 1</button>
-        <button class="small-button" style="border-radius: 0 0 0 0;">Button 2</button>
-        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Button 3</button>
+        <button class="small-button" style="border-radius: 0.625rem 0 0 0.625rem;">Download (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Leaderboard (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Account (WIP)</button>
     </div>
 
     <img id="big-button" onclick="{
@@ -116,9 +124,9 @@
         }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
 
     <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
-        <button class="small-button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
-        <button class="small-button" style="border-radius: 0 0 0 0;">Button 5</button>
-        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Button 6</button>
+        <button class="button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Skinner (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Settings (WIP)</button>
     </div>
     </body>
     <script>
