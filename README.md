@@ -25,6 +25,6 @@
  - [x] Map selection
  - [ ] Maps loaded from a server 
  - [x] Mapping 
- - [ ] Uploading maps
+ - [x] Uploading maps
  - [ ] Profiles/Accounts
  - [ ] Leaderboards
