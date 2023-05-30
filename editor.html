@@ -42,6 +42,18 @@
             background-size: contain;
             background-position-x: center;
         }
+
+        .TextButton {
+            background-color: rgba(0, 0, 0, 0.5);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+        }
+
+        .TextButton:hover {
+            background-color: rgba(127, 127, 127, 0.75);
+            transform: scale(1.5);
+            cursor: pointer;
+        }
         
 
         input {
@@ -255,17 +267,19 @@
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
-            mapLength = audio.durationF
+            mapLength = audio.duration
 
             AppendTiles(BPM*mapLength);
-            // Create the grid cells
+            
+            console.log("Reloaded")
         }
 
         async function LoadJson(_Chart) {
 
-            //Conver file Json to editor Json
+            //Convert file Json to editor Json
 
-            //Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
+            console.log("Loading Chart Json")
+
             let reader = new FileReader();
             reader.readAsText(_Chart);
 
@@ -284,6 +298,7 @@
                     ReloadChart()
                     setTimeout(() => {
                         LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
+                        console.log("Loaded Chart Json")
                     }, 3000);
                 }, 100);
             };
@@ -298,6 +313,7 @@
         }
 
         function AppendTiles(_AMNT) {
+            console.log("Creating Tiles")
             for (let i = 0; i < _AMNT; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('grid-cell');
@@ -310,6 +326,7 @@
                 mapEditor.appendChild(cell);
             }
             UpdateTileHeight(BPM)
+            console.log("Created Tiles")
         }
 
         function LoadNotes(_Notes) {
@@ -339,7 +356,8 @@
         window.onkeydown = function(e) {
             switch (e.keyCode) {
                 case 27: 
-                    document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+                    (document.getElementById("HelpMenu").style.display == "block") ? document.getElementById("HelpMenu").style.display = "none" : document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+                    
                     //location.href = 'index.html';
                     break
             
@@ -502,7 +520,170 @@
     </div>
     
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
-    <button id="audio" style="position: absolute; bottom: 0; right: 0; width: 10rem; height:2.5rem;" onclick="Playtest()">Test Chart</button><br>
+    <div style="position: absolute; bottom: 0; right: 0;">
+        <a class="TextButton" onclick="{document.getElementById('HelpMenu').style.display = (document.getElementById('HelpMenu').style.display == 'none') ? 'block' : 'none';}">ⓘ</a>
+        <button style=" width: 10rem; height:2.5rem;" onclick="Playtest()">Test Chart</button><br>
+    </div>
+    
+    <div id="HelpMenu" class="modal" style="display:none; position: absolute; width: 100%; height: 95%;">
+        <div class="modal-content" style=" height: 100%;">
+            <div class="UIContainer" style="background-color: rgba(0, 0, 0, 0.9); width: 97.5%; height: 100%;">
+                <a style="font-size: 26px;">
+                    Help Menu
+                </a>
+                <hr>
+                <div style="display: flex; height: 100%; overflow-y: scroll">
+                    <div class="UIContainer" style="width: 18rem; max-width: 20%;">
+                        <a style="font-size: 26px;">
+                            Keybinds
+                        </a>
+                        <hr>
+                        <p>
+                            Toggle Note: [Left Mouse Click]<br>
+                            Play Audio: [Space Bar]<br>
+                            Scroll: [Mouse Wheel]<br>
+                            Exit editor: [esc]<br>
+                            Exit menus: [esc]
+                        </p>
+                    </div>
+                    <div class="UIContainer" style="width: 38rem; max-width: 50%; height: fit-content;">
+                        <a style="font-size: 26px;">
+                            Patterns
+                        </a>
+                        <hr>
+                        <div id="trills" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Trills.png">
+                                <hr>
+                                Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
+                                <hr>
+                                Jump Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes on the left then 2 notes on the right or vise versa.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
+                                <hr>
+                                Split Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes on the outer sides then 2 notes in the middle or vise versa.
+                                </a>
+                            </div>
+                        </div>
+
+                        <div id="streams" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Stream.png">
+                                <hr>
+                                Stream<br>
+                                <a>
+                                    A pattern of notes aligned so that the next note over (left or right) is a set distance over.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumpsream.png">
+                                <hr>
+                                Jump Streams<br>
+                                <a>
+                                    A pattern of notes alternating like streams back and forth, also 2 notes are on every line that represents some difference in audio.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Handstream.png">
+                                <hr>
+                                Hand Stream<br>
+                                <a>
+                                    (Light)<br>
+                                    Hands with 3 notes inbetween.
+                                </a><br>
+                                <a>
+                                    (Dense)<br>
+                                    Hands with 4 notes inbetween. the middle line has 2, which helps again represent a part of the audio.
+                                </a>
+                            </div>
+                        </div>
+
+                        <div id="jacks" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Hands.png">
+                                <hr>
+                                Hands<br>
+                                <a>
+                                    3 notes every set distance with a different spot open.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Minijacks.png">
+                                <hr>
+                                Mini Jacks<br>
+                                <a>
+                                    Notes that repeat in succession, strung together by 2 to 3 note, with more notes accenting the audio.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Runningman.png">
+                                <hr>
+                                Running Man<br>
+                                <a>
+                                    Jacks on one side and a stream like pattern on the other pinging back and forth.
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="UIContainer" style="width: 26rem; max-width: 30%;">
+                        <a style="font-size: 26px;">
+                            How do I publish a chart
+                        </a>
+                        <hr>
+                        <p>
+                           Lets say you made a chart. All the metadata is filled out. The timing & offset is right. Someone has modded it (Having a someone who makes charts look at the chart and tell you what you should change). It has a background and everything else, and you want it to be played by everyone. Then this is for you. This will explain how one should go about publishing a chart. But before you try publishing it anywhere make sure it meets the criteria.
+                           <br><br>If you've gotten no infomating back on if your chart is worthy or not wait 1 month and try again. If this happens again... I don't know what to tell you..... Try again, again? maybe.
+                        </p>
+                        <br>
+                        <div class="UIContainer">
+                            <br>
+                            <a style="text-align: left;">
+                                Way: #1
+                            </a>
+                            <p style="margin-left: 10%; text-align: left;">
+                                1.) Download your chart.<br>
+                                2.) Join (<a href="">discord</a>).<br>
+                                3.) Post your chart in the charts channel.<br>
+                                4.) Wait. You will be pinged if your chart is considered worthy.
+                            </p>
+                        </div>
+                        <div class="UIContainer">
+                            <br>
+                            <a style="text-align: left;">
+                                Way: #2
+                            </a>
+                            <p style="margin-left: 10%; text-align: left;">
+                                1.) Download your chart.<br>
+                                2.) Email your file to <a href="cyphe371@gmail.com">cyphe371@gmail.com</a>.<br>
+                                3.) Wait. You will be emailed back if your chart is considered worthy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div id="ExitMenu" class="modal" style="display:none; position: absolute; width: 100%;">
         <div class="modal-content">
