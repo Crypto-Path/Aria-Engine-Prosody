@@ -42,6 +42,18 @@
             background-size: contain;
             background-position-x: center;
         }
+
+        .TextButton {
+            background-color: rgba(0, 0, 0, 0.5);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+        }
+
+        .TextButton:hover {
+            background-color: rgba(127, 127, 127, 0.75);
+            transform: scale(1.5);
+            cursor: pointer;
+        }
         
 
         input {
@@ -80,39 +92,46 @@
         let file;
 
         let Json = {
-            "1": {
-                "Name": "???",
-                "Audio": "???",
-                "SongArtist": "???",
-                "Creator": "???",
-                "BPM": 60,
-                "BG": {
-                    "BG":"Sprites/Background/BG.png",
-                    "Gradient":"Sprites/Background/Gradient.png",
-                    "Pattern":"Sprites/Background/Pattern.png",
-                    "Center":"Sprites/Background/Center.png"
-                },
-                "4Rows": {
-                    "Difficulty1": {
-                        "Map Name": "???",
-                        "Offset": 0,
-                        "Notes":[[],[],[],[]]
-                    }
+            "Name": "???",
+            "Audio": "???",
+            "SongArtist": "???",
+            "Creator": "???",
+            "BPM": 60,
+            "BG": {
+                "BG":"Sprites/Background/BG.png",
+                "Gradient":"Sprites/Background/Gradient.png",
+                "Pattern":"Sprites/Background/Pattern.png",
+                "Center":"Sprites/Background/Center.png"
+            },
+            "4Rows": {
+                "Difficulty1": {
+                    "PreviewPoint": "0",
+                    "Map Name": "???",
+                    "Offset": 0,
+                    "Notes":[[],[],[],[]]
                 }
-            }
+            },
+            "Tags": [],
+            "Description": "???"
         }
 
         // Toggle note placement on click
         function toggleNote(event) {
             const cell = event.target;
+            toggleCell(cell);
+        }
+
+        function toggleCell(cell, _loaded = false) {
             cell.classList.toggle('note');
+
             const row = cell.getAttribute('data-row');
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
-            cell.classList.contains('note') ? Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].pop(parseInt(row)/4);
-            console.log(cell)
 
-            Json["1"]["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
+            const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row)/4);
+            cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index,1);
+
+            Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
                 return a - b;
             });
 
@@ -120,16 +139,31 @@
         }
 
         function UpdateChartJson() {
-            try {
-                Json["1"]["Audio"] = document.getElementById("MDPreAudio").value;
-            } catch (error) { }
-            Json["1"]["Name"] = document.getElementById("MDChartName").value;
-            Json["1"]["SongArtist"] = document.getElementById("MDArtist").value;
-            Json["1"]["Creator"] = document.getElementById("MDCreator").value;
-            Json["1"]["BPM"] = document.getElementById("MDBPM").value;
-            Json["1"]["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
+            Json["Audio"] = (document.getElementById("MDPreAudio").value != "Custom") ? document.getElementById("MDPreAudio").value : Json["Audio"];
+            Json["Name"] = document.getElementById("MDChartName").value;
+            Json["SongArtist"] = document.getElementById("MDArtist").value;
+            Json["Creator"] = document.getElementById("MDCreator").value;
+            Json["BPM"] = document.getElementById("MDBPM").value;
+            Json["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
+            Json['4Rows']['Difficulty1']['PreviewPoint'] = document.getElementById("ChartPreview").value;
 
-            document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
+            //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
+            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
+
+            Json["Description"] = document.getElementById("InpDesc").innerHTML;
+            
+            for (let i = 0; i < document.getElementById("InpTags").innerHTML.split(' ').length; i++) {
+                const element = document.getElementById("InpTags").innerHTML.split(' ')[i];
+                Json["Tags"].push(element);
+            }
+
+            setTimeout(() => {
+                document.getElementById("FileSizeText").innerText = `${
+                    ((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 / 1024 >= 1) ? Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 / 1024 * 100 ) / 100 + "mb" : Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 1024 * 100 ) / 100 + "kb"
+                } / 5mb \n(${
+                    Math.round((encodeURI(JSON.stringify(Json)).split(/%..|./).length - 1) / 5242880 * 10000) / 100
+                }% of the size limit taken up)`;
+            }, 1000)
         }
 
         function play() {
@@ -139,12 +173,6 @@
         function pause() {
             audio.pause();
         }
-
-        // Move the grid up or down on scroll
-        document.addEventListener('scroll', function(event) {
-            const deltaY = event.deltaY;
-            offsetY += deltaY/BPM;
-        });
 
         window.onload = function() {
             // Updates the game, basically the play
@@ -222,7 +250,7 @@
         }
 
         addEventListener("wheel", (event) => {
-            audio.currentTime += event.deltaY/50;
+            audio.currentTime += event.deltaY/BPM/audio.duration*10;
         });
         
 
@@ -235,26 +263,45 @@
             audio = document.getElementById("audio");
 
             RemoveAllTiles();
+            Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
             mapLength = audio.duration
 
             AppendTiles(BPM*mapLength);
-            // Create the grid cells
+            
+            console.log("Reloaded")
         }
 
-        function JsonToChart() {
-            Json = JSON.parse(document.getElementById("OptionChartData").innerHTML)
+        async function LoadJson(_Chart) {
 
-            document.getElementById("MDChartName").value = Json["1"]["Name"];
-            document.getElementById("MDArtist").value = Json["1"]["SongArtist"];
-            document.getElementById("MDCreator").value = Json["1"]["Creator"];
-            document.getElementById("MDBPM").value = Json["1"]["BPM"];
-            document.getElementById("MDOffset").value = Json["1"]["4Rows"]["Difficulty1"]["Offset"];
-            ReloadChart();
+            //Convert file Json to editor Json
 
-            LoadNotes(Json["1"]["4Rows"]["Difficulty1"]["Notes"])
+            console.log("Loading Chart Json")
+
+            let reader = new FileReader();
+            reader.readAsText(_Chart);
+
+            reader.onload = function() {
+                const _chart = JSON.parse(reader.result)
+                document.getElementById("MDChartName").value = _chart["Name"];
+                document.getElementById("MDArtist").value = _chart["SongArtist"];
+                document.getElementById("MDCreator").value = _chart["Creator"];
+                document.getElementById("MDBPM").value = _chart["BPM"];
+                document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
+                Json["Audio"] = _chart["Audio"];
+
+                document.getElementById("BGBGCenter").src = _chart["BG"]["Center"]
+
+                setTimeout(() => {
+                    ReloadChart()
+                    setTimeout(() => {
+                        LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
+                        console.log("Loaded Chart Json")
+                    }, 3000);
+                }, 100);
+            };
         }
 
         function RemoveAllTiles() {
@@ -266,6 +313,7 @@
         }
 
         function AppendTiles(_AMNT) {
+            console.log("Creating Tiles")
             for (let i = 0; i < _AMNT; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('grid-cell');
@@ -278,16 +326,22 @@
                 mapEditor.appendChild(cell);
             }
             UpdateTileHeight(BPM)
+            console.log("Created Tiles")
         }
 
-        function LoadNotes(_Rows) {
-            for (let r = 0; r < _Rows.length; r++) {
-                const rows = _Rows[r];
-                for (let i = 0; i < rows.length; i++) {
-                    const col = rows[i];
-                    console.log()
-                    //let tile = document.querySelectorAll("[data-row=" + rows + "],[data-col=" + col + "]")
-                    //tile.classList.contains('note') ? 'on' : 'off';
+        function LoadNotes(_Notes) {
+            console.log("Loading chart")
+            console.log(_Notes)
+            for (let _NoteX = 0; _NoteX < _Notes.length; _NoteX++) { // Cycles threw each lane [],[],[],[]
+                const _XNotes = document.querySelectorAll(`div[data-col='${-_NoteX+3}']`) // Gets all the editor tiles with that lane
+                for (let _NoteY = 0; _NoteY < _Notes[_NoteX].length; _NoteY++) { // Cycles threw all the notes
+                    for (let i = 0; i < _XNotes.length; i++) {
+                        const element = _XNotes[i];
+                        if (element.getAttribute("data-row") == _Notes[_NoteX][_NoteY]*4) {
+                            toggleCell(element)
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -302,7 +356,8 @@
         window.onkeydown = function(e) {
             switch (e.keyCode) {
                 case 27: 
-                    document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+                    (document.getElementById("HelpMenu").style.display == "block") ? document.getElementById("HelpMenu").style.display = "none" : document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+                    
                     //location.href = 'index.html';
                     break
             
@@ -311,8 +366,32 @@
                     break;
             }
         }
+
+        function convertImageToBase64(imgUrl, loc) {
+            const image = new Image();
+            image.crossOrigin='anonymous';
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = image.naturalHeight;
+                canvas.width = image.naturalWidth;
+                ctx.drawImage(image, 0, 0);
+                const dataUrl = canvas.toDataURL();
+                //callback && callback(dataUrl)
+                Json['BG'][loc] = dataUrl;
+            }
+            image.src = imgUrl;
+        }
+
+        function Playtest() {
+            try {
+                localStorage['Chart'] = JSON.stringify(Json); window.open('game.html', '_blank');
+            } catch (error) {
+                window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of the Background\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
+            }
+        }
     </script>
-    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left;">
+    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left; height: 50rem; max-height: 70%; overflow-y: scroll;">
         <div id="Header">
             <p>
                 Mapping
@@ -321,7 +400,7 @@
         <div class = "UIContainer">
             <div>
                 <a>
-                    MetaData:
+                    Mapping Data:
                 </a>
             </div>
             <label>Song: </label>
@@ -329,43 +408,282 @@
             <div class="UIContainer">
                 <label for="songs">Pre-Songs:</label>
 
-                <select id="MDPreAudio" name="songs" onchange="UpdateChartJson()" id="songs">
+                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]] }" id="songs">
                     <option value="Custom">Custom</option>
                     <option value="Audio/Inaji-The_Pathbreaking.mp3">Inaji - The Pathbreaking</option>
                     <option value="Audio/Cyberspace Abyss.mp3">Cyphe Mercury - Cyberspace Abyss</option>
                 </select>
-                <input id="MDAudio" onchange="UpdateChartJson()" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
+                <input id="MDAudio" onchange="{Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
             </div>
-
+            <label>BPM: </label>
+            <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>
+            <label>Offset: </label>
+            <input id="MDOffset" onchange="ReloadChart()" type="text"> <br>
+        </div>
+        <div class = "UIContainer">
+            <div>
+                <a>
+                    Preview:
+                </a>
+            </div>
             <label>Chart Title: </label>
             <input id="MDChartName" onchange="UpdateChartJson()" type="text"> <br>
-            <label>BPM: </label>
-            <input id="MDBPM" onchange="{ReloadChart(); UpdateChartJson()}" type="number" value="60"> <br>
-            <label>Offset: </label>
-            <input id="MDOffset" onchange="{ReloadChart(); UpdateChartJson()}" type="text"> <br>
             <label>Artist: </label>
             <input id="MDArtist" onchange="UpdateChartJson()" type="text"> <br>
             <label>Creator: </label>
             <input id="MDCreator" onchange="UpdateChartJson()" type="text"> <br>
+
+            <label>Audio Preview:</label>
+            <input id="ChartPreview" onchange="UpdateChartJson()" type="number"> <button onclick="{document.getElementById('ChartPreview').value = (audio.src != null) ? audio.currentTime : 0}">Set Current Time Stamp</button> <br>
+            <div class="UIContainer">
+                <div>
+                    <a>
+                        Info Panel WIP
+                    </a>
+                </div>
+                <label>Description: </label>
+                <span id="InpDesc" class="textarea" role="textbox" contenteditable>
+                            
+                </span> <br>
+                <label>Tags: (Sepparated by space) </label>
+                <span id="InpTags" class="textarea" role="textbox" contenteditable>
+                            
+                </span> <br>
+                <label>Source: WIP</label>
+                <input id="InpSource" onchange="UpdateChartJson()" type="text"> <br>
+            </div>
+        </div>
+        <div class = "UIContainer">
+            <div>
+                <a>
+                    Background:
+                </a>
+            </div>
+            <label>Main Background:
+                <input id="BGBG" onchange="{var BG = blob.createObjectURL(this.files[0]); document.getElementById('BG').src = BG; convertImageToBase64(BG, 'BG'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+            </label>
+            <label>BG Twist: (Optional)</label>
+            <div class="UIContainer">
+                (Feature may be removed in the future)
+                <br>
+                <label>
+                    Center: 
+                    <input id="BGBGCenter" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+                <label>
+                    Pattern: 
+                    <input id="BGBGPattern" onchange="{var BGPattern = blob.createObjectURL(this.files[0]); document.getElementById('BGPattern').src = BGPattern; convertImageToBase64(BGPattern, 'Pattern'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+                <label>
+                    Gradient: 
+                    <input id="BGBGGradient" onchange="{var BGGradient = blob.createObjectURL(this.files[0]); document.getElementById('BGGradient').src = BGGradient; convertImageToBase64(BGGradient, 'Gradient'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
+                </label>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <div>
+                <a>
+                    Difficulty:
+                </a>
+            </div>
+            <br>
+            <label id="ChartDiff"></label>
         </div>
     </div>
     
     <div id="MappingData" class="UIContainer"  style="width:20%; float: right;">
         <div>
             <p>
-                Map JSON:
+                Export/Import:
             </p>
-            <hr>
-            Loading maps into editor not supported yet
         </div>
-        <span id="OptionChartData" class="textarea" role="textbox">
-            
-        </span>
         <!--<button onclick="JsonToChart()">Load</button>-->
-        <button onclick="{navigator.clipboard.writeText(getElementById('OptionChartData').innerHTML)}">Copy</button>
+        <label>
+            Import chart: 
+            <input type="file" onchange="{var ImportedChart = this.files[0]; LoadJson(ImportedChart); UpdateChartJson();}" accept=".psdc"></input>
+        </label>
+        <hr>
+        <label>
+            Export chart:
+            <button onclick="download(`Chart_${Date.now()}.psdc`,JSON.stringify(Json))">Download Chart</button>
+        </label>
+        <div class="UIContainer">
+            <a>
+                Criteria:
+            </a>
+            <div class="UIContainer">
+                <a>
+                    File size: <a id="FileSizeText"></a> / 5mb
+                </a>
+            </div>
+        </div>
     </div>
     
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
+    <div style="position: absolute; bottom: 0; right: 0;">
+        <a class="TextButton" onclick="{document.getElementById('HelpMenu').style.display = (document.getElementById('HelpMenu').style.display == 'none') ? 'block' : 'none';}">ⓘ</a>
+        <button style=" width: 10rem; height:2.5rem;" onclick="Playtest()">Test Chart</button><br>
+    </div>
+    
+    <div id="HelpMenu" class="modal" style="display:none; position: absolute; width: 100%; height: 95%;">
+        <div class="modal-content" style=" height: 100%;">
+            <div class="UIContainer" style="background-color: rgba(0, 0, 0, 0.9); width: 97.5%; height: 100%;">
+                <a style="font-size: 26px;">
+                    Help Menu
+                </a>
+                <hr>
+                <div style="display: flex; height: 100%; overflow-y: scroll">
+                    <div class="UIContainer" style="width: 18rem; max-width: 20%;">
+                        <a style="font-size: 26px;">
+                            Keybinds
+                        </a>
+                        <hr>
+                        <p>
+                            Toggle Note: [Left Mouse Click]<br>
+                            Play Audio: [Space Bar]<br>
+                            Scroll: [Mouse Wheel]<br>
+                            Exit editor: [esc]<br>
+                            Exit menus: [esc]
+                        </p>
+                    </div>
+                    <div class="UIContainer" style="width: 38rem; max-width: 50%; height: fit-content;">
+                        <a style="font-size: 26px;">
+                            Patterns
+                        </a>
+                        <hr>
+                        <div id="trills" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Trills.png">
+                                <hr>
+                                Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
+                                <hr>
+                                Jump Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes on the left then 2 notes on the right or vise versa.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
+                                <hr>
+                                Split Trills<br>
+                                <a>
+                                    A repeating pattern alternating between 2 notes on the outer sides then 2 notes in the middle or vise versa.
+                                </a>
+                            </div>
+                        </div>
+
+                        <div id="streams" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Stream.png">
+                                <hr>
+                                Stream<br>
+                                <a>
+                                    A pattern of notes aligned so that the next note over (left or right) is a set distance over.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Jumpsream.png">
+                                <hr>
+                                Jump Streams<br>
+                                <a>
+                                    A pattern of notes alternating like streams back and forth, also 2 notes are on every line that represents some difference in audio.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Handstream.png">
+                                <hr>
+                                Hand Stream<br>
+                                <a>
+                                    (Light)<br>
+                                    Hands with 3 notes inbetween.
+                                </a><br>
+                                <a>
+                                    (Dense)<br>
+                                    Hands with 4 notes inbetween. the middle line has 2, which helps again represent a part of the audio.
+                                </a>
+                            </div>
+                        </div>
+
+                        <div id="jacks" style="display: flex;">
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Hands.png">
+                                <hr>
+                                Hands<br>
+                                <a>
+                                    3 notes every set distance with a different spot open.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Minijacks.png">
+                                <hr>
+                                Mini Jacks<br>
+                                <a>
+                                    Notes that repeat in succession, strung together by 2 to 3 note, with more notes accenting the audio.
+                                </a>
+                            </div>
+
+                            <div class="UIContainer">
+                                <img style="width: 100%;" src="Sprites/Guide/Runningman.png">
+                                <hr>
+                                Running Man<br>
+                                <a>
+                                    Jacks on one side and a stream like pattern on the other pinging back and forth.
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="UIContainer" style="width: 26rem; max-width: 30%;">
+                        <a style="font-size: 26px;">
+                            How do I publish a chart
+                        </a>
+                        <hr>
+                        <p>
+                           Lets say you made a chart. All the metadata is filled out. The timing & offset is right. Someone has modded it (Having a someone who makes charts look at the chart and tell you what you should change). It has a background and everything else, and you want it to be played by everyone. Then this is for you. This will explain how one should go about publishing a chart. But before you try publishing it anywhere make sure it meets the criteria.
+                           <br><br>If you've gotten no infomating back on if your chart is worthy or not wait 1 month and try again. If this happens again... I don't know what to tell you..... Try again, again? maybe.
+                        </p>
+                        <br>
+                        <div class="UIContainer">
+                            <br>
+                            <a style="text-align: left;">
+                                Way: #1
+                            </a>
+                            <p style="margin-left: 10%; text-align: left;">
+                                1.) Download your chart.<br>
+                                2.) Join (<a href="">discord</a>).<br>
+                                3.) Post your chart in the charts channel.<br>
+                                4.) Wait. You will be pinged if your chart is considered worthy.
+                            </p>
+                        </div>
+                        <div class="UIContainer">
+                            <br>
+                            <a style="text-align: left;">
+                                Way: #2
+                            </a>
+                            <p style="margin-left: 10%; text-align: left;">
+                                1.) Download your chart.<br>
+                                2.) Email your file to <a href="cyphe371@gmail.com">cyphe371@gmail.com</a>.<br>
+                                3.) Wait. You will be emailed back if your chart is considered worthy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div id="ExitMenu" class="modal" style="display:none; position: absolute; width: 100%;">
         <div class="modal-content">
@@ -389,5 +707,38 @@
             </div>
         </div>
     </div>
+    <script>
+        // Set Json audio
+        const fileInput = document.getElementById("MDAudio");
+
+        // Listen for the change event so we can capture the file
+        fileInput.addEventListener('change', (e) => {
+            // Get a reference to the file
+            const file = e.target.files[0];
+
+            // Encode the file using the FileReader API
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                Json["Audio"] = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        // Download the chart shown in editor.
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+    </script>
+    <script src="Scripts/DifficultyCalculator.js"></script>
   </body>
 </html>

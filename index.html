@@ -1,140 +1,135 @@
-<html> 
-    <head>
-        <title>
-            Prosody - Menu
-        </title>
-        <link rel="stylesheet" href="CSS/UI.css">
-        <link rel="stylesheet" href="CSS/BG.css">
-        <style>
-            a {
-                font-size: 2rem;
-            }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prosody</title>
+  <link rel="stylesheet" href="CSS/UI.css">
+  <link rel="stylesheet" href="CSS/BG.css">
+  <style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-            p {
-                font-size: 1rem;
-            }
+    #big {
+        aspect-ratio : 1 / 1;
+        width: 30%;
+        font-size: 24px;
+        margin: auto;
 
-            .SongSelector {
-                display: block;
-                background-color: rgba(0, 0, 0, 0.5);
-                width: 20rem;
-                max-width: 45%;
-                cursor: pointer;
-            }
-            .SongSelector:hover {
-                background-color: rgba(0, 0, 0, 0.75);
-            }
+        animation-name: expand;
+        animation-duration: 1.5s;
+        animation-delay: 0ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
 
-            .miniIcon {
-                background-color: rgba(62, 86, 114, 0.5);
-                border-radius: 15%;
-                width: 0.875rem;
-            }
+    #big-button {
+        aspect-ratio : 1 / 1;
+        width: 30%;
+        font-size: 24px;
+        margin: auto;
 
-            .SongBanner {
-                background-image: url('Sprites/Background/BG.png');
-                background-size: 100%;
-                height: 6rem;
-                background-position: center;
-                text-align: left;
-                border-radius: 0 0 1rem 1rem;
-            }
+        animation-name: ping;
+        animation-duration: 0.5s;
+        animation-delay: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
 
-            .BannerImg {
-                margin-top: 2rem;
-            }
+    #big-button:hover {
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.15s;
+        width: 34.5%;
+        cursor: pointer;
 
-            ::-webkit-scrollbar {
-                -webkit-appearance: scrollbartrack-vertical;
-                -webkit-appearance: scrollbarthumb-vertical;
-            }   
+        animation-name: rotate;
+        animation-duration: 8s;
+        animation-delay: 0ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
 
-            .chartContainer {
-                display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
-            }
-        </style>
-    </head>
-    <body>
-        <script src="Data/Maps.js"></script>
-        <div class="bg"></div>
-        <div class="bg bg2"></div>
-        <div class="bg bg3"></div>
-        <div id="Container" class = "UIContainer" style="height: 95%;">
-            <div id="TitleMenuContainer" class="UIContainer">
-                <a>
-                    Song Select
-                </a>
-                <div class="UIContainer" style="display: flex;">
-                    <div class="UIContainer" style="float:left; width: 20%;">
-                        <button style="width: 75%; height: 3rem; font-size: 32px; display: inline-flex;" onclick="window.location.href='editor.html'">
-                            <img src="Sprites/Notes/Note_Hit_4.png" style="width:30%" />
-                            Editor
-                        </button>
-                    </div> 
-                    <div class="UIContainer">
-                        <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
-                        <button>
-                            Search
-                        </button>
-                    </div> 
-                    <div class="UIContainer" style="float:right; width: 20%;">
-                        <button>
-                            Profile
-                        </button>
-                    </div> 
-                </div>
-            </div>
-            <div id="SongsContainer" class="UIContainer chartContainer">
-            </div>
-        </div>
-        <script>
+    @keyframes rotate {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+    }
 
-            function CreateButton(_mapId) {
-                console.log(`Loading map: ${_mapId}`)
-                var main = document.createElement("button")
+    @keyframes ping {
+        from {transform: scale(0.9);}
+        to {transform: scale(1.1);}
+    }
 
-                var banner = document.createElement("div")
-                var bannerImg = document.createElement("img")
-                var bannerTitle = document.createElement("a")
-                
-                var info = document.createElement("div")
-                var infoStats = document.createElement("p")
+    @keyframes expand {
+        from {transform: scale(0.5);}
+        to {transform: scale(10);}
+    }
 
-                info.appendChild(infoStats);
+    #top-buttons, #bottom-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 5rem;
+        background-color: #f0f0f0;
+        position: fixed;
+        left: 0;
+        margin-left: 0;
+    }
 
-                banner.appendChild(bannerImg);
-                banner.appendChild(bannerTitle);
+    #top-buttons {
+        top: 0;
+        margin-top: 0;
+    }
 
-                main.appendChild(banner);
-                main.appendChild(info);
+    #bottom-buttons {
+        bottom: 0;
+    }
 
-                main.classList.add("UIContainer")
-                main.classList.add("SongSelector")
-                main.onclick = function name(params) {
-                    localStorage['Chart'] = JSON.stringify(charts[_mapId])
-                    window.location.href='game.html'
-                }
+    .small-button {
+        width: 30%;
+        height: 90%;
+        font-size: 26px;
+    }
 
-                banner.classList.add("SongBanner", "UIContainer")
-                bannerImg.classList.add("BannerImg")
+    .button {
+        width: 30%;
+        height: 90%;
+        font-size: 26px;
+        color: #f0f0f0;
+        background-color: rgba(67, 119, 134, 0.33);
+    }
 
-                bannerImg.src = "Sprites/Icon.png";
-                bannerTitle.innerText = charts[_mapId]["Name"]
+    button:hover {
+        background-color: rgba(127, 127, 127, 0.66);
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+    <div id="top-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
+        <button class="small-button" style="border-radius: 0.625rem 0 0 0.625rem;">Download (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Leaderboard (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Account (WIP)</button>
+    </div>
 
-                var au = document.createElement('audio');
-                au.src = charts[_mapId]["Audio"]
-                au.addEventListener('loadedmetadata', function(){
-                    infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
-                })
+    <img id="big-button" onclick="{
+        this.id = 'big'
+        setTimeout(() => {location.href = 'menu.html'},1000)
+        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
 
-                info.classList.add("UIContainer")
-
-                document.getElementById("SongsContainer").appendChild(main);
-            }
-
-            for (var i in charts) {
-                CreateButton(i)
-            }
-        </script>
+    <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
+        <button class="button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
+        <button class="small-button" style="border-radius: 0 0 0 0;">Skinner (WIP)</button>
+        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Settings (WIP)</button>
+    </div>
     </body>
+    <script>
+        
+    </script>
 </html>
