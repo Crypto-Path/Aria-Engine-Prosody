@@ -244,6 +244,18 @@
             //     document.getElementById("SongsContainer").appendChild(main);
             // }
 
+            id = 0
+            function Update() {
+                try {
+                    const bps = charts[id]["BPM"] / 60
+                    const off = charts[id]["4Rows"]["Difficulty1"]["Offset"] / charts[id]["BPM"]
+                    document.getElementById("BGImage").style.transform = `Scale(${1.1 + (((-document.getElementById("audio").currentTime - off) % (1 / bps)) * bps / 20)})`
+                } catch (error) {
+                    
+                }
+            }
+            setInterval(Update, 1000/60)
+
             function CreateButton(_mapId) {
                 console.log(`Loading map: ${_mapId}`)
                 var main = document.createElement("button")
@@ -296,6 +308,7 @@
                     // SECTION: Difficulty stats
 
                     document.getElementById("audio").oncanplay = () => {
+                        id = _mapId
                         totalNotes = charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][0].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][1].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][2].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][3].length
                         document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId]) * 100) / 100
                         document.getElementById("ChartTTNotes").innerText = totalNotes
