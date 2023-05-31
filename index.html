@@ -118,16 +118,45 @@
         <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Account (WIP)</button>
     </div>
 
-    <img id="big-button" onclick="{
-        this.id = 'big'
-        setTimeout(() => {location.href = 'menu.html'},1000)
-        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
-
     <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
         <button class="button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
         <button class="small-button" style="border-radius: 0 0 0 0;">Skinner (WIP)</button>
         <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Settings (WIP)</button>
     </div>
+    <div class="UIContainer" style="position: absolute; top: 15%; height: 66%; width: 30%;">
+        <a style="font-size: 26px;">
+            Chang log
+        </a>
+        <hr>
+        <div class="UIContainer">
+            <a>
+                Version: Omega Initialization<br>
+                Omega Ωv0.1.1 (3.8.2023)
+            </a>
+            <hr>
+            <div style="text-align: left;">
+                <a style="white-space: pre-wrap;">
+Added:
+    - Playable gameplay
+    - 2 Mods
+        - Auto Mod (Plays the map for you)
+        - Rate Mod (Speed at which the map plays)
+    - Key mapping
+    - Reloading Map (can also quick reload with ` key)
+    - Playfield Offset option
+    - Scroll speed adjuster
+    - Hit error bar
+    - Level percent tracker
+    - Temp scoreboard with no real purpose other than being able to compare your score to my best
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <img id="big-button" onclick="{
+        this.id = 'big'
+        setTimeout(() => {location.href = 'menu.html'},1000)
+        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
     </body>
     <script>
         
