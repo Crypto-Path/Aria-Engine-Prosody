@@ -87,6 +87,8 @@
 
         let file;
 
+        let editorHasTiles = false;
+
         let Json = {
             "Name": "???",
             "Audio": "???",
@@ -140,6 +142,7 @@
         }
 
         function UpdateChartJson() {
+            console.log("Updating Chart Json");
             Json["Audio"] = (document.getElementById("MDPreAudio").value != "Custom") ? document.getElementById("MDPreAudio").value : Json["Audio"];
             Json["Name"] = document.getElementById("MDChartName").value;
             Json["SongArtist"] = document.getElementById("MDArtist").value;
@@ -153,9 +156,13 @@
 
             Json["Description"] = document.getElementById("InpDesc").innerHTML;
 
+            Json["Tags"] = [];
             for (let i = 0; i < document.getElementById("InpTags").innerHTML.split(' ').length; i++) {
                 const element = document.getElementById("InpTags").innerHTML.split(' ')[i];
-                Json["Tags"].push(element);
+                if (element != ' ' || element != "" || element != "\\n" || element != null || element != ``) {
+                    console.log(element)
+                    Json["Tags"].push(element);
+                }
             }
 
             setTimeout(() => {
@@ -176,6 +183,7 @@
         }
 
         window.onload = function() {
+            console.log("Loading Editor...");
             // Updates the game, basically the play
             function Update() {
                 if (audio != null) {
@@ -208,6 +216,7 @@
             });
 
             document.getElementById('MDPreAudio').addEventListener('change', function() {
+                console.log("Detecting New Audio");
                 console.log(`${this.value}`);
                 console.log('File name: ' + this.value);
                 file = this.value;
@@ -258,7 +267,11 @@
         }
 
         addEventListener("wheel", (event) => {
-            audio.currentTime += event.deltaY / BPM / audio.duration * 10;
+            try {
+                audio.currentTime += event.deltaY / BPM / audio.duration * 10;
+            } catch (error) {
+
+            }
         });
 
 
@@ -266,32 +279,43 @@
 
         function ReloadChart() {
             if (audio != 0) {
-                pause()
+                pause();
             }
             audio = document.getElementById("audio");
+            console.log("Audio Set");
 
             RemoveAllTiles();
+            console.log("Removing all tiles");
             Json['4Rows']['Difficulty1']['Notes'] = [
                 [],
                 [],
                 [],
                 []
-            ]
+            ];
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
-            mapLength = audio.duration
+            setTimeout(() => {
+                mapLength = audio.duration;
+                console.log("audio:");
+                console.log(audio);
+                console.log("Editor data set");
 
-            AppendTiles(BPM * mapLength);
+                AppendTiles(BPM * mapLength);
+                console.log(BPM);
+                console.log(mapLength);
+                console.log(`Appended ${BPM * mapLength} Notes`);
 
-            console.log("Reloaded")
+                console.log(`Reloaded ${mapEditor.childElementCount}`);
+            }, 100);
         }
 
         async function LoadJson(_Chart) {
+            console.log("Loading Chart Json");
 
             //Convert file Json to editor Json
 
-            console.log("Loading Chart Json")
+            console.log("Loading Chart Json");
 
             let reader = new FileReader();
             reader.readAsText(_Chart);
@@ -305,6 +329,31 @@
                 document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
                 Json["Audio"] = _chart["Audio"];
 
+                document.getElementById("audio").src = _chart["Audio"]
+
+                // switch (chart["Name"]) {
+                //     case "Inaji-The_Pathbreaking":
+                //         document.getElementById("MDAudio").src =_chart["Audio"]
+                //         break;
+                //     case "Cyberspace Abyss":
+                //         document.getElementById("MDChartName").value = "Cyberspace Abyss"
+                //         document.getElementById("MDBPM").value = 170;
+                //         BPM = 170;
+                //         document.getElementById("MDOffset").value = 0;
+                //         document.getElementById("MDArtist").value = "Cyphe Mercury";
+                //         break;
+                //     case "X3ll3n-Spatium_Cursu":
+                //         document.getElementById("MDChartName").value = "Spatium Cursu"
+                //         document.getElementById("MDBPM").value = 170;
+                //         BPM = 170;
+                //         document.getElementById("MDOffset").value = 0;
+                //         document.getElementById("MDArtist").value = "X3LL3N";
+                //         break;
+
+                //     default:
+                //         break;
+                // }
+
                 document.getElementById("BGBGCenter").src = _chart["BG"]["Center"]
 
                 setTimeout(() => {
@@ -312,7 +361,7 @@
                     setTimeout(() => {
                         LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
                         console.log("Loaded Chart Json")
-                    }, 3000);
+                    }, 10000);
                 }, 100);
             };
         }
@@ -326,8 +375,9 @@
         }
 
         function AppendTiles(_AMNT) {
-            console.log("Creating Tiles")
+            console.log(`Creating ${_AMNT} Tiles`)
             for (let i = 0; i < _AMNT; i++) {
+                console.log(i)
                 const cell = document.createElement('div');
                 cell.classList.add('grid-cell');
                 cell.addEventListener('click', toggleNote);
@@ -461,9 +511,7 @@
                             
                 </span> <br>
                 <label>Tags: (Sepparated by space) </label>
-                <span id="InpTags" class="textarea" role="textbox" contenteditable>
-                            
-                </span> <br>
+                <span id="InpTags" class="textarea" role="textbox" contenteditable></span> <br>
                 <label>Source: WIP</label>
                 <input id="InpSource" onchange="UpdateChartJson()" type="text"> <br>
             </div>
