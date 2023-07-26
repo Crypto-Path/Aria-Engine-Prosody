@@ -15,22 +15,23 @@ function UpdateNotes(_chart) {
         for (let j = 0; j < notes[i].length; j++) {
             note = _chart.Get_Poss(i)[j] // Gets note information
             noteObject = notes[i][j].style;
-            noteObject.left = (note.Get_Pos()[0] - StartPos[0])/16.66 * window.innerWidth / 1920  + "rem"; // Sets the X location
-            noteObject.top = (note.Get_Pos()[1] * ( scrollSpeed * window.innerWidth / 1920 * 80 ) - StartPos[1])/16  + "rem"; // Sets the Y location
+            noteObject.left = (note.Get_Pos()[0] - StartPos[0]) / 16.66 * window.innerWidth / 1920 + "rem"; // Sets the X location
+            offset = ((chart.Get_Audio_Time() == 0) ? (Date.now() - StartTime) / 1000 - 3 : 0);
+            noteObject.top = ((note.Get_Pos()[1] + offset) * (scrollSpeed * window.innerWidth / 1920 * 80) - StartPos[1]) / 16 + "rem"; // Sets the Y location
             noteObject.width = 8 * window.innerWidth / 1920 + "rem"
             noteObject.height = noteObject.width
         }
-    }  
+    }
 }
 
 function CreateNote(_chart, row, index) {
     noteImage = document.createElement("img"); // Creates image object
     notes[row][index] = noteImage; // Set visual notes array to image object
-    noteImage.src = "Sprites/Notes/Note_Hit_"+(row+1)+".png"; // Sets the image's image
+    noteImage.src = "Sprites/Notes/Note_Hit_" + (row + 1) + ".png"; // Sets the image's image
     noteImage.classList.add('note'); // Sets the class for the look of the object
     note = _chart.Get_Poss(row)[index] // Gets note information
-    noteImage.style.left = (note.x - StartPos[0])/18 + "rem"; // Sets the X location
-    noteImage.style.top = (note.y * ( scrollSpeed / 2 ) - StartPos[1])/16 + "rem"; // Sets the Y location
+    noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
+    noteImage.style.top = (note.y * (scrollSpeed / 2) - StartPos[1]) / 16 + "rem"; // Sets the Y location
     noteImage.id = tempNoteId; // Debug Purposes
     tempNoteId++; // Debug Purposes
 
