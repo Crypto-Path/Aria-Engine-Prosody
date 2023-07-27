@@ -16,7 +16,11 @@ function UpdateNotes(_chart) {
             note = _chart.Get_Poss(i)[j] // Gets note information
             noteObject = notes[i][j].style;
             noteObject.left = (note.Get_Pos()[0] - StartPos[0]) / 16.66 * window.innerWidth / 1920 + "rem"; // Sets the X location
-            offset = ((chart.Get_Audio_Time() == 0) ? (Date.now() - StartTime) / 1000 - 3 : 0);
+            getOffset = false;
+            try {
+                getOffset = (chart.Get_Audio_Time() == 0);
+            } catch (error) {}
+            offset = (getOffset ? (Date.now() - StartTime) / 1000 - 3 : 0);
             noteObject.top = ((note.Get_Pos()[1] + offset) * (scrollSpeed * window.innerWidth / 1920 * 80) - StartPos[1]) / 16 + "rem"; // Sets the Y location
             noteObject.width = 8 * window.innerWidth / 1920 + "rem"
             noteObject.height = noteObject.width

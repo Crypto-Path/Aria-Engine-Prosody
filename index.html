@@ -138,18 +138,217 @@
         <button class="small-button" style="border-radius: 0 0 0 0;">Skinner (WIP)</button>
         <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Settings (WIP)</button>
     </div>
-    <div class="UIContainer" style="position: absolute; top: 15%; height: 66%; width: 30%;">
+    <div class="UIContainer" style="position: absolute; top: 15%; height: 66%; width: 30%; left: 63%; overflow-y: scroll;">
         <a style="font-size: 26px;">
             Chang log
         </a>
         <hr>
         <div class="UIContainer">
             <a>
+                Version: Minor improvements<br>
+                Epsilon εv0.6.150 (5.29.2023)
+            </a>
+            <hr>
+            <div style="text-align: left; margin-left: 1rem;">
+                <a style="white-space: pre-wrap;">
+Whats new?
+
+// Index.html
+    - Main Menu
+        - Nicer looking song selection button (the main button)
+            - Lights up even more when hovered over
+        - Changelog (shows newest and all previous updates)
+
+// Song select
+    - Less static feeling menu
+        - Background pulses to BPM
+        - Title hase dark transparent background
+    - Added back button to return to the main menu
+    - Two new songs to play until I get songs to load from a server
+        - Spatium Cursu
+        - Bad Apple!!
+
+// Gameplay
+    - Improved chart playability
+        - Notes (specifically noticable on Cyberspace Abyss) can no longer been seen at the start of the chart
+        - 3 second wait time before notes start rolling in (This also help reduce lag from the beginning of a chart)
+        - Notes move and try to estimate their starting position so it doesn't look weird (So I don't have to have the notes teleport to their position when the song starts)
+
+// Editor
+    - Fixed editor (Again)
+        - Chart can successfully be Imported
+        - Tags no longer take up 90% (exaggeration) of the file size
+            - Issue bc it kept re-adding tags to the tage list ever time the Json was updated, and for some reason counted blank or space characters
+                </a>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <a>
+                Version: Chart Selecting & Editing<br>
+                Epsilon εv0.5.150 (5.29.2023)
+            </a>
+            <hr>
+            <div style="text-align: left; margin-left: 1rem;">
+                <a style="white-space: pre-wrap;">
+Whats new?
+
+// Index.html
+    - Main Menu
+        - Access to editor and song selecting
+        - Bouncing Icon of the game (It will have background audio and will sync with that BGM, I just don't have anything yet)
+        - Other buttons showing what will be expected in the future of prosody
+
+// Song select
+    - Better song select
+        - Blurred background and mini banner in the top left
+        - Dynamic song selection
+            - Use arrow keys to navigate the song selector ( <- Up || /\ Up || \/ Down || -> Down)
+            - Audio plays from preview point
+    - Chart info
+        - Difficulty (Diff calculation will be adjusted later)
+        - Total notes / Max combo
+        - BPM (Audio's beats per minute)
+        - NPS (Chart's notes per second)
+    - Leaderboard (Doesn't show user scores... yet)
+        - Shows people who worked on the game and did something notable or has been helping with it. (and contains some extra info on what they did to get there)
+
+// Gameplay
+    - Optimized notes (Charts can now support up to 3-4x the notes -> ~700 to ~3000 (Depends on computer and browser))
+    - Improved score panel
+        - Shows chart information (Ie. Artist, Creator, Etc.)
+
+// Editor
+    - Fixed editor
+        - Json now is correctly shown and doesn't mess up when you place notes out of order
+        - Json no longer visible / Json replaced with files
+        - Chart can be Imported and Exported from and into a file
+    - More editor options
+        - Tags (Will be used for searching for charts when I get around to it)
+        - Description (To add more information about the chart. What patterns does it contain? Any fun facts about this chart, song, or anything else? how many charts have you made and which one is this? Etc.)
+        - Preview point (Where the song will start when in song selector -> Usually the besy or most catchy part to hook someone into playing the chart)
+        - Chart testing (Opens a new tab where you can play the chart just like any other chart)
+    - Criteria (This either lists the limitations to avoid errors when mapping so that it can be tested, or what is overall bad in charting)
+        - File size (limit 5mb, files larger than this won't work on some browsers and this is to limit the size it'll take up when I make a server hosting these charts)
+
+There are probably more changes, I changed/fixed/added A LOT. Sorry if I missed anything.
+                </a>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <a>
+                Version: Editor & Menu<br>
+                Epsilon εv0.4.111 (5.8.2023)
+            </a>
+            <hr>
+            <div style="text-align: left; margin-left: 1rem;">
+                <a style="white-space: pre-wrap;">
+Added:
+    - Menu screen
+        - Nice background
+        - Songs selection that load from JSON of all charts
+        - Temporary menu bars
+            - Editor
+            - Search
+            - Profile
+    - Attempted mobile support (may or may not work :/)
+    - Editor
+        - 2 Pre selected maps that auto fill metadata, timings, and offsets.
+            - Inaji - The Pathbreaking
+            - Cyphe Mercury (me) - Cyberspace Abyss
+        - Json converter (to use in expirimental) (can be broken easily/ map might not reflect from editor to play field...)
+            - If you like a map you made DM me the JSON for it, and I might add it to the game, songs won't get their own update, but will be added as soon as they possible if they are good enough.
+        - Scroll editor, click to toggle notes
+    - Improved note renderer and reader. (helps with better understanding of JSON and editor)
+    - Adjusted score calculation and judgement ranges
+    - better keybind adjustments
+    - Slight optimizations
+    - esc button leaves any menu to go to the main menu, except ofc the main menu itself
+        - Editor prompts you to save your work (ie, save it to a text file or something) before leaving to the main menu
+                </a>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <a>
+                Version: Visuals & Apprehension<br>
+                Omega Ωv0.3.81 (3.18.2023)
+            </a>
+            <hr>
+            <div style="text-align: left; margin-left: 1rem;">
+                <a style="white-space: pre-wrap;">
+Added:
+    - Screen scaling (Game now fits to any screen)
+    - Background
+        - Concept idea similar to SDVX (Kinda) (Optional)
+        - BG Dim (In-case you don't like the background)
+    - Results Ranks Images
+        - Score
+            - PC+ - Perfect+ Combo
+            - PC - Perfect Combo
+            - FC - Full Combo
+            - C - Clear
+            - F - Fail
+        - Accuracy // Plan to add S just got lazy hehe
+            - EX
+            - A
+            - B
+            - C
+    - Friendlier Hit timings and judgement weights
+    - Pausing (Game can now be paused!!)
+                </a>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <a>
+                Version: Scoring and more<br>
+                Omega Ωv0.2.? (3.14.2023)
+            </a>
+            <hr>
+            <div style="text-align: left; margin-left: 1rem;">
+                <a style="white-space: pre-wrap;">
+Added:
+    - New Default chart
+    - Music now plays to the game
+    - Note sync with BPM
+    - Improved UI
+    - combo
+    - 1 Mod
+        - Switch (Switches the scroll direction every 0.5-2 seconds I forget)
+    - More stuff in setting panel
+        - Upscroll (Inverts the direction the notes tend toward)
+        - Force reset (Reloads the map, but in some situations can reset other stuff aswell)
+        - Map JSON (You can edit the map, copy paste it to someone else and they can try, the song option accepts url .mp3 file)
+        - How to play
+        - Discord link
+    - Scores now expand when hovering over them
+    - Real time accuracy and combo dislpay
+    - Results Screen
+        - Shows play stats
+            - These include: Perfects+, Perfects, Goods, Bads, Misses Amounts
+            - Score, accuracy, and a work in progress display for Value
+            - Any mods that were used
+            - Hit error board!
+            - Restart button
+      
+Fixed:
+    - "Auto mod is now a god" other than the fun rhyming there, auto mod no longer gets overwhelmed with dense maps
+    - Better performance
+    - Scroll speed adjuster
+    - Hit error bar
+    - Level percent tracker
+    - Temp scoreboard with no real purpose other than being able to compare your score to my best
+
+Note:
+Updates are no longer real time. The game is being coded in a different branch, but it will merge when I think it's at its next milestone or notable feature
+                </a>
+            </div>
+        </div>
+        <div class="UIContainer">
+            <a>
                 Version: Omega Initialization<br>
                 Omega Ωv0.1.1 (3.8.2023)
             </a>
             <hr>
-            <div style="text-align: left;">
+            <div style="text-align: left; margin-left: 1rem;">
                 <a style="white-space: pre-wrap;">
 Added:
     - Playable gameplay
