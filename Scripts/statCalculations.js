@@ -36,12 +36,12 @@ function Get_Score(_judgements, _judgementsWeights, _combosHighest) {
     return _score;
 }
 
-function Get_Value(_judgements, _judgementsWeights, _combosHighest, _chart, _rate) {
+function Get_Value(_judgements, _judgementsWeights, _combosHighest, _chart, _diff, _rate) {
     Score = Get_Score(_judgements, _judgementsWeights, _combosHighest) / 10000;
     Acc = Get_Acc(_judgements, _judgementsWeights) * 100;
     Multi = (Score + Acc) / 2;
     console.log(_chart)
-    ChartDiff = calculateDifficulty(_chart, _rate);
+    ChartDiff = calculateDifficulty(_chart, _diff, _rate);
     Value = ChartDiff * Math.pow(Multi / 95, 3);
     return Value;
 }

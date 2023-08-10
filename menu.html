@@ -64,20 +64,53 @@
         }
         
         .tag {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 25%;
+            display: inline-block;
             margin: 2px;
+            padding: 4px 8px;
+            background-color: rgba(0, 0, 0, 0.15);
+            ;
+            color: #fff;
+            border-radius: 3px;
         }
         
         .tab {
-            color: lightskyblue;
-            text-decoration: underline;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 22px;
+        }
+        
+        .tabs-container {
+            width: 15%;
+            display: flex;
+            justify-content: normal;
+            top: 37%;
+            margin-left: 2rem;
+        }
+        
+        .InfoContainer {
+            /*Most Divs*/
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+            Width: 95%;
+            border-radius: 0.625rem;
+            background-color: rgba(62, 86, 114, 0.5);
+            text-align: center;
+            height: fit-content;
+            min-height: 1rem;
+            max-width: 100%;
+            padding-bottom: 0.625rem;
+            margin-top: 0.625rem;
         }
     </style>
 </head>
 
 <body>
+    <div id="FadeIn" style="position: absolute; width: 100%; height: 100%; background-color: #fff; z-index: 999; pointer-events:none; top: 0;">
+    </div>
     <div class="UIContainer" style="width: 25%; background-color: rgba(0, 0, 0, 0);">
         <div style="width: 100%; height: 20%;">
             <img id="InfoBanner" style="width: 100%; aspect-ratio : 16 / 9; border-radius: 10px;" src="Sprites/Game.png" />
@@ -87,15 +120,15 @@
         </div>
         <audio id="audio" style="position:sticky;top: 200%; float: left; display:none" controls></audio><br>
     </div>
-    <div style="width: 20%; display: flex; top: 37%; margin-left: 2rem; justify-content: space-evenly;">
+    <div class="tabs-container">
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">Basic</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
     </div>
-    <div class="UIContainer" style="width: 20%; height: auto; top: 38%; padding-top: 5px; ">
+    <div class="InfoContainer" style="width: 20%; height: auto; top: 38%; padding-top: 5px; ">
         <div id="AboutPanel" style="display: block;">
-            <div class="UIContainer">
+            <div class="InfoContainer">
                 <a>
                         Description:
                     </a>
@@ -103,7 +136,7 @@
                     Just a simple browser rhythm game
                 </p>
             </div>
-            <div class="UIContainer" style="overflow-wrap:normal;">
+            <div class="InfoContainer" style="overflow-wrap:normal;">
                 <a>
                         Tags:
                     </a>
@@ -114,7 +147,7 @@
             </div>
         </div>
         <div id="InfoPanel" style="display: block;">
-            <div class="UIContainer" style="overflow-wrap:normal;">
+            <div class="InfoContainer" style="overflow-wrap:normal;">
                 <br>
                 <a>
                         Difficulty: 
@@ -144,7 +177,7 @@
                         ∞
                     </a>
             </div>
-            <div class="UIContainer" style="overflow-wrap:normal;">
+            <div class="InfoContainer" style="overflow-wrap:normal;">
                 <a>
                         Artist: 
                     </a>
@@ -164,7 +197,7 @@
             <a style="font-size: 0.66rem;">
                     Currently only shows contributers to the development of prosody. (Likely not up to date, this is just a placeholder for now)
                 </a>
-            <div class="UIContainer">
+            <div class="InfoContainer">
                 <div class="score">
                     <a>
                             Cyphe Mercury
@@ -203,7 +236,7 @@
     </div>
     <div id="Container" class="UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 37%; right: 0; top: 0;">
         <div id="TitleMenuContainer" class="UIContainer">
-            <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
+            <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" onchange="SearchForChart()" placeholder="Search" /> <br>
             <button>
                     Search
                 </button>
@@ -268,106 +301,188 @@
                     const bps = charts[id]["BPM"] / 60
                     const off = charts[id]["4Rows"]["Difficulty1"]["Offset"] / charts[id]["BPM"]
                     document.getElementById("BGImage").style.transform = `Scale(${1.1 + (((-document.getElementById("audio").currentTime - off) % (1 / bps)) * bps / 20)})`
-                } catch (error) {
 
-                }
+                } catch (error) {}
             }
             setInterval(Update, 1000 / 60)
 
             function CreateButton(_mapId) {
-                console.log(`Loading map: ${_mapId}`)
-                var main = document.createElement("button")
+                console.log(charts[_mapId]["4Rows"].length)
+                for (let i = 0; i < charts[_mapId]["4Rows"].length; i++) {
+                    console.log(`Loading map: ${_mapId}`)
+                    var main = document.createElement("button")
 
-                var info = document.createElement("div")
-                var title = document.createElement("a")
-                var other = document.createElement("a")
+                    var info = document.createElement("div")
+                    var title = document.createElement("a")
+                    var other = document.createElement("a")
 
-                main.appendChild(info);
-                info.appendChild(title);
-                info.appendChild(other);
+                    main.appendChild(info);
+                    info.appendChild(title);
+                    info.appendChild(other);
 
-                other.style.fontSize = "0.66rem"
+                    other.style.fontSize = "0.66rem"
 
-                main.classList.add("UIContainer")
-                main.classList.add("SongSelector")
-                main.onclick = function name(params) {
-                    document.getElementById("BGContainer").style.display = "flex";
-                    document.querySelectorAll('.bg').forEach(e => e.remove());
-                    this.style.backgroundColor = "rgba(127,127,127,127.2)"
-                    if (this.id == "Selected") {
-                        localStorage['Chart'] = JSON.stringify(charts[_mapId])
-                        window.location.href = 'game.html'
+                    main.classList.add("UIContainer")
+                    main.classList.add("SongSelector")
+                    main.onclick = function name(params) {
+                        document.getElementById("BGContainer").style.display = "flex";
+                        document.querySelectorAll('.bg').forEach(e => e.remove());
+                        this.style.backgroundColor = "rgba(127,127,127,127.2)"
+                        if (this.id == "Selected") {
+                            localStorage['Chart'] = JSON.stringify(charts[_mapId])
+                            localStorage['Difficulty'] = i
+                            window.location.href = 'game.html'
+                        }
+                        try {
+                            let Deselect = document.getElementById("Selected")
+                            Deselect.id = ""
+                            Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
+                        } catch (error) {}
+                        this.id = "Selected"
+                        document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
+                        document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
+                        document.getElementById("Title").innerText = charts[_mapId]["Name"]
+                        document.getElementById("ChartArtist").innerText = charts[_mapId]["SongArtist"]
+                        document.getElementById("ChartCreator").innerText = charts[_mapId]["Creator"]
+
+                        // SECTION: Audio
+
+                        document.getElementById("audio").src = charts[_mapId]["Audio"];
+                        document.getElementById("audio").currentTime = charts[_mapId]["4Rows"][i]["PreviewPoint"]
+                        document.getElementById("audio").play()
+
+                        document.getElementById("audio").onended = () => {
+                            setTimeout(() => {
+                                document.getElementById("audio").currentTime = charts[_mapId]["4Rows"][i]["PreviewPoint"];
+                                document.getElementById("audio").play()
+                            }, 500)
+                        }
+
+                        // SECTION: Difficulty stats
+
+                        document.getElementById("audio").oncanplay = () => {
+                            id = _mapId
+                            totalNotes = charts[_mapId]["4Rows"][i]["Notes"][0].length + charts[_mapId]["4Rows"][i]["Notes"][1].length + charts[_mapId]["4Rows"][i]["Notes"][2].length + charts[_mapId]["4Rows"][i]["Notes"][3].length
+                            document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId], i) * 100) / 100
+                            document.getElementById("ChartTTNotes").innerText = totalNotes
+                            document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
+                            document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
+                        }
+
+                        // SECTION: Description
+
+                        const Desc = charts[_mapId]["Description"]
+                        document.getElementById("description").innerText = (Desc != undefined) ? Desc : "This chart does not have a description!";
+
+                        // SECTION: Tags
+                        var tags = document.getElementsByClassName('tag');
+
+                        while (tags[0]) {
+                            tags[0].parentNode.removeChild(tags[0]);
+                        }
+
+                        for (let i = 0; i < charts[_mapId]["Tags"].length; i++) {
+
+                            const element = charts[_mapId]["Tags"][i];
+
+                            let tag = document.createElement("a");
+                            tag.innerText = element;
+                            tag.classList.add("tag")
+
+                            document.getElementById("TagContainer").appendChild(tag);
+                        }
                     }
-                    try {
-                        let Deselect = document.getElementById("Selected")
-                        Deselect.id = ""
-                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
-                    } catch (error) {}
-                    this.id = "Selected"
-                    document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("Title").innerText = charts[_mapId]["Name"]
-                    document.getElementById("ChartArtist").innerText = charts[_mapId]["SongArtist"]
-                    document.getElementById("ChartCreator").innerText = charts[_mapId]["Creator"]
+                    title.innerText = charts[_mapId]["Name"];
+                    other.innerText = `\nArtist: ${charts[_mapId]["SongArtist"]}, By: ${charts[_mapId]["Creator"]}`
 
-                    // SECTION: Audio
+                    //info.classList.add("UIContainer")
 
-                    document.getElementById("audio").src = charts[_mapId]["Audio"];
-                    document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"]
-                    document.getElementById("audio").play()
+                    document.getElementById("SongsContainer").appendChild(main);
 
-                    document.getElementById("audio").onended = () => {
-                        setTimeout(() => {
-                            document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"];
-                            document.getElementById("audio").play()
-                        }, 500)
-                    }
-
-                    // SECTION: Difficulty stats
-
-                    document.getElementById("audio").oncanplay = () => {
-                        id = _mapId
-                        totalNotes = charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][0].length + charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][1].length + charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][2].length + charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][3].length
-                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId]) * 100) / 100
-                        document.getElementById("ChartTTNotes").innerText = totalNotes
-                        document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
-                        document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
-                    }
-
-                    // SECTION: Description
-
-                    const Desc = charts[_mapId]["Description"]
-                    document.getElementById("description").innerText = (Desc != undefined) ? Desc : "This chart does not have a description!";
-
-                    // SECTION: Tags
-                    var tags = document.getElementsByClassName('tag');
-
-                    while (tags[0]) {
-                        tags[0].parentNode.removeChild(tags[0]);
-                    }
-
-                    for (let i = 0; i < charts[_mapId]["Tags"].length; i++) {
-
-                        const element = charts[_mapId]["Tags"][i];
-
-                        let tag = document.createElement("a");
-                        tag.innerText = element;
-                        tag.classList.add("tag")
-
-                        document.getElementById("TagContainer").appendChild(tag);
-                    }
                 }
-                title.innerText = charts[_mapId]["Name"];
-                other.innerText = `\nArtist: ${charts[_mapId]["SongArtist"]}, By: ${charts[_mapId]["Creator"]}`
-
-                //info.classList.add("UIContainer")
-
-                document.getElementById("SongsContainer").appendChild(main);
-
             }
 
             for (var i in charts) {
                 CreateButton(i)
+            }
+            setTimeout(() => {
+                document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
+                document.getElementById('FadeIn').style.opacity = '0';
+            }, 500);
+
+            function SearchForChart() {
+                string = document.querySelector("#TitleMenuContainer > input[type=text]").value
+                while (document.getElementsByClassName('SongSelector').length > 0) {
+                    document.getElementsByClassName('SongSelector')[0].remove()
+                }
+                if (string != "") {
+                    console.log(`Searching for: ${string}`)
+                    for (var i in charts) {
+                        if (charts[i]["Name"].includes(string)) {
+                            CreateButton(i)
+                            console.log(`Found Matching Name: "${string}" in "${charts[i]["Name"]}"`)
+                            continue;
+                        }
+                        if (charts[i]["Creator"].includes(string)) {
+                            CreateButton(i)
+                            console.log(`Found Matching Creator: "${string}" in "${charts[i]["Creator"]}"`)
+                            continue;
+                        }
+                        if (charts[i]["SongArtist"].includes(string)) {
+                            CreateButton(i)
+                            console.log(`Found Matching SongArtist: "${string}" in "${charts[i]["SongArtist"]}"`)
+                            continue;
+                        }
+                        if (string.includes(" = ") || string.includes(" > ") || string.includes(" < ") || string.includes(" >= ") || string.includes(" <= ")) {
+                            try {
+                                if (charts[i][string.split(' = ')[0]] == string.split(' = ')[1]) {
+                                    CreateButton(i)
+                                    console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${charts[i][string.split(' = ')[0]]}"`)
+                                    continue;
+                                }
+                            } catch (error) {}
+                            try {
+                                if (charts[i][string.split(' >= ')[0]] >= string.split(' = ')[1]) {
+                                    CreateButton(i)
+                                    console.log(`Found Greater Than Equal Value: "${string.split(' = ')[1]}" <= "${charts[i][string.split(' = ')[0]]}"`)
+                                    continue;
+                                }
+                            } catch (error) {}
+                            try {
+                                if (charts[i][string.split(' <= ')[0]] <= string.split(' = ')[1]) {
+                                    CreateButton(i)
+                                    console.log(`Found Less Than Equal Value: "${string.split(' = ')[1]}" >= "${charts[i][string.split(' = ')[0]]}"`)
+                                    continue;
+                                }
+                            } catch (error) {}
+                            try {
+                                if (charts[i][string.split(' > ')[0]] > string.split(' = ')[1]) {
+                                    CreateButton(i)
+                                    console.log(`Found Greater Than Value: "${string.split(' = ')[1]}" < "${charts[i][string.split(' = ')[0]]}"`)
+                                    continue;
+                                }
+                            } catch (error) {}
+                            try {
+                                if (charts[i][string.split(' < ')[0]] < string.split(' = ')[1]) {
+                                    CreateButton(i)
+                                    console.log(`Found Less Than Value: "${string.split(' = ')[1]}" > "${charts[i][string.split(' = ')[0]]}"`)
+                                    continue;
+                                }
+                            } catch (error) {}
+                        }
+                        for (let j = 0; j < charts[i]["Tags"].length; j++) {
+                            if (charts[i]["Tags"][j].includes(string)) {
+                                CreateButton(i)
+                                console.log(`Found Matching Tag: "${string}" in "${charts[i]["Tags"][j]}"`)
+                                break;
+                            }
+                        }
+                    }
+                    return;
+                } else
+                    for (var i in charts) {
+                        CreateButton(i)
+                    }
             }
         </script>
         <script>
@@ -405,7 +520,9 @@
                         IncDecRementSelection(1)
                         break;
                     case 13: // Move selection down
-                        document.getElementById('Selected').click()
+                        try {
+                            document.getElementById('Selected').click()
+                        } catch (error) {}
                         break;
 
                     default:

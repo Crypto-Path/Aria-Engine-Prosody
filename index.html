@@ -146,7 +146,7 @@
         <div class="UIContainer">
             <a>
                 Version: Minor improvements<br>
-                Epsilon εv0.6.150 (5.29.2023)
+                Theta θv0.6.
             </a>
             <hr>
             <div style="text-align: left; margin-left: 1rem;">
@@ -155,11 +155,22 @@ Whats new?
 
 // Index.html
     - Main Menu
+        - New play button
+            - No longer pixelated
+            - Text in the center, "Prosody"
+            - Expands into transition to song select
         - Nicer looking song selection button (the main button)
             - Lights up even more when hovered over
         - Changelog (shows newest and all previous updates)
 
 // Song select
+    - Fades out of transition to song select
+    - Songs now support multiple difficulties (WIP)
+    - Updated difficulty Calculator (tries to account for stamina)
+    - Working search bar
+        - Searching finds some things in a chart that has whatever was typed in (Song Name, Artist, Creator, Tags)
+        - Allows for dynamic/equational searching (IE. BPM = 170 returns all maps where the chart's BPM is 170)
+    - Somewhat nicer info panel
     - Less static feeling menu
         - Background pulses to BPM
         - Title hase dark transparent background
@@ -167,14 +178,22 @@ Whats new?
     - Two new songs to play until I get songs to load from a server
         - Spatium Cursu
         - Bad Apple!!
+        - BONUS: The Pathbreaking has an easier diff now
 
 // Gameplay
+    - Rank
+        - Some no longer pixelated
+        - New S rank for 95% to 99.999%
+    - Song progress bar
+    - Results now come up after the last note is hit rather then when the song ends
+    - When starting the keybinds are shown above the note hitters
     - Improved chart playability
         - Notes (specifically noticable on Cyberspace Abyss) can no longer been seen at the start of the chart
         - 3 second wait time before notes start rolling in (This also help reduce lag from the beginning of a chart)
         - Notes move and try to estimate their starting position so it doesn't look weird (So I don't have to have the notes teleport to their position when the song starts)
 
 // Editor
+    - Charts now save differentlt (Charts made before this update will not work)
     - Fixed editor (Again)
         - Chart can successfully be Imported
         - Tags no longer take up 90% (exaggeration) of the file size
@@ -369,8 +388,13 @@ Added:
 
     <img id="big-button" onclick="{
         this.id = 'big'
-        setTimeout(() => {location.href = 'menu.html'},1000)
+        setTimeout(() => {location.href = 'menu.html'},1400);
+        setTimeout(() => {
+            document.getElementById('TitleText').style.transition = 'opacity ' + 750 + 'ms';
+            document.getElementById('TitleText').style.opacity = '0';
+        },500);
         }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Icon.png" />
+    <img id="TitleText" style="pointer-events:none; aspect-ratio: 1 / 1;position: absolute;border-radius: 50%;image-rendering: pixelated; width: 400px; left: calc(50% - 200px); top: calc(50% - 200px);" src="Sprites/Title.png" />
 </body>
 <script>
 </script>

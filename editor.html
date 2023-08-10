@@ -102,19 +102,17 @@
                 "Pattern": "Sprites/Background/Pattern.png",
                 "Center": "Sprites/Background/Center.png"
             },
-            "4Rows": {
-                "Difficulty1": {
-                    "PreviewPoint": "0",
-                    "Map Name": "???",
-                    "Offset": 0,
-                    "Notes": [
-                        [],
-                        [],
-                        [],
-                        []
-                    ]
-                }
-            },
+            "4Rows": [{
+                "PreviewPoint": "0",
+                "Map Name": "???",
+                "Offset": 0,
+                "Notes": [
+                    [],
+                    [],
+                    [],
+                    []
+                ]
+            }],
             "Tags": [],
             "Description": "???"
         }
@@ -132,10 +130,10 @@
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
 
-            const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row) / 4);
-            cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row) / 4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index, 1);
+            const index = Json["4Rows"][0]["Notes"][col].indexOf(parseInt(row) / 4);
+            cell.classList.contains('note') ? Json["4Rows"][0]["Notes"][col].push(parseInt(row) / 4) : Json["4Rows"][0]["Notes"][col].splice(index, 1);
 
-            Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b) {
+            Json["4Rows"][0]["Notes"][col].sort(function(a, b) {
                 return a - b;
             });
 
@@ -149,11 +147,11 @@
             Json["SongArtist"] = document.getElementById("MDArtist").value;
             Json["Creator"] = document.getElementById("MDCreator").value;
             Json["BPM"] = document.getElementById("MDBPM").value;
-            Json["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
-            Json['4Rows']['Difficulty1']['PreviewPoint'] = document.getElementById("ChartPreview").value;
+            Json["4Rows"][0]["Offset"] = document.getElementById("MDOffset").value;
+            Json['4Rows'][0]['PreviewPoint'] = document.getElementById("ChartPreview").value;
 
             //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
-            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
+            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 0, 1);
 
             Json["Description"] = document.getElementById("InpDesc").innerHTML;
 
@@ -287,7 +285,7 @@
 
             RemoveAllTiles();
             console.log("Removing all tiles");
-            Json['4Rows']['Difficulty1']['Notes'] = [
+            Json['4Rows'][0]['Notes'] = [
                 [],
                 [],
                 [],
@@ -327,7 +325,7 @@
                 document.getElementById("MDArtist").value = _chart["SongArtist"];
                 document.getElementById("MDCreator").value = _chart["Creator"];
                 document.getElementById("MDBPM").value = _chart["BPM"];
-                document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
+                document.getElementById("MDOffset").value = _chart["4Rows"][0]["Offset"];
                 Json["Audio"] = _chart["Audio"];
 
                 document.getElementById("audio").src = _chart["Audio"]
@@ -337,7 +335,7 @@
                 setTimeout(() => {
                     ReloadChart()
                     setTimeout(() => {
-                        LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
+                        LoadNotes(_chart["4Rows"][0]["Notes"])
                         console.log("Loaded Chart Json")
                     }, 10000);
                 }, 100);
@@ -427,6 +425,7 @@
         function Playtest() {
             try {
                 localStorage['Chart'] = JSON.stringify(Json);
+                localStorage['Difficulty'] = 0;
                 window.open('game.html', '_blank');
             } catch (error) {
                 window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of the Background\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
@@ -450,13 +449,13 @@
             <div class="UIContainer">
                 <label for="songs">Pre-Songs:</label>
 
-                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]] }" id="songs">
+                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows'][0]['Notes']= [[],[],[],[]] }" id="songs">
                     <option value="Custom">Custom</option>
                     <option value="Audio/Inaji-The_Pathbreaking.mp3">Inaji - The Pathbreaking</option>
                     <option value="Audio/Cyberspace Abyss.mp3">Cyphe Mercury - Cyberspace Abyss</option>
                     <option value="Audio/X3ll3n-Spatium_Cursu.mp3">X3LL3N - Spatium Cursu</option>
                 </select>
-                <input id="MDAudio" onchange="{Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
+                <input id="MDAudio" onchange="{Json['4Rows'][0]['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
             </div>
             <label>BPM: </label>
             <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>

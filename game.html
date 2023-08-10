@@ -38,6 +38,10 @@
     <script src="Scripts/savingAndLoading.js"></script>
     <script src="Scripts/statCalculations.js"></script>
     <script src="Scripts/noteRenderer.js"></script>
+    <script src="Scripts/hitError.js"></script>
+    <script src="Scripts/BGRot.js"></script>
+    <script src="Scripts/hitCheck.js"></script>
+    <script src="Scripts/showLetters.js"></script>
     <script>
         chart = null; // The chart itself
         chartData = null; // Gets map data from location
@@ -86,6 +90,7 @@
         rotateProgress = 0
         pause = [true, false, 0] // Can pause, Is paused, Paused amount
         StartTime = null;
+        totalNotes = 0;
         //FinalNoteTime = null;
 
         function LoadChart(_chart) {
@@ -96,7 +101,8 @@
                 return;
             }
 
-            return new Chart(_chartJSON, 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
+            console.log(localStorage["Difficulty"])
+            return new Chart(_chartJSON, localStorage["Difficulty"], 4, StartPos[0], StartPos[1], 0, 1, 0, rate); // Creates the chart that will be played or is being viewed
         }
 
         // Removes next note in row
@@ -108,191 +114,6 @@
             idProgress[_row]++; // Increases idProgress so next note in row can be hit
         }
 
-        // Creates a hit error object, showing their offset, which fades over time
-        function HitError(_offset, _length, _color) {
-
-            hitErrors.push([_offset, chart.Get_Audio_Time_Left(), _color])
-
-            hitError = document.createElement("div"); // Creates the hit object visual
-            hitError.classList.add("hitError"); // Adds the class for the CSS
-            hitError.style.left = ((_offset * (128 / (hitRange)) + 64) / 9) * (window.innerWidth / 1920) + "rem"; // Sets the position
-
-            hitError.style.backgroundColor = _color;
-            hitError.style.opacity = "0.5";
-
-            document.getElementById("HitErrorBar").appendChild(hitError) // Appedns the hit error object to the hit error bar
-
-            // Fade the hit error over time
-            let _object = hitError //document.getElementById("HitErrorBar").children[3]
-            setTimeout(function() {
-                _object.style.opacity = "0.5";
-                setTimeout(function() {
-                    _object.style.opacity = "0.25";
-                    setTimeout(function() {
-                        _object.style.opacity = "0.2";
-                        setTimeout(function() {
-                            _object.remove();
-                        }, _length / 8); // 125ms
-                    }, _length / 8); // 125ms
-                }, _length / 4); // 250ms
-            }, _length / 2); // 500ms
-        }
-
-        function Create_Result_Hit_Errors() {
-            console.log("Creating Hit errors");
-            for (let i = 0; i < hitErrors.length; i++) {
-                if (i / 5 == Math.floor(i / 5)) {
-                    console.log("Progress: " + Math.round((i / Get_TotalNotes(Judgements)) * 100) / 100 + "%");
-                }
-                const _hitError = hitErrors[i];
-                let _hitObject = document.createElement("div"); // Creates the hit object visual
-                _hitObject.classList.add("hitError"); // Adds the class for the CSS
-                _hitObject.style.top = (_hitError[0] * 18 + 5.66) + "rem"; // Sets the position
-                _hitObject.style.left = (-(_hitError[1] * 100 / chart.Get_Audio_Length()) + 100) + "%"; // Sets the position
-                _hitObject.style.height = "0.25rem";
-                _hitObject.style.width = "0.25rem";
-                _hitObject.style.position = "absolute";
-
-                _hitObject.style.backgroundColor = _hitError[2];
-                _hitObject.style.opacity = "0.75";
-
-                document.getElementById("ResultErrorContainer").appendChild(_hitObject);
-            }
-            console.log("Progress: 100%");
-        }
-
-        // Creates hit error and removes a note
-        function HitNote(_PosY, _ErrorTime, _row, _color = "rgb(255,95,127)") {
-            HitError(_PosY, _ErrorTime, _color); // Creates hit error
-            RemoveNote(_row); // Removes note by row
-        }
-
-        // For score calculation
-        function IncreaseCombo(_id) {
-            Judgements[_id]++; // For acc calculation
-            switch (_id) {
-                case 0:
-                    Combos[0]++;
-                    Combos[1]++;
-                    Combos[2]++;
-                    break;
-
-                case 1:
-                    Combos[0] = 0;
-                    Combos[1]++;
-                    Combos[2]++;
-                    break;
-
-                case 2:
-                    Combos[0] = 0;
-                    Combos[1] = 0;
-                    Combos[2]++;
-                    break;
-
-                default:
-                    Combos[0] = 0;
-                    Combos[1] = 0;
-                    Combos[2] = 0;
-                    break;
-            }
-            for (let i = 0; i < Combos.length; i++) {
-                const _combo = Combos[i];
-                if (_combo > HighestCombos[i]) {
-                    HighestCombos[i] = _combo;
-                }
-            }
-            document.getElementById("ComboText").innerText = "x" + Combos[2];
-            document.getElementById("AccText").innerHTML = Get_Acc(Judgements, JudgementWeights).toFixed(5) * 100 + "%"; // Shows user their accuracy
-        }
-
-        // Checks the judgement position of the next note of each row and if the user has pressed the dedicated key
-        function HitCheck() {
-            if (playing) { // Checks if the map is playing to avoid being able to hit notes before the game is started
-                notesLeft = 0;
-                for (let i = 0; i < notes.length; i++) { // Checks each row
-                    notesLeft += CheckRow(i)
-                }
-            }
-        }
-
-        function CheckRow(i) {
-            for (let j = 0; j < notes[i].length; j++) { // Checks each note
-                NoteID = chart.Get_Poss(i)[0].Get_Id()
-                note = chart.Get_Poss(i)[0]
-                PosY = note.Get_Pos()[1];
-                returnValue = notes[i].length;
-                if (auto) {
-                    if (PosY >= -(hitRange / 120)) { // Aut0 hit range
-                        if (PosY <= (hitRange)) {
-                            hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
-                            if (document.getElementById("OptionRB").checked) {
-                                Set_BG_Rotation(i)
-                            }
-                            HitNote(PosY, HitErrorTime / 4, i, "rgb(135,206,235)");
-                            IncreaseCombo(0)
-                            setTimeout(function() {
-                                if (document.getElementById("OptionRB").checked) {
-                                    Set_BG_Rotation(i, false)
-                                }
-                                hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
-                            }, 16000 / (chart.map["BPM"] * rate));
-                        }
-                        return returnValue;
-                    }
-                }
-                if (NoteID == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-                    if (PosY >= -(hitRange / 1.5)) {
-                        ABSY = Math.abs(PosY);
-                        if (ABSY <= (hitRange / JudgementRanges[0])) { // Perfect Plus hit range
-                            if (keys[i]) {
-                                HitNote(PosY, HitErrorTime, i, "rgb(135,206,235)");
-                                IncreaseCombo(0)
-                                return returnValue;
-                            }
-                        }
-
-                        if (ABSY <= (hitRange / JudgementRanges[1])) { // Perfect hit range
-                            if (keys[i]) {
-                                HitNote(PosY, HitErrorTime, i, "rgb(155,206,215)");
-                                IncreaseCombo(1)
-                                return returnValue;
-                            }
-                        }
-
-                        if (ABSY <= (hitRange / JudgementRanges[2])) { // Good hit range
-                            if (keys[i]) {
-                                HitNote(PosY, HitErrorTime, i, "rgb(175,206,195)");
-                                IncreaseCombo(2)
-                                return returnValue;
-                            }
-                        }
-
-
-                        if (ABSY <= (hitRange / JudgementRanges[3])) { // Good hit range
-                            if (keys[i]) { // Bad hit range
-                                HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
-                                IncreaseCombo(3);
-                                return returnValue;
-                            }
-                        }
-
-                        if (keys[i]) { // Miss hit range
-                            HitNote(PosY, HitErrorTime, i);
-                            IncreaseCombo(4)
-                            return returnValue;
-                        }
-                    }
-                }
-                if (PosY > (hitRange / 2)) { // If no notes are hit in any of the hit ranges the note misses
-                    HitNote(PosY, HitErrorTime, i);
-                    releasedIdProgress[i] = idProgress[i];
-                    IncreaseCombo(4)
-                    return returnValue;
-                }
-            }
-        }
-
-
         function InitChart(_chartData) {
             chart = LoadChart(_chartData);
             chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
@@ -301,52 +122,13 @@
             document.getElementById("BGGradient").src = _chartJSON["BG"]["Gradient"];
             document.getElementById("BGPattern").src = _chartJSON["BG"]["Pattern"];
             document.getElementById("BGCenter").src = _chartJSON["BG"]["Center"];
+
+            totalNotes = chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][0].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][1].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][2].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][3].length
         }
 
         function Start(chartData, mapId) {
             InitChart(chartData, mapId)
             console.log("Map: " + mapId + " - " + chartMetaData);
-        }
-
-        function Set_BG_Rotation(_index, _set = true) {
-            if (_set) {
-                let v = 0
-                switch (_index) {
-                    case 0:
-                        v = -document.getElementById("OptionRIL").value;
-                        break;
-                    case 1:
-                        v = -document.getElementById("OptionRIS").value;
-                        break;
-                    case 2:
-                        v = document.getElementById("OptionRIS").value;
-                        break;
-                    case 3:
-                        v = document.getElementById("OptionRIL").value;
-                        break;
-                    default:
-                        break;
-                }
-                rotation[_index] = v;
-                return;
-            }
-            rotation[_index] = 0;
-        }
-
-        function BG_Rotate() {
-            let _r = 0 // Rotation
-            for (let i = 0; i < rotation.length; i++) {
-                _r += rotation[i] / 4;
-            } // Finds average rotation amount
-            if (Math.round(rotateProgress) != Math.round(_r)) { // To avoid wiggling
-                if (rotateProgress < _r) { // If rotation is smaller
-                    rotateProgress += 0.1;
-                } else { // If rotation is larger
-                    rotateProgress -= 0.1;
-                }
-            }
-            document.getElementById("BGPattern").style.transform = "rotate(" + rotateProgress + "deg)";
-            document.getElementById("BGCenter").style.transform = "rotate(" + rotateProgress * 3 + "deg)";
         }
 
         function KeyDown(_index) {
@@ -417,6 +199,10 @@
                         if (!playing) {
                             StartTime = Date.now();
                             startMap();
+                            for (let i = 0; i < hitKeys.length; i++) {
+                                const letter = String.fromCharCode(hitKeys[i]);
+                                showLetter(letter, 'Arial', window.innerWidth / 1920 * 42, window.innerWidth / 1920 * 800 + (i * 96), window.innerWidth / 1920 * 720, 1000, 10000, true, 1000);
+                            }
                         }
                         break;
 
@@ -438,6 +224,11 @@
                         console.log(e.keyCode)
                         break;
                 }
+                setTimeout(() => {
+                    if (Judgements[0] + Judgements[1] + Judgements[2] + Judgements[3] + Judgements[4] == totalNotes && playing == true) {
+                        Show_Results()
+                    }
+                }, 500);
             }
         }
 
@@ -500,6 +291,9 @@
             document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_A.png"
             if (_acc < 0.95) return;
 
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_S.png"
+            if (_acc < 1) return;
+
             if (_acc == 1) document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_EX.png";
         }
 
@@ -520,7 +314,7 @@
             document.getElementById("ResultMapName").innerText = `${chartMetaData[0]}`;
             document.getElementById("ResultArtist").innerText = `Artist: ${chartMetaData[1]}`;
             document.getElementById("ResultCreator").innerText = `Creator: ${chartMetaData[2]}`;
-            document.getElementById("ResultDiff").innerText = `Difficulty [${chartMetaData[4]}]`;
+            document.getElementById("ResultDiff").innerText = `Difficulty [${chartMetaData[4]} (${Math.round(calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate)*1000)/1000})`;
             var _date = new Date()
             document.getElementById("ResultDate").innerText = `Date: ${_date.getHours()}:${_date.getMinutes()}:${_date.getSeconds()} - ${_date.getDay()}/${_date.getMonth()}/${_date.getFullYear()}`;
 
@@ -528,7 +322,7 @@
             console.log("Showing Score Results");
             document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights) * 100000) / 1000 + "%";
             console.log("Showing Acc Results");
-            document.getElementById("ResultValue").innerText = Math.round(Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, rate) * 100) / 100;
+            document.getElementById("ResultValue").innerText = Math.round(Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, localStorage["Difficulty"], rate) * 100) / 100;
             console.log("Showing Value Results");
 
             document.getElementById("ResultAuto").innerText = document.getElementById("OptionModAuto").checked;
@@ -545,6 +339,7 @@
             Set_Score_Rank_Image()
             Set_Acc_Rank_Image()
         }
+
 
         // When site loads
         window.onload = function() {
@@ -584,6 +379,11 @@
                         }
                     }
                 }
+
+                try {
+                    progress = (chart.audio.currentTime / chart.audio.duration) * 100;
+                    document.getElementById("ProgressBar").style.width = progress + '%';
+                } catch (error) {}
 
                 if (document.getElementById("OptionRB").checked) {
                     BG_Rotate()
@@ -681,7 +481,7 @@
             chart = null // So chart can be set later and so the previous doesn't interfere with anything
             Start(chartData, 1); // Generates the map
             document.title = `Prosody - Playing: ${chartMetaData[0]}`
-            document.getElementById("AccText").innerHTML = `&lt;Space to Start&gt;\n${calculateDifficulty(chart.map, rate)}`; // Visual so people know how to start
+            document.getElementById("AccText").innerHTML = `Space to Start`; // Visual so people know how to start // \n${calculateDifficulty(chart.map, rate)}
 
             Resize()
             playing = _playing;
@@ -885,8 +685,9 @@
         </div>
         <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 120%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
             <div id="HitErrorBar" style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;">
-                <a id="ComboText" style="position: inherit; width: 8rem; top: -3rem; text-align: center;"></a>
-                <a id="AccText" style="position: inherit; width: 8rem; top: -2rem; text-align: center;">Loading...</a>
+                <a id="ComboText" style="position: inherit; width: 4rem; left: 23rem; top: -3rem; background-color: rgba(0, 0, 0, 0.5); border-radius: 5px;"></a>
+                <a id="AccText" style="position: inherit; width: 8rem; left: 23rem; top: -5rem; font-size: 16px; background-color: rgba(0, 0, 0, 0.5); border-radius: 5px;"></a>
+                <a id="ChartInfoText" style="position: inherit; width: 16rem; top: -3rem; text-align: center; font-size: 38px;">Loading...</a>
                 <div id="HitErrorBarExtension" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;">
                 </div>
             </div>
@@ -999,6 +800,10 @@
                 </div>
             </div>
             <iframe id='iFrame1' src="SettingsPanel/Other.htm" style="width: 100%; height:77.5rem" frameborder="0" scrolling="no" onload="" seamless></iframe>
+        </div>
+    </div>
+    <div id="ProgressBarContainer" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 5px; background-color: #ccc; z-index: 999;">
+        <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
         </div>
     </div>
     <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
