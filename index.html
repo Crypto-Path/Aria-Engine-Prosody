@@ -21,7 +21,7 @@
             font-size: 24px;
             margin: auto;
             animation-name: expand;
-            animation-duration: 1.5s;
+            animation-duration: 3s;
             animation-delay: 0ms;
             animation-iteration-count: infinite;
             animation-timing-function: linear;
@@ -76,7 +76,7 @@
                 transform: scale(0.5);
             }
             to {
-                transform: scale(10);
+                transform: scale(20);
             }
         }
         
@@ -389,11 +389,11 @@ Added:
 
     <img id="big-button" onclick="{
         this.id = 'big'
-        setTimeout(() => {location.href = 'menu.html'},1400);
+        setTimeout(() => {location.href = 'menu.html'},2500);
         setTimeout(() => {
             document.getElementById('TitleText').style.transition = 'opacity ' + 750 + 'ms';
             document.getElementById('TitleText').style.opacity = '0';
-        },500);
+        },1500);
         }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Icon.png" />
     <img id="TitleText" style="pointer-events:none; aspect-ratio: 1 / 1;position: absolute;border-radius: 50%;image-rendering: pixelated; width: 400px; left: calc(50% - 200px); top: calc(50% - 200px);" src="Sprites/Title.png" />
 </body>
