@@ -39,7 +39,6 @@
     <script src="Scripts/statCalculations.js"></script>
     <script src="Scripts/noteRenderer.js"></script>
     <script src="Scripts/hitError.js"></script>
-    <script src="Scripts/BGRot.js"></script>
     <script src="Scripts/hitCheck.js"></script>
     <script src="Scripts/showLetters.js"></script>
     <script>
@@ -135,8 +134,6 @@
             key[_index] = true
             hitters[_index].src = "Sprites/Notes/Hitter_Lit_1.png";
 
-            Set_BG_Rotation(_index)
-
             if (released[_index] == true) {
                 keys[_index] = true
                 released[_index] = false;
@@ -149,8 +146,6 @@
         function KeyUp(_index) {
             key[_index] = false;
             hitters[_index].src = "Sprites/Notes/Hitter_Unlit_1.png";
-
-            Set_BG_Rotation(_index, false)
 
             released[_index] = true;
             releasedIdProgress[_index] = idProgress[_index];
@@ -197,6 +192,7 @@
 
                     case 32: // START MAP
                         if (!playing) {
+                            document.body.style.cursor = 'none';
                             StartTime = Date.now();
                             startMap();
                             for (let i = 0; i < hitKeys.length; i++) {
@@ -209,6 +205,7 @@
                     case 27: // Pause & Exit
                         if (pause[0] && playing) {
                             Pause(true)
+                            document.body.style.cursor = 'initial';
                             document.getElementById("PauseMenu").style.display = "block";
                             return;
                         }
@@ -298,6 +295,7 @@
         }
 
         function Show_Results() {
+            document.body.style.cursor = 'initial';
             console.log("Setting Results")
             playing = false;
             console.log("Ending Play");
@@ -346,7 +344,7 @@
             LoadSettings() // Loads settings if they were saved
 
             //Map data retrieval
-            document.getElementById("OptionChartData").innerHTML = localStorage["Chart"];
+            //document.getElementById("OptionChartData").innerHTML = localStorage["Chart"];
 
 
             // Makes sure the map doesn't go too far offscreen
@@ -384,10 +382,6 @@
                     progress = (chart.audio.currentTime / chart.audio.duration) * 100;
                     document.getElementById("ProgressBar").style.width = progress + '%';
                 } catch (error) {}
-
-                if (document.getElementById("OptionRB").checked) {
-                    BG_Rotate()
-                }
             }
             for (let i = 0; i < document.getElementsByClassName("hitter").length; i++) {
                 const element = document.getElementsByClassName("hitter")[i];
@@ -407,7 +401,7 @@
             chart.Play_Audio(rate) // Starts the song
 
             document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHidingRight");
-            document.getElementById("ScoreBoard").classList.add("delay-1", "UIHidingLeft");
+            //document.getElementById("ScoreBoard").classList.add("delay-1", "UIHidingLeft");
         }
 
         function Set_Input_Key(input) {
@@ -440,7 +434,7 @@
             document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
 
             document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
-            document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
+            //document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
 
             // Removes ALL Notes
             for (let i = 0; i < notes.length; i++) {
@@ -476,7 +470,7 @@
             HighestCombos = [0, 0, 0];
 
             // For map Changes
-            chartData = document.getElementById("OptionChartData").innerHTML;
+            chartData = localStorage["Chart"];;
             rate = document.getElementById("OptionModRate").value; // Rate changes require whole map to be reload hence thiss function exists
             chart = null // So chart can be set later and so the previous doesn't interfere with anything
             Start(chartData, 1); // Generates the map
@@ -541,6 +535,7 @@
             <div class="UIContainer" style="width: 97.5%;">
                 <button onclick="{
                         document.getElementById('PauseMenu').style.display = 'none';
+                        document.body.style.cursor = 'none';
                         setTimeout(function() {
                             Resume();
                             setTimeout(function() {
@@ -663,7 +658,7 @@
     </div>
     <!-- End of modal HTML -->
     <div id="EverythingContainer">
-        <div id="ScoreBoard" class="UIContainer MainUIContainer" style="float:left; width:20%; max-width: 25%; height: 97%;">
+        <!--<div id="ScoreBoard" class="UIContainer MainUIContainer" style="float:left; width:20%; max-width: 25%; height: 97%;">
             <div>
                 <p>
                     SCORES (WIP)
@@ -682,7 +677,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div id="ChartContainer" style="position:absolute; width: 26.75rem; height: 120%; left: 46.8rem; top: -0.625rem; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #888;">
             <div id="HitErrorBar" style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;">
                 <a id="ComboText" style="position: inherit; width: 4rem; left: 23rem; top: -3rem; background-color: rgba(0, 0, 0, 0.5); border-radius: 5px;"></a>
@@ -759,59 +754,18 @@
                         this.nextElementSibling.value = this.value
                         document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')'
                         }" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
-                <label>Rotate Background: </label>
-                <input id="OptionRB" onchange="SaveOptions()" type="checkbox"> <br>
-                <label>Rotation Intesity: </label> <br>
-                <!--
-                        RI - Rotation Intesite
-                        S - Small (Inner)
-                        L - Large (Outer)
-                    -->
-                <label>Pattern (Outer, Inner): </label>
-                <input id="OptionRIS" oninput="{ rotationIntesitySP = this.value }" type="number" min="1" max="100" value="5" style="width: 2rem;"> <label>deg</label> <input id="OptionRIL" oninput="{ rotationIntesitySP = this.value }" type="number" min="1"
-                    max="100" value="10" style="width: 2rem;"> <label>deg</label> <br>
             </div>
-
-            <div class="UIContainer">
-                <div>
-                    <p>
-                        Expirimental:
-                    </p>
-                </div>
-                <div class="UIContainer">
-                    <label>
-                            <div>
-                                <a> Will reset all saved </a> <br>
-                                <a> settings if site isn't </a> <br>
-                                <a> done loading. </a> 
-                            </div>
-                        </label>
-                    <button onclick="Reload_Chart()" style="background-color: rgba(240, 100, 100, 0.5); width: 5rem;">Force Reload Chart</button>
-                </div><br>
-                <div class="UIContainer">
-                    <div>
-                        <p>
-                            Map JSON:
-                        </p>
-                    </div>
-                    <span id="OptionChartData" class="textarea" role="textbox" contenteditable>
-                            
-                        </span>
-                </div>
+        </div>
+        <div id="ProgressBarContainer" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 5px; background-color: #ccc; z-index: 999;">
+            <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
             </div>
-            <iframe id='iFrame1' src="SettingsPanel/Other.htm" style="width: 100%; height:77.5rem" frameborder="0" scrolling="no" onload="" seamless></iframe>
         </div>
-    </div>
-    <div id="ProgressBarContainer" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 5px; background-color: #ccc; z-index: 999;">
-        <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
+        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
+            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" />
+            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" />
+            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" />
         </div>
-    </div>
-    <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-        <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" />
-        <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" />
-        <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" />
-    </div>
 </body>
 
 </html>

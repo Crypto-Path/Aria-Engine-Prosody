@@ -18,15 +18,9 @@ function CheckRow(i) {
             if (PosY >= -(hitRange / 120)) { // Aut0 hit range
                 if (PosY <= (hitRange)) {
                     hitters[i].src = "Sprites/Notes/Hitter_Lit_1.png";
-                    if (document.getElementById("OptionRB").checked) {
-                        Set_BG_Rotation(i)
-                    }
                     HitNote(PosY, HitErrorTime / 4, i, "rgb(135,206,235)");
                     IncreaseCombo(0)
                     setTimeout(function() {
-                        if (document.getElementById("OptionRB").checked) {
-                            Set_BG_Rotation(i, false)
-                        }
                         hitters[i].src = "Sprites/Notes/Hitter_Unlit_1.png";
                     }, 16000 / (chart.map["BPM"] * rate));
                 }
