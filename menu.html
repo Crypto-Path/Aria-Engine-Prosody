@@ -461,6 +461,15 @@
             if (string != "") {
                 console.log(`Searching for: ${string}`)
                 for (var i in charts) {
+                    if (string.includes("ID = ")) {
+                        try {
+                            if (i == string.split('ID = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${charts[i][string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                    }
                     if (charts[i]["Name"].includes(string)) {
                         CreateButton(i)
                         console.log(`Found Matching Name: "${string}" in "${charts[i]["Name"]}"`)
