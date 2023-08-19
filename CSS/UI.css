@@ -1,165 +1,198 @@
 html {
-  font-size: 16px;
-  touch-action: manipulation;
+    font-size: 16px;
+    touch-action: manipulation;
 }
 
 body {
-  overflow: hidden;
-  background-size:     cover;                      /* <------ */
-  background-repeat:   no-repeat;
-  background-position: center center;              /* optional, center the image */
-  color: white;
-  margin: 0 0 0 0;
+    overflow: hidden;
+    background-size: cover;
+    /* <------ */
+    background-repeat: no-repeat;
+    background-position: center center;
+    /* optional, center the image */
+    color: white;
+    margin: 0 0 0 0;
 }
 
 p {
-  padding-top: 1rem;
-  text-align: center;
-  color: white;
+    padding-top: 1rem;
+    text-align: center;
+    color: white;
 }
 
 a {
-  color: white;
+    color: white;
 }
 
 input {
-  width: 1.875rem;
-  height: 1.5625rem;
-  border-radius: 0.625rem;
-  font-size: 0.625rem;
+    width: 1.875rem;
+    height: 1.5625rem;
+    border-radius: 0.625rem;
+    font-size: 0.625rem;
 }
 
 label {
-  font-size: 1rem;
-  color: white;
+    font-size: 1rem;
+    color: white;
 }
+
 
 /* Chrome, Safari, Edge, Opera */
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
+
 /* Firefox */
+
 input[type=number] {
-  appearance: textfield;
+    appearance: textfield;
 }
 
 button {
-  width: 3.125rem;
-  height: 1.5625rem auto;
-  border-radius: 0.625rem;
-  font-size: 0.625rem;
+    width: 3.125rem;
+    height: 1.5625rem auto;
+    border-radius: 0.625rem;
+    font-size: 0.625rem;
 }
 
-
 iframe[seamless] {
-  border: none;
+    border: none;
 }
 
 ::-webkit-scrollbar {
-  width: 0.625rem;
+    width: 0.625rem;
 }
+
 
 /* Track */
+
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+    background: #f1f1f1;
 }
+
 
 /* Handle */
+
 ::-webkit-scrollbar-thumb {
-  background: #888;
+    background: #888;
 }
+
 
 /* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+    background: #555;
 }
 
-.UIContainer { /*Most Divs*/
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  Width: 95%;
-  border-radius: 0.625rem;
-  background-color: rgba(62, 86, 114, 0.5);
-  text-align: center;
-  height: fit-content;
-  min-height: 1rem;
-  max-width: 100%;
-  padding-bottom: 0.625rem;
-  margin-top: 0.625rem;
+.UIContainer {
+    /*Most Divs*/
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    Width: 95%;
+    border-radius: 0.625rem;
+    background-color: rgba(62, 86, 114, 0.5);
+    text-align: center;
+    height: fit-content;
+    min-height: 1rem;
+    max-width: 100%;
+    padding-bottom: 0.625rem;
+    margin-top: 0.625rem;
 }
 
-.UIHidingLeft { /*Settings when games starts*/
-  opacity: 0;
-  transform: translate(-100%,0);
-  transition-property: opacity, transform;
-  transition-timing-function: ease-in-out;
-  transition-duration: 0.5s;
+.UIHidingLeft {
+    /*Settings when games starts*/
+    opacity: 0;
+    transform: translate(-100%, 0);
+    transition-property: opacity, transform;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.5s;
 }
 
-.UIHidingRight { /*Leaderboard when games starts*/
-  opacity: 0;
-  transform: translate(100%,0);
-  transition-property: opacity, transform;
-  transition-timing-function: ease-in-out;
-  transition-duration: 1.5s;
+.UIHidingRight {
+    /*Leaderboard when games starts*/
+    opacity: 0;
+    transform: translate(100%, 0);
+    transition-property: opacity, transform;
+    transition-timing-function: ease-in-out;
+    transition-duration: 1.5s;
 }
 
-.MainUIContainer { /*The two main panels (Leaderboard, Settings)*/
-  background-color: rgba(62, 86, 114, 0.33);
-  border-radius: 1.25rem;
-  overflow-y: auto; /* Hide scrollbars */
-  transition-property: opacity;
-  transition-timing-function: ease-in-out;
-  transition-duration: 0.5s;
+.MainUIContainer {
+    /*The two main panels (Leaderboard, Settings)*/
+    background-color: rgba(62, 86, 114, 0.33);
+    border-radius: 1.25rem;
+    overflow-y: auto;
+    /* Hide scrollbars */
+    transition-property: opacity;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.5s;
 }
 
-.score {  /*Leaderboard score*/
-  border-radius: 0.625rem;
-  background-color: rosybrown;
-  width: 90%;
-  margin-top: 0.625rem;
-  margin-left: 0.9375rem;
+.score {
+    /*Leaderboard score*/
+    border-radius: 0.625rem;
+    background-color: rosybrown;
+    width: 90%;
+    margin-top: 0.625rem;
+    margin-left: 0.9375rem;
 }
 
-.scorePFP { /*Leaderboard score profile picture of user*/
-  float: left;
-  width: 15%;
-  margin: auto;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 0.625rem;
+.scorePFP {
+    /*Leaderboard score profile picture of user*/
+    float: left;
+    width: 15%;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0.625rem;
 }
 
-.score:hover .scorePFP { /*Leaderboard score when it gets hovered over*/
-  float:none;
-  width:50%;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 2.0625rem;
+.score:hover .scorePFP {
+    /*Leaderboard score when it gets hovered over*/
+    float: none;
+    width: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2.0625rem;
 }
 
-.textarea { /*Larger text box's made to fite everything and resize*/
-  display: block;
-  overflow: hidden;
-  min-height: 1.25rem;
-  line-height: 1.25rem;
-  color: rgb(201, 201, 201);
+.textarea {
+    /*Larger text box's made to fite everything and resize*/
+    display: block;
+    overflow: hidden;
+    min-height: 1.25rem;
+    line-height: 1.25rem;
+    color: rgb(201, 201, 201);
 }
 
-.background { /*BG of game*/
-  image-rendering: auto !important; 
+.background {
+    /*BG of game*/
+    image-rendering: auto !important;
 }
 
-.delay-1 {  /*Delays*/
-  -webkit-transition: all 1s ease-in-out;
-     -moz-transition: all 1s ease-in-out;
-      -ms-transition: all 1s ease-in-out;
-       -o-transition: all 1s ease-in-out;
-          transition: all 1s ease-in-out;
+.delay-1 {
+    /*Delays*/
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -ms-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
 }
 
 span {
-  background-color: rgba(0,0,0,0.2);
-  border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.fullscreen-toggle {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.fullscreen-toggle>img {
+    width: 2rem;
+    height: 2rem;
 }
