@@ -185,5 +185,24 @@
     }
 </script>
 <script src="Data/Updates.js"></script>
+<script>
+    const fullscreenToggle = document.getElementById('fullscreenToggle');
+
+    fullscreenToggle.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            document.documentElement.requestFullscreen()
+                .catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+        }
+    });
+    document.onload(() => {
+        setTimeout(() => {
+            document.documentElement.requestFullscreen()
+        }, 1000)
+    });
+</script>
 
 </html>
