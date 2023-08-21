@@ -583,8 +583,17 @@
                         document.getElementById('Selected').click()
                     } catch (error) {}
                     break;
+                case 8: // Move selection down
+                    document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
+                    break;
 
                 default:
+                    if (document.activeElement !== document.getElementById('SearchBar')) {
+                        char = (e.getModifierState('CapsLock') || e.shiftKey) ? String.fromCharCode(e.keyCode) : String.fromCharCode(e.keyCode).toLowerCase();
+                        if (char != "") {
+                            document.getElementById("SearchBar").value += char;
+                        }
+                    }
                     console.log(e.keyCode)
                     break;
             }
