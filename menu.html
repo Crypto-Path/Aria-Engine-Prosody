@@ -6,6 +6,7 @@
     </title>
     <link rel="stylesheet" href="CSS/UI.css">
     <link rel="stylesheet" href="CSS/BG.css">
+    <link rel="stylesheet" href="CSS/NoSelect.css">
     <style>
         a {
             font-size: 1rem;
@@ -583,8 +584,10 @@
                         document.getElementById('Selected').click()
                     } catch (error) {}
                     break;
-                case 8: // Move selection down
-                    document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
+                case 8: // Backspace
+                    if (document.activeElement !== document.getElementById('SearchBar')) {
+                        document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
+                    }
                     break;
 
                 default:
