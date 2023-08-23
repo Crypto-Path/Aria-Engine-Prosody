@@ -587,17 +587,12 @@
                 case 8: // Backspace
                     if (document.activeElement !== document.getElementById('SearchBar')) {
                         document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
+                        SearchForChart()
                     }
                     break;
-                case 9: // Backspace
-                    if (document.activeElement !== document.getElementById('SearchBar')) {
-                        document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
-                    }
+                case 9:
                     break;
-                case 10: // Backspace
-                    if (document.activeElement !== document.getElementById('SearchBar')) {
-                        document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
-                    }
+                case 10:
                     break;
                 case 11:
                     break;
@@ -624,6 +619,7 @@
                     if (document.activeElement !== document.getElementById('SearchBar')) {
                         char = (e.getModifierState('CapsLock') || e.shiftKey) ? String.fromCharCode(e.keyCode) : String.fromCharCode(e.keyCode).toLowerCase();
                         document.getElementById("SearchBar").value += char;
+                        SearchForChart()
                     }
                     console.log(e.keyCode)
                     break;
