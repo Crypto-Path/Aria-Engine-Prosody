@@ -4,7 +4,7 @@ function InitNotes(_chart, _notes) {
         _notes[i] = [] // Inits var
         _notes[i].length = _chart.Get_Poss(i).length; // Sets length of each array in notes
         for (let j = 0; j < _chart.Get_Poss(i).length; j++) { // Gets each note in row
-            CreateNote(_chart, i, j); // Creates note
+            CreateNote(_chart, i, j, 1); // Creates note
         }
     }
     return _notes;
@@ -28,21 +28,89 @@ function UpdateNotes(_chart) {
     }
 }
 
-function CreateNote(_chart, row, index) {
-    noteImage = document.createElement("img"); // Creates image object
-    notes[row][index] = noteImage; // Set visual notes array to image object
-    noteImage.src = "Sprites/Notes/Note_Hit_" + (row + 1) + ".png"; // Sets the image's image
-    noteImage.classList.add('note'); // Sets the class for the look of the object
-    note = _chart.Get_Poss(row)[index] // Gets note information
-    noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
-    noteImage.style.top = (note.y * (scrollSpeed / 4) - StartPos[1]) / 16 + "rem"; // Sets the Y location
-    noteImage.id = tempNoteId; // Debug Purposes
-    tempNoteId++; // Debug Purposes
+function CreateNote(_chart, _row, _index, _noteType = 0) {
+    switch (_noteType) {
+        case 0: // Creates a regular note
+            noteImage = document.createElement("img"); // Creates image object
+            notes[_row][_index] = noteImage; // Set visual notes array to image object
+            noteImage.src = "Sprites/Notes/Note_Hit_" + (_row + 1) + ".png"; // Sets the image's image
+            noteImage.classList.add('note'); // Sets the class for the look of the object
+            note = _chart.Get_Poss(_row)[_index] // Gets note information
+            noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
+            noteImage.style.top = (note.y * (scrollSpeed / 4) - StartPos[1]) / 16 + "rem"; // Sets the Y location
+            noteImage.id = tempNoteId; // Debug Purposes
+            tempNoteId++; // Debug Purposes
+        
+            //Sizing
+            noteImage.style.left = (6 * _row) * window.innerWidth / 1920 + "rem"
+            noteImage.style.width = 8 * window.innerWidth / 1920 + "rem"
+            noteImage.style.height = noteImage.style.width
+        
+            document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
+            break;
+        case 1: // Creates a long note
 
-    //Sizing
-    noteImage.style.left = (6 * row) * window.innerWidth / 1920 + "rem"
-    noteImage.style.width = 8 * window.innerWidth / 1920 + "rem"
-    noteImage.style.height = noteImage.style.width
+            noteImage = document.createElement("img"); // Creates image object
 
-    document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
+
+            noteImage = document.createElement("img"); // Creates image object
+            notes[_row][_index] = noteImage; // Set visual notes array to image object
+            noteImage.src = "Sprites/Notes/Note_Hit_Start_" + (_row + 1) + ".png"; // Sets the image's image
+            noteImage.classList.add('note'); // Sets the class for the look of the object
+            note = _chart.Get_Poss(_row)[_index] // Gets note information
+            noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
+            noteImage.style.top = (note.y * (scrollSpeed / 4) - StartPos[1]) / 16 + "rem"; // Sets the Y location
+            noteImage.id = tempNoteId; // Debug Purposes
+            tempNoteId++; // Debug Purposes
+            noteImage.style.left = (6 * _row) * window.innerWidth / 1920 + "rem"
+            noteImage.style.width = 8 * window.innerWidth / 1920 + "rem"
+            noteImage.style.height = noteImage.style.width
+        
+            document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
+            break;
+        case 2: // Creates an adlib note
+            noteImage = document.createElement("img"); // Creates image object
+            notes[_row][_index] = noteImage; // Set visual notes array to image object
+            noteImage.src = "Sprites/Notes/Note_Hit_" + (_row + 1) + ".png"; // Sets the image's image
+            noteImage.classList.add('note'); // Sets the class for the look of the object
+            note = _chart.Get_Poss(_row)[_index] // Gets note information
+
+            noteImage.style.opacity = "0"; // Turns it invisible
+
+            noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
+            noteImage.style.top = (note.y * (scrollSpeed / 4) - StartPos[1]) / 16 + "rem"; // Sets the Y location
+            noteImage.id = tempNoteId; // Debug Purposes
+            tempNoteId++; // Debug Purposes
+        
+            //Sizing
+            noteImage.style.left = (6 * _row) * window.innerWidth / 1920 + "rem"
+            noteImage.style.width = 8 * window.innerWidth / 1920 + "rem"
+            noteImage.style.height = noteImage.style.width
+        
+            document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
+            break;
+        case 2: // Creates an mine note
+            noteImage = document.createElement("img"); // Creates image object
+            notes[_row][_index] = noteImage; // Set visual notes array to image object
+
+            noteImage.src = "Sprites/Notes/Note_Hit_" + (_row + 1) + ".png"; // Sets the image's image
+
+            noteImage.classList.add('note'); // Sets the class for the look of the object
+            note = _chart.Get_Poss(_row)[_index] // Gets note information
+            noteImage.style.opacity = "rem"; // Sets the X location
+            noteImage.style.left = (note.x - StartPos[0]) / 18 + "rem"; // Sets the X location
+            noteImage.style.top = (note.y * (scrollSpeed / 4) - StartPos[1]) / 16 + "rem"; // Sets the Y location
+            noteImage.id = tempNoteId; // Debug Purposes
+            tempNoteId++; // Debug Purposes
+        
+            //Sizing
+            noteImage.style.left = (6 * _row) * window.innerWidth / 1920 + "rem"
+            noteImage.style.width = 8 * window.innerWidth / 1920 + "rem"
+            noteImage.style.height = noteImage.style.width
+        
+            document.getElementById("NoteContainer").appendChild(noteImage); // Appends the object to DOM
+            break;
+        default:
+            break;
+    }
 }
