@@ -35,6 +35,15 @@ Whats new?
         - BONUS: The Pathbreaking has an easier diff now
 
 // Gameplay
+    - New info panel design
+        - Centered in the middle of the screen
+        - Removed panel to the left
+        - Better organization 
+    - Rate mode keybinds
+        - ctrl + + increases rate by .1
+        - ctrl + - decreases rate by .1
+        - ctrl + shift + + increases rate by .05
+        - ctrl + shift + - decreases rate by .05
     - Removed background rotation
     - Scroll speed is now closer to other rhythm games (osu! & Quaver)
     - Rank

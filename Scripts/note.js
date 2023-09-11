@@ -42,11 +42,11 @@ class Note {
     Get_Id() {
         return this.id;
     }
-    
+
     Get_Type() {
         return this.type;
     }
-    
+
     Get_Length() {
         return this.length;
     }

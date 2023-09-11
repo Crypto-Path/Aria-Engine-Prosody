@@ -21,7 +21,7 @@ class Chart {
         this.rate = rate;
 
         this.audio = null;
-
+        this.delayTimer = null;
         this.row = []
             /*Sets each row to an empty array for some purpose idk*/
         for (let i = 0; i < rows; i++) {
@@ -135,7 +135,7 @@ class Chart {
         const audioLocation = this.map["Audio"]; // Gets JSON url or directory location for audio
         this.audio = new Audio(audioLocation);
         this.audio.playbackRate = _rate;
-        setTimeout(() => {
+        this.delayTimer = setTimeout(() => {
             this.audio.play();
         }, 3000)
     }

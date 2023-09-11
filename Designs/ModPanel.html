@@ -162,15 +162,19 @@
 
     // Listen for keydown event on the document
     document.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.shiftKey && event.key === '=') {
+        if (event.ctrlKey && event.shiftKey && event.key === '+') {
             // Move the range to the right
-            rangeInput.value += 0.05;
+            rangeInput.value = Math.round((parseFloat(rangeInput.value) + 0.05) * 20) / 20;
+            document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+            document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
             event.preventDefault(); // Prevent default browser behavior
             return;
         }
-        if (event.ctrlKey && event.shiftKey && event.key === '-') {
+        if (event.ctrlKey && event.shiftKey && event.key === '_') {
             // Move the range to the right
-            rangeInput.value -= 0.05;
+            rangeInput.value = Math.round((parseFloat(rangeInput.value) - 0.05) * 20) / 20;
+            document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+            document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
             event.preventDefault(); // Prevent default browser behavior
             return;
         }
@@ -178,6 +182,8 @@
         if (event.ctrlKey && event.key === '=') {
             // Move the range to the right
             rangeInput.value = Math.round((parseFloat(rangeInput.value) + 0.1) * 20) / 20;
+            document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+            document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
             event.preventDefault(); // Prevent default browser behavior
             return;
         }
@@ -186,6 +192,8 @@
         if (event.ctrlKey && event.key === '-') {
             // Move the range to the left
             rangeInput.value = Math.round((parseFloat(rangeInput.value) - 0.1) * 20) / 20;
+            document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+            document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
             event.preventDefault(); // Prevent default browser behavior
             return;
         }

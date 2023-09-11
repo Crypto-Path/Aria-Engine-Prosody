@@ -193,7 +193,6 @@
 
                     case 32: // START MAP
                         if (!playing) {
-                            document.body.style.cursor = 'none';
                             StartTime = Date.now();
                             startMap();
                             for (let i = 0; i < hitKeys.length; i++) {
@@ -359,7 +358,6 @@
                 UpdateNotes(chart); // Update the notes position the user will see onscreen
                 if (playing) { // Checks if chart is playing or not
                     if (chart.Get_Audio_Time_Left() <= 0) {
-                        document.getElementById("AccText").innerHTML = "&lt;Waiting for Song to end&gt;";
                         Show_Results()
                     }
                     chart.Update_Progress(rate); // Updates note behind the scene based on song position
@@ -396,6 +394,9 @@
         }
 
         function startMap() {
+            document.body.style.cursor = 'none';
+            document.getElementById('MainPanel').style.display = 'none'
+
             auto = document.getElementById("OptionModAuto").checked; // Check if auto mod is active
 
             playing = true; // For the update function to know it can start
@@ -419,22 +420,26 @@
         }
 
         function Reload_Chart(_object = null, _playing = false) {
+
             clearInterval(0); // Stops Update from being called every ms
             playing = false; // Keeps Update function from doing anything just incase
             pause = [true, false, 0];
-            if (chart != null) // Makes sure thare IS audio that can be disable
+            if (chart != null) { // Makes sure thare IS audio that can be disable
+                clearInterval(chart.delayTimer); //chart.delayTimer
                 chart.Stop_Audio(); // Stops the music from playing
-
+            }
             if (_object != null) {
                 _object.blur()
             }
 
             SaveOptions(); // Gets and Sets the Options
+            document.body.style.cursor = 'initial';
+            document.getElementById('MainPanel').style.display = (_playing) ? 'none' : 'block';
             document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
             document.getElementById("StatsMenu").style.display = "none"; // Hides result screen
             document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
 
-            document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
+            //document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
             //document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
 
             // Removes ALL Notes
@@ -651,7 +656,7 @@
                 </div>
             </div>
             <div class="UIContainer" style="width: 97.5%;">
-                <button onclick="Reload_Chart()" style="width: 5rem; height: 3rem;">
+                <button onclick="{Reload_Chart()}" style="width: 5rem; height: 3rem;">
                         Restart
                     </button>
             </div>
@@ -683,7 +688,7 @@
             <div id="HitErrorBar" style="position: absolute; top:31.25rem; left: 9.0625rem; width:8.3125rem; height: 0.3125rem; background-color: blue;">
                 <a id="ComboText" style="position: inherit; width: 4rem; left: 23rem; top: -3rem; background-color: rgba(0, 0, 0, 0.5); border-radius: 5px;"></a>
                 <a id="AccText" style="position: inherit; width: 8rem; left: 23rem; top: -5rem; font-size: 16px; background-color: rgba(0, 0, 0, 0.5); border-radius: 5px;"></a>
-                <a id="ChartInfoText" style="position: inherit; width: 16rem; top: -3rem; text-align: center; font-size: 38px;">Loading...</a>
+                <!--<a id="ChartInfoText" style="position: inherit; width: 16rem; top: -3rem; text-align: center; font-size: 38px;">Loading...</a>-->
                 <div id="HitErrorBarExtension" style="position: inherit; top:0; left: 4rem; width:0.325rem; height: 0.625rem; background-color: blue;">
                 </div>
             </div>
@@ -699,64 +704,184 @@
             </div>
             <div id="NoteContainer" style="overflow:hidden;"></div>
         </div>
-        <div id="MapsSettingContainer" class="UIContainer MainUIContainer" style="float:right; width:20%; max-width: 25%; height: 97%; align-items: center; justify-content: center;">
+        <div id="MainPanel" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.5);">
+            <div style="background-color: rgba(26, 55, 92, 0.5); position: absolute; width: 50%; height: 66%; left: 25%; top: 16.6%; border-radius: 10px; box-shadow: 15px;  text-align: center;">
+                <!--<a style="width: 100%; height: auto; font-size: 48px; color: white;">
+                    TITLE
+                </a>-->
+                <div id="Mods&Info" style="display: flex; justify-content: space-around; width: 100%; height: calc(100% - 40px); overflow-y: scroll;">
+                    <div style="width: 45%; height: auto;">
+                        <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px;">
+                            <div style="text-align: center; font-size: 32px; color: white;">
+                                <p>
+                                    KEY BINDINGS
+                                </p>
+                            </div>
+                            <hr>
+                            <div id="KeyBindsContainer">
+                                <div style="text-align: center;">
+                                    <label>GAMEPLAY</label>
+                                </div>
+                                <br>
+                                <div id="KeyKeybindsContainer" style="display: flex; justify-content: center;">
+                                    <input id="KeyCheck1" type="number" onchange="{SaveOptions();}" style="visibility: hidden; width: 0; padding: 0; margin: 0;" value="68"> <input id="KeyLetter1" type="text" onchange="{document.getElementById('KeyCheck1').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
+                                        maxlength="1" style="width:2.5rem" value="D">
+                                    <input id="KeyCheck2" type="number" onchange="{SaveOptions();}" style="visibility: hidden; width: 0; padding: 0; margin: 0;" value="70"> <input id="KeyLetter2" type="text" onchange="{document.getElementById('KeyCheck2').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
+                                        maxlength="1" style="width:2.5rem" value="F">
+                                    <input id="KeyCheck3" type="number" onchange="{SaveOptions();}" style="visibility: hidden; width: 0; padding: 0; margin: 0;" value="74"> <input id="KeyLetter3" type="text" onchange="{document.getElementById('KeyCheck3').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
+                                        maxlength="1" style="width:2.5rem" value="J">
+                                    <input id="KeyCheck4" type="number" onchange="{SaveOptions();}" style="visibility: hidden; width: 0; padding: 0; margin: 0;" value="75"> <input id="KeyLetter4" type="text" onchange="{document.getElementById('KeyCheck4').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
+                                        maxlength="1" style="width:2.5rem" value="K">
+                                </div>
+                                <br>
+                                <div style="text-align: center;">
+                                    <label>OTHER</label>
+                                </div>
+                                <div id="OtherKeybindsContainer" style="display: flex; flex-direction: column; align-items: center;">
+                                    <div>
+                                        <input id="KeyRestart" type="text" onchange="{document.getElementById('KeyCheck1').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem; margin: auto;" value=" ">
+                                        <label><b>Start Chart </b></label>
+                                    </div>
+                                    <div>
+                                        <input id="KeyRestart" type="text" onchange="{document.getElementById('KeyCheck1').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}" maxlength="1" style="width:2.5rem; margin: auto;" value="`">
+                                        <label><b>Quick restart </b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px;">
+                            <div style="text-align: center; font-size: 32px; color: white;">
+                                <p>
+                                    MODIFIERS
+                                </p>
+                            </div>
+                            <hr>
+                            <div style="margin-left: 10px;">
+                                <input id="OptionModAuto" onchange="Reload_Chart(this)" type="checkbox"> <label>Auto</label> <br>
 
-            <div class="UIContainer">
-                <div>
-                    <p>
-                        MODS:
-                    </p>
-                </div>
-                <label>Auto: </label>
-                <input id="OptionModAuto" onchange="Reload_Chart(this)" type="checkbox"> <br>
-                <label>Rate: </label>
-                <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1"> <br>
-                <label>Switcher: </label>
-                <input id="OptionSwitcher" onchange="Reload_Chart()" type="checkbox"> <br>
-            </div>
+                                <input id="OptionModRate" onchange="Reload_Chart()" type="number" value="1" min="0.2" max="16" oninput="{
+                                    document.getElementById('OptionModRateSlider').value = this.value * 20;}" style="width: 2.375rem;">
+                                <input id="OptionModRateSlider" onchange="Reload_Chart()" type="range" min="4" max="320" value="20" class="slider" id="myRange" oninput="{
+                                    document.getElementById('OptionModRate').value = this.value / 20}" style="width: 50%"> <label>Rate</label> <br>
 
-            <div class="UIContainer">
-                <div>
-                    <p>
-                        GamePlay:
-                    </p>
-                </div>
-                <label>Upscroll: </label>
-                <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <br>
-                <label>Scroll Speed: </label>
-                <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <br>
-                <label>Playfield X Offset: </label>
-                <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <br>
-                <div class="UIContainer">
-                    <div>
-                        <p>
-                            Key Bindings:
-                        </p>
+                                <input id="OptionSwitcher" onchange="Reload_Chart()" type="checkbox"> <label>Switcher</label> <br>
+                            </div>
+                        </div>
                     </div>
-                    <label>Keys: (Key Code) (Key Char)</label> <br>
-                    <label>1 -</label>
-                    <input id="KeyCheck1" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter1').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="68"> <input id="KeyLetter1" type="text" onchange="{document.getElementById('KeyCheck1').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
-                        maxlength="1" style="width:2.5rem" value="D"> <br>
-                    <label>2 -</label>
-                    <input id="KeyCheck2" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter2').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="70"> <input id="KeyLetter2" type="text" onchange="{document.getElementById('KeyCheck2').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
-                        maxlength="1" style="width:2.5rem" value="F"> <br>
-                    <label>3 -</label>
-                    <input id="KeyCheck3" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter3').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="74"> <input id="KeyLetter3" type="text" onchange="{document.getElementById('KeyCheck3').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
-                        maxlength="1" style="width:2.5rem" value="J"> <br>
-                    <label>4 -</label>
-                    <input id="KeyCheck4" type="number" onchange="{SaveOptions(); document.getElementById('KeyLetter4').value = String.fromCharCode(this.value);}" style="width:2.5rem" value="75"> <input id="KeyLetter4" type="text" onchange="{document.getElementById('KeyCheck4').value = this.value.toUpperCase().charCodeAt(0); SaveOptions()}"
-                        maxlength="1" style="width:2.5rem" value="K"> <br>
+                    <div style="width: 45%; height: auto;">
+                        <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px; ">
+                            <div style="text-align: center; font-size: 32px; color: white;">
+                                <p>
+                                    GAMEPLAY
+                                </p>
+                            </div>
+                            <hr>
+                            <div style="margin-left: 10px;">
+                                <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <label>Upscroll</label> <br>
+                                <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <label>Scroll Speed</label> <br>
+                                <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <label>Playfield X Offset</label> <br>
+                                <input id="OptionBackgroundDim" onchange="Reload_Chart()" type="number" value="50" min="0" max="100" oninput="{
+                                    document.getElementById('OptionBGDim').value = this.value;
+                                    document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" style="width: 2.375rem;">
+                                <input id="OptionBGDim" oninput="{
+                                    document.getElementById('OptionBackgroundDim').value = this.value;
+                                    document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" type="range" min="1" max="100" value="50" style="width: 50%;"> <label>Background Dim</label>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px;">
+                            <div style="text-align: center; font-size: 32px; color: white;">
+                                <p>
+                                    INFORMATION
+                                </p>
+                            </div>
+                            <hr>
+                            <div>
+                                <div style="text-align: center; font-size: 28px; color: white;">
+                                    <p>
+                                        Join our discord!!
+                                    </p>
+                                </div>
+                                <div style="color: white; margin-left: 20px">
+                                    <a>
+                                        Joining the discord helps increase activity, development, and events.
+                                    </a>
+                                    <br>
+                                    <a>
+                                        It also allows users to recommend features like QoL improvements and new ideas entirel, or you could report bugs you find, .
+                                    </a>
+                                    <br>
+                                    <a>
+                                       You can keep updated on what is happening in the community.
+                                    </a>
+                                    <br>
+                                    <a>
+                                        If you're looking for a project to help in. This project is open source. <a href="https://github.com/Crypto-Path/Aria-Engine-Prosody">Github</a>
+                                    </a>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="UIContainer">
+                                    <iframe src="https://discord.com/widget?id=1082208425582276700&theme=dark" width="66%" height="400" style="margin-left: 16.6%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="UIContainer">
-                <label>Background Dim: </label>
-                <input id="OptionBGDim" oninput="{
-                        this.nextElementSibling.value = this.value
-                        document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')'
-                        }" type="range" min="1" max="100" value="50" style="width: 10rem;"> <output>50</output> <br>
+                <div>
+                    <button style="width: 90px; height: 40px; background-color: rgba(255, 255, 255, 0.77); border-radius: 5px;" onclick="{document.getElementById('MainPanel').style.display = 'none'}">
+                    CONTINUE
+                    </button>
+                </div>
             </div>
         </div>
+
+        <script>
+            const rangeInput = document.getElementById('OptionModRate');
+
+            // Listen for keydown event on the document
+            document.addEventListener('keydown', (event) => {
+                if (event.ctrlKey && event.shiftKey && event.key === '+') {
+                    // Move the range to the right
+                    rangeInput.value = Math.round((parseFloat(rangeInput.value) + 0.05) * 20) / 20;
+                    document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+                    document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
+                    Reload_Chart()
+                    event.preventDefault(); // Prevent default browser behavior
+                    return;
+                }
+                if (event.ctrlKey && event.shiftKey && event.key === '_') {
+                    // Move the range to the right
+                    rangeInput.value = Math.round((parseFloat(rangeInput.value) - 0.05) * 20) / 20;
+                    document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+                    document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
+                    Reload_Chart()
+                    event.preventDefault(); // Prevent default browser behavior
+                    return;
+                }
+
+                if (event.ctrlKey && event.key === '=') {
+                    // Move the range to the right
+                    rangeInput.value = Math.round((parseFloat(rangeInput.value) + 0.1) * 20) / 20;
+                    document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+                    document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
+                    Reload_Chart()
+                    event.preventDefault(); // Prevent default browser behavior
+                    return;
+                }
+
+                // Check if Ctrl key and - are pressed
+                if (event.ctrlKey && event.key === '-') {
+                    // Move the range to the left
+                    rangeInput.value = Math.round((parseFloat(rangeInput.value) - 0.1) * 20) / 20;
+                    document.getElementById('OptionModRateSlider').value = document.getElementById('OptionModRate').value * 20;
+                    document.getElementById('OptionModRate').value = parseInt(document.getElementById('OptionModRateSlider').value) / 20;
+                    Reload_Chart()
+                    event.preventDefault(); // Prevent default browser behavior
+                    return;
+                }
+            });
+        </script>
         <div id="ProgressBarContainer" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 5px; background-color: #ccc; z-index: 999;">
             <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
             </div>
