@@ -515,7 +515,7 @@
             UpdateScrollDirection()
             const windowWidth = window.innerWidth / 1920
             document.getElementById("ChartContainer").style.left = document.getElementById("OptionPlayfieldXOffset").value * windowWidth + "rem"
-            document.getElementById("ChartContainer").style.width = 26.75 * windowWidth + "rem"
+            document.getElementById("ChartContainer").style.width = document.getElementById("OptionPlayfieldWidth").value * windowWidth + "rem"
             document.getElementById("HitErrorBar").style.left = 6 * windowWidth + "rem"
             document.getElementById("HitErrorBar").style.width = 15 * windowWidth + "rem"
             document.getElementById("HitErrorBarExtension").style.left = 6.66 * windowWidth + "rem"
@@ -747,6 +747,25 @@
                                         <label><b>Quick restart </b></label>
                                     </div>
                                 </div>
+                                <br>
+
+                                <div style="text-align: center;">
+                                    <label>MODS</label>
+                                </div>
+                                <div id="OtherKeybindsContainer" style="display: flex; flex-direction: column; align-items: left; padding-left: 25%; font-size: 50%;">
+                                    <div>
+                                        <label><a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">CTRL</a> + <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">+</a></label><label><b> Rate + 0.1</b></label>
+                                    </div>
+                                    <div>
+                                        <label><a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">CTRL</a> - <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">-</a></label><label><b> Rate - 0.1</b></label>
+                                    </div>
+                                    <div>
+                                        <label><a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">CTRL</a> + <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">SHIFT</a> + <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">+</a></label><label><b> Rate + 0.05</b></label>
+                                    </div>
+                                    <div>
+                                        <label><a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">CTRL</a> + <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">SHIFT</a> - <a style="background-color: rgba(129, 129, 129, 0.5); border-radius: 5px;">-</a></label><label><b> Rate - 0.05</b></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px;">
@@ -780,6 +799,7 @@
                                 <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <label>Upscroll</label> <br>
                                 <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <label>Scroll Speed</label> <br>
                                 <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <label>Playfield X Offset</label> <br>
+                                <input id="OptionPlayfieldWidth" onchange="SaveOptions()" type="number" value="26.75"> <label>Playfield Width</label> <br>
                                 <input id="OptionBackgroundDim" onchange="Reload_Chart()" type="number" value="50" min="0" max="100" oninput="{
                                     document.getElementById('OptionBGDim').value = this.value;
                                     document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" style="width: 2.375rem;">
