@@ -237,7 +237,7 @@
     </div>
     <div id="Container" class="UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 37%; right: 0; top: 0;">
         <div id="TitleMenuContainer" class="UIContainer">
-            <input id="SearchBar" type="text" style="width: 75%; height: 2rem; font-size: 22px;" oninput="SearchForChart()" placeholder="Search" /> <br>
+            <input id="SearchBar" type="text" pattern="[a-zA-Z0-9!@#$%^*_|]{6,25}" style="width: 75%; height: 2rem; font-size: 22px;" oninput="SearchForChart()" placeholder="Search" /> <br>
             <button>
                     Search
             </button>
@@ -328,6 +328,8 @@
         // }
 
         id = 0
+        const searchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()-=_+[]{}\\|\'\";:/?.>,<`~"
+
 
         function Update() {
             try {
@@ -340,6 +342,7 @@
         setInterval(Update, 1000 / 60)
 
         function CreateButton(_mapId) {
+            clearInterval(creatingButtons);
             console.log(charts[_mapId]["4Rows"].length)
             for (let i = 0; i < charts[_mapId]["4Rows"].length; i++) {
                 console.log(`Loading map: ${_mapId}`)
@@ -446,13 +449,28 @@
             }
         }
 
+        console.log(charts);
+        getCharts();
+        console.log(charts);
         for (var i in charts) {
             CreateButton(i)
         }
+
+        var creatingButtons = WaitForButtons();
+
         setTimeout(() => {
             document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
             document.getElementById('FadeIn').style.opacity = '0';
         }, 500);
+
+        function WaitForButtons() {
+            return setInterval(() => {
+                for (var i in charts) {
+                    buttons = i;
+                    CreateButton(i)
+                }
+            }, 100);
+        }
 
         function SearchForChart() {
             string = document.querySelector("#TitleMenuContainer > input[type=text]").value
@@ -460,6 +478,7 @@
                 document.getElementsByClassName('SongSelector')[0].remove()
             }
             if (string != "") {
+                //console.log(charts[i])
                 console.log(`Searching for: ${string}`)
                 for (var i in charts) {
                     if (string.includes("ID = ")) {
@@ -590,43 +609,18 @@
                         SearchForChart()
                     }
                     break;
-                case 9:
-                    break;
-                case 10:
-                    break;
-                case 11:
-                    break;
-                case 12:
-                    break;
-                case 13:
-                    break;
-                case 14:
-                    break;
-                case 15:
-                    break;
-                case 16:
-                    break;
-                case 17:
-                    break;
-                case 18:
-                    break;
-                case 19:
-                    break;
-                case 20:
-                    break;
-
                 default:
-                    if (document.activeElement !== document.getElementById('SearchBar')) {
-                        char = (e.getModifierState('CapsLock') || e.shiftKey) ? String.fromCharCode(e.keyCode) : String.fromCharCode(e.keyCode).toLowerCase();
+                    char = (e.getModifierState('CapsLock') || e.shiftKey) ? String.fromCharCode(e.keyCode) : String.fromCharCode(e.keyCode).toLowerCase();
+                    if (document.activeElement !== document.getElementById('SearchBar') && searchChars.includes(char)) {
                         document.getElementById("SearchBar").value += char;
                         SearchForChart()
                     }
-                    console.log(e.keyCode)
+                    console.log(e.keyCode + " " + char)
                     break;
             }
         }
     </script>
-    <script src="Scripts/Fullscreenify.js"></script>
+    <!--<script src="Scripts/Fullscreenify.js"></script>-->
     <script>
         setTimeout(() => {
             urlSearchResult = new URLSearchParams(window.location.search).get("search") || new URLSearchParams(window.location.search).get("Search")
