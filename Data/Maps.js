@@ -1,4 +1,15 @@
-const charts = {
+let charts;
+getCharts();
+
+function getCharts() {
+    fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/")
+        .then(response => response.text())
+        .then(data => charts = JSON.parse(data))
+        .catch(error => {
+            // handle the error
+        });
+}
+/*= {
     "1": {
         "Name": "The Pathbreaking",
         "Audio": "Audio/Inaji-The_Pathbreaking.mp3",
@@ -350,4 +361,4 @@ const charts = {
         "Tags": ["Zun", "Touhou", "Best", "Song", "Remix", "Handstreams", "Dense", "DHS", "Light", "LHS", "Hands", "Chords", "Jacks"],
         "Description": "An amazing song composed by Zun, and is used in Touhou a bullet hell game.\n\n---[Chart Info]---\nContains light and dense handstreams and dense chord jacks"
     }
-}
+} */
