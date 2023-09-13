@@ -76,12 +76,13 @@
         
         .tab {
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 2% 4%;
             background-color: #333;
             color: #fff;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 22px;
+            font-size: 18px;
+            width: 100%;
         }
         
         .tabs-container {
@@ -89,7 +90,7 @@
             display: flex;
             justify-content: normal;
             top: 37%;
-            margin-left: 2rem;
+            margin-left: 3%;
         }
         
         .InfoContainer {
@@ -121,13 +122,13 @@
         </div>
         <audio id="audio" style="position:sticky;top: 200%; float: left; display:none" controls></audio><br>
     </div>
-    <div class="tabs-container">
+    <div class="tabs-container" style="width: 10%">
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">Basic</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
     </div>
-    <div class="InfoContainer" style="width: 20%; height: auto; top: 38%; padding-top: 5px; ">
+    <div class="InfoContainer" style="width: 20%; height: 40%; overflow-y: scroll; top: 38%; padding-top: 5px; ">
         <div id="AboutPanel" style="display: block;">
             <div class="InfoContainer">
                 <a>
@@ -229,7 +230,7 @@
             </div>
         </div>
     </div>
-    <button style="width: 10rem; height: 3rem; position: absolute; bottom: 0; margin: 2%;" onclick="{location.href = 'index.html';}">Back</button>
+    <button style="width: 10rem; height: 6%; position: absolute; bottom: 0; margin: 2%;" onclick="{location.href = 'index.html';}">Back</button>
     <script src="Data/Maps.js"></script>
     <div class="bg"></div>
     <div class="bg bg2"></div>
@@ -458,16 +459,17 @@
 
         var creatingButtons = WaitForButtons();
 
-        setTimeout(() => {
-            document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
-            document.getElementById('FadeIn').style.opacity = '0';
-        }, 500);
 
         function WaitForButtons() {
             return setInterval(() => {
+                let buttons = 0;
                 for (var i in charts) {
                     buttons = i;
                     CreateButton(i)
+                }
+                if (buttons != 0) {
+                    document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
+                    document.getElementById('FadeIn').style.opacity = '0';
                 }
             }, 100);
         }
