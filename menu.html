@@ -344,8 +344,8 @@
 
         function CreateButton(_mapId) {
             clearInterval(creatingButtons);
-            console.log(charts[_mapId]["4Rows"].length)
-            for (let i = 0; i < charts[_mapId]["4Rows"].length; i++) {
+            console.log(JSON.parse(charts[_mapId])["4Rows"].length)
+            for (let i = 0; i < JSON.parse(charts[_mapId])["4Rows"].length; i++) {
                 console.log(`Loading map: ${_mapId}`)
                 var main = document.createElement("button")
 
@@ -377,7 +377,7 @@
                     document.querySelectorAll('.bg').forEach(e => e.remove());
                     this.style.backgroundColor = "rgba(127,127,127,127.2)"
                     if (this.id == "Selected") {
-                        localStorage['Chart'] = JSON.stringify(charts[_mapId])
+                        localStorage['Chart'] = charts[_mapId]
                         localStorage['Difficulty'] = i
                         window.location.href = 'game.html'
                     }
@@ -387,21 +387,21 @@
                         Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
                     } catch (error) {}
                     this.id = "Selected"
-                    document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("Title").innerText = charts[_mapId]["Name"]
-                    document.getElementById("ChartArtist").innerText = charts[_mapId]["SongArtist"]
-                    document.getElementById("ChartCreator").innerText = charts[_mapId]["Creator"]
+                    document.getElementById("BGImage").src = JSON.parse(charts[_mapId])["BG"]["BG"]
+                    document.getElementById("InfoBanner").src = JSON.parse(charts[_mapId])["BG"]["BG"]
+                    document.getElementById("Title").innerText = JSON.parse(charts[_mapId])["Name"]
+                    document.getElementById("ChartArtist").innerText = JSON.parse(charts[_mapId])["SongArtist"]
+                    document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"]
 
                     // SECTION: Audio
 
-                    document.getElementById("audio").src = charts[_mapId]["Audio"];
-                    document.getElementById("audio").currentTime = charts[_mapId]["4Rows"][i]["PreviewPoint"]
+                    document.getElementById("audio").src = JSON.parse(charts[_mapId])["Audio"];
+                    document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"]
                     document.getElementById("audio").play()
 
                     document.getElementById("audio").onended = () => {
                         setTimeout(() => {
-                            document.getElementById("audio").currentTime = charts[_mapId]["4Rows"][i]["PreviewPoint"];
+                            document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
                             document.getElementById("audio").play()
                         }, 500)
                     }
@@ -410,16 +410,16 @@
 
                     document.getElementById("audio").oncanplay = () => {
                         id = _mapId
-                        totalNotes = charts[_mapId]["4Rows"][i]["Notes"][0].length + charts[_mapId]["4Rows"][i]["Notes"][1].length + charts[_mapId]["4Rows"][i]["Notes"][2].length + charts[_mapId]["4Rows"][i]["Notes"][3].length
-                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId], i) * 100) / 100
+                        totalNotes = JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][0].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][1].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][2].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][3].length
+                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(JSON.parse(charts[_mapId]), i) * 100) / 100
                         document.getElementById("ChartTTNotes").innerText = totalNotes
-                        document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
+                        document.getElementById("ChartBPM").innerText = JSON.parse(charts[_mapId])["BPM"]
                         document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
                     }
 
                     // SECTION: Description
 
-                    const Desc = charts[_mapId]["Description"]
+                    const Desc = JSON.parse(charts[_mapId])["Description"]
                     document.getElementById("description").innerText = (Desc != undefined) ? Desc : "This chart does not have a description!";
 
                     // SECTION: Tags
@@ -429,9 +429,9 @@
                         tags[0].parentNode.removeChild(tags[0]);
                     }
 
-                    for (let i = 0; i < charts[_mapId]["Tags"].length; i++) {
+                    for (let i = 0; i < JSON.parse(charts[_mapId])["Tags"].length; i++) {
 
-                        const element = charts[_mapId]["Tags"][i];
+                        const element = JSON.parse(charts[_mapId])["Tags"][i];
 
                         let tag = document.createElement("a");
                         tag.innerText = element;
@@ -440,8 +440,8 @@
                         document.getElementById("TagContainer").appendChild(tag);
                     }
                 }
-                title.innerText = charts[_mapId]["Name"];
-                other.innerText = `\nArtist: ${charts[_mapId]["SongArtist"]}, By: ${charts[_mapId]["Creator"]}`
+                title.innerText = JSON.parse(charts[_mapId])["Name"];
+                other.innerText = `\nArtist: ${JSON.parse(charts[_mapId])["SongArtist"]}, By: ${JSON.parse(charts[_mapId])["Creator"]}`
 
                 //info.classList.add("UIContainer")
 
@@ -487,67 +487,67 @@
                         try {
                             if (i == string.split('ID = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                     }
-                    if (charts[i]["Name"].includes(string)) {
+                    if (JSON.parse(charts[i])["Name"].includes(string)) {
                         CreateButton(i)
-                        console.log(`Found Matching Name: "${string}" in "${charts[i]["Name"]}"`)
+                        console.log(`Found Matching Name: "${string}" in "${JSON.parse(charts[i])["Name"]}"`)
                         continue;
                     }
-                    if (charts[i]["Creator"].includes(string)) {
+                    if (JSON.parse(charts[i])["Creator"].includes(string)) {
                         CreateButton(i)
-                        console.log(`Found Matching Creator: "${string}" in "${charts[i]["Creator"]}"`)
+                        console.log(`Found Matching Creator: "${string}" in "${JSON.parse(charts[i])["Creator"]}"`)
                         continue;
                     }
-                    if (charts[i]["SongArtist"].includes(string)) {
+                    if (JSON.parse(charts[i])["SongArtist"].includes(string)) {
                         CreateButton(i)
-                        console.log(`Found Matching SongArtist: "${string}" in "${charts[i]["SongArtist"]}"`)
+                        console.log(`Found Matching SongArtist: "${string}" in "${JSON.parse(charts[i])["SongArtist"]}"`)
                         continue;
                     }
                     if (string.includes(" = ") || string.includes(" > ") || string.includes(" < ") || string.includes(" >= ") || string.includes(" <= ")) {
                         try {
-                            if (charts[i][string.split(' = ')[0]] == string.split(' = ')[1]) {
+                            if (JSON.parse(charts[i])[string.split(' = ')[0]] == string.split(' = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                         try {
-                            if (charts[i][string.split(' >= ')[0]] >= string.split(' = ')[1]) {
+                            if (JSON.parse(charts[i])[string.split(' >= ')[0]] >= string.split(' = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Greater Than Equal Value: "${string.split(' = ')[1]}" <= "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Greater Than Equal Value: "${string.split(' = ')[1]}" <= "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                         try {
-                            if (charts[i][string.split(' <= ')[0]] <= string.split(' = ')[1]) {
+                            if (JSON.parse(charts[i])[string.split(' <= ')[0]] <= string.split(' = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Less Than Equal Value: "${string.split(' = ')[1]}" >= "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Less Than Equal Value: "${string.split(' = ')[1]}" >= "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                         try {
-                            if (charts[i][string.split(' > ')[0]] > string.split(' = ')[1]) {
+                            if (JSON.parse(charts[i])[string.split(' > ')[0]] > string.split(' = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Greater Than Value: "${string.split(' = ')[1]}" < "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Greater Than Value: "${string.split(' = ')[1]}" < "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                         try {
-                            if (charts[i][string.split(' < ')[0]] < string.split(' = ')[1]) {
+                            if (JSON.parse(charts[i])[string.split(' < ')[0]] < string.split(' = ')[1]) {
                                 CreateButton(i)
-                                console.log(`Found Less Than Value: "${string.split(' = ')[1]}" > "${charts[i][string.split(' = ')[0]]}"`)
+                                console.log(`Found Less Than Value: "${string.split(' = ')[1]}" > "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
                             }
                         } catch (error) {}
                     }
-                    for (let j = 0; j < charts[i]["Tags"].length; j++) {
-                        if (charts[i]["Tags"][j].includes(string)) {
+                    for (let j = 0; j < JSON.parse(charts[i])["Tags"].length; j++) {
+                        if (JSON.parse(charts[i])["Tags"][j].includes(string)) {
                             CreateButton(i)
-                            console.log(`Found Matching Tag: "${string}" in "${charts[i]["Tags"][j]}"`)
+                            console.log(`Found Matching Tag: "${string}" in "${JSON.parse(charts[i])["Tags"][j]}"`)
                             break;
                         }
                     }
