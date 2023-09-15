@@ -13,6 +13,7 @@ Whats new?
     - Nice transitino into song select
 
 // Song select
+    - Charts are now retrieved from the server
     - Opening transition
     - Temporary context menu, does nothing yet
     - Fades out of transition to song select
@@ -61,7 +62,7 @@ Whats new?
 
 // Editor
     - In the help menu Split Trills now has the correct reference image
-    - Charts now save differentlt (Charts made before this update will not work)
+    - Charts now save differently (Charts made before this update will not work)
     - Fixed editor (Again)
         - Chart can successfully be Imported
         - Tags no longer take up 90% (exaggeration) of the file size
