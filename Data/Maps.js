@@ -34,10 +34,10 @@ function getCharts() {
                                 _alt[getIndexOfChart(j + 1)] = _charts[j][0];
                                 //console.log(_alt);
                             }
-                            if (_alt[-1] != null) {
-                                _alt.shift();
-                                console.log("System: Removed negative index")
-                            }
+                            // if (_alt[-1] != null) {
+                            //     //_alt.shift(); // 
+                            //     console.log("System: Removed negative index")
+                            // }
                             console.log(_alt);
                             charts = _alt;
                         }
