@@ -28,7 +28,7 @@ function getCharts() {
                         }
 
                         if (i == chartCount - 1) {
-                            _alt.length = _charts.length;
+                            _alt.length = _charts.length; // Sets the length of _alt so the exact index can be reached
                             console.log(_alt);
                             for (let j = 0; j < _alt.length; j++) {
                                 _alt[getIndexOfChart(j + 1)] = _charts[j][0];
@@ -61,5 +61,5 @@ function getIndexOfChart(index) {
             return i;
         }
     }
-    return -1;
+    return _charts.length;
 }
