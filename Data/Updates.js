@@ -17,6 +17,8 @@ Whats new?
     - Opening transition
     - Temporary context menu, does nothing yet
     - Fades out of transition to song select
+        - Loading progress bar, showing how close till all charts being loaded
+            - Mainly so you know if there's an error and you have to reload
     - Songs now support multiple difficulties (WIP)
     - Updated difficulty Calculator (tries to account for stamina)
     - Working search bar
