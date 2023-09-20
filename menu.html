@@ -20,11 +20,22 @@
             display: block;
             background-color: rgba(0, 0, 0, 0.5);
             width: 100%;
+            height: 64px;
+            text-align: left;
             cursor: pointer;
+            opacity: 80%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-size: 133%;
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         .SongSelector:hover {
             background-color: rgba(0, 0, 0, 0.75);
+        }
+        
+        #Selected {
+            margin-left: -1px;
         }
         
         .miniIcon {
@@ -111,7 +122,14 @@
 </head>
 
 <body>
-    <div id="FadeIn" style="position: absolute; width: 100%; height: 100%; background-color: #fff; z-index: 999; pointer-events:none; top: 0; left: 0;">
+    <div id="FadeIn" style="position: absolute; width: 100%; height: 100%; background-color: #fff; z-index: 999; pointer-events:none; top: 0; left: 0; display: flex; justify-content: center; align-items: center;">
+        <div>
+            <a id="myProgressBarText" style="color: black;">
+                0/0 charts loaded
+            </a>
+            <br>
+            <progress id="myProgressBar" max="100" value="0"></progress>
+        </div>
     </div>
     <div class="UIContainer" style="width: 25%; background-color: rgba(0, 0, 0, 0);">
         <div style="width: 100%; height: 20%;">
@@ -236,14 +254,14 @@
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
     </div>
-    <div id="Container" class="UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 37%; right: 0; top: 0;">
+    <div id="Container" class="UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 42%; right: 0; top: 0;">
         <div id="TitleMenuContainer" class="UIContainer">
             <input id="SearchBar" type="text" pattern="[a-zA-Z0-9!@#$%^*_|]{6,25}" style="width: 75%; height: 2rem; font-size: 22px;" oninput="SearchForChart()" placeholder="Search" /> <br>
             <button>
                     Search
             </button>
         </div>
-        <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0)">
+        <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0);">
         </div>
     </div>
 
@@ -349,6 +367,9 @@
                 console.log(`Loading map: ${_mapId}`)
                 var main = document.createElement("button")
 
+                console.log(`url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/chartData.json')`);
+                main.style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/bg.png')`;
+
                 var info = document.createElement("div")
                 var title = document.createElement("a")
                 var other = document.createElement("a")
@@ -356,6 +377,9 @@
                 main.appendChild(info);
                 info.appendChild(title);
                 info.appendChild(other);
+
+                title.style = "background-color: rgba(0, 0, 0, 0.66); border-radius: 3px; color: white;"
+                other.style = "background-color: rgba(0, 0, 0, 0.66); border-radius: 3px; color: white;"
 
                 other.style.fontSize = "0.66rem"
 
@@ -392,6 +416,7 @@
                     document.getElementById("Title").innerText = JSON.parse(charts[_mapId])["Name"]
                     document.getElementById("ChartArtist").innerText = JSON.parse(charts[_mapId])["SongArtist"]
                     document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"]
+
 
                     // SECTION: Audio
 
@@ -485,7 +510,7 @@
                 for (var i in charts) {
                     if (string.includes("ID = ")) {
                         try {
-                            if (i == string.split('ID = ')[1]) {
+                            if (i == string.split('ID = ')[1] - 1) {
                                 CreateButton(i)
                                 console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
                                 continue;
