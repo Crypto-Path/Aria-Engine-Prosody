@@ -13,6 +13,10 @@ Whats new?
     - Nice transitino into song select
 
 // Song select
+    - Nicer song selection buttons
+        - Background shown on button
+        - Title and info floats to the left
+            - Background for contrast
     - Charts are now retrieved from the server
     - Opening transition
     - Temporary context menu, does nothing yet
@@ -32,7 +36,7 @@ Whats new?
         - Background pulses to BPM
         - Title hase dark transparent background
     - Added back button to return to the main menu
-    - Two new songs to play until I get songs to load from a server
+    - Two new songs to play until I get songs to load from a server (server now works these are just for the update ig)
         - Spatium Cursu
         - Bad Apple!!
         - BONUS: The Pathbreaking has an easier diff now

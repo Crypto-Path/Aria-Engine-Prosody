@@ -75,17 +75,19 @@ function sortCharts(toSort) {
         // Compare the second elements (index 1) of each array
         return a[1] - b[1];
     });
+    _alt.length = _charts.length;
     for (let j = 0; j < _alt.length; j++) {
         _alt[j] = toSort[j][0];
         //console.log(_alt);
     }
+    return _alt;
 }
 
 function reloadChart() {
     for (let i = 0; i < document.getElementsByClassName("SongSelector").length; i = i) {
         document.getElementsByClassName("SongSelector")[0].remove();
     }
-    sortCharts();
+    charts = sortCharts(_charts);
     for (var i in charts) {
         CreateButton(i)
     }

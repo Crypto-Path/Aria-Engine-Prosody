@@ -266,8 +266,8 @@
     </div>
 
     <div id="BGContainer" style="position:absolute; top: 0; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
-        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-        <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png" />
+        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.5);" />
+        <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="" />
     </div>
     <div id="ContextMenu" onmouseover="{this.mouseIsOver = true;}" onmouseout="{this.mouseIsOver = false;}" style="background-color: rgb(200, 200, 200, 0.75); position: absolute; margin: 0 0 0 0; width: 150px; height: calc(auto + 10px); border-radius: 10px; padding-bottom: 10px; display: none;">
         <div style="text-align: center;">
@@ -361,7 +361,7 @@
         setInterval(Update, 1000 / 60)
 
         function CreateButton(_mapId) {
-            clearInterval(creatingButtons);
+            //clearInterval(creatingButtons);
             console.log(JSON.parse(charts[_mapId])["4Rows"].length)
             for (let i = 0; i < JSON.parse(charts[_mapId])["4Rows"].length; i++) {
                 console.log(`Loading map: ${_mapId}`)
@@ -399,42 +399,42 @@
                     console.log(params)
                     document.getElementById("BGContainer").style.display = "flex";
                     document.querySelectorAll('.bg').forEach(e => e.remove());
-                    this.style.backgroundColor = "rgba(127,127,127,127.2)"
+                    this.style.backgroundColor = "rgba(127,127,127,127.2)";
                     if (this.id == "Selected") {
-                        localStorage['Chart'] = charts[_mapId]
-                        localStorage['Difficulty'] = i
-                        window.location.href = 'game.html'
+                        localStorage['Chart'] = charts[_mapId];
+                        localStorage['Difficulty'] = i;
+                        window.location.href = 'game.html';
                     }
                     try {
-                        let Deselect = document.getElementById("Selected")
-                        Deselect.id = ""
-                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
+                        let Deselect = document.getElementById("Selected");
+                        Deselect.id = "";
+                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)";
                     } catch (error) {}
-                    this.id = "Selected"
-                    document.getElementById("BGImage").src = JSON.parse(charts[_mapId])["BG"]["BG"]
-                    document.getElementById("InfoBanner").src = JSON.parse(charts[_mapId])["BG"]["BG"]
-                    document.getElementById("Title").innerText = JSON.parse(charts[_mapId])["Name"]
-                    document.getElementById("ChartArtist").innerText = JSON.parse(charts[_mapId])["SongArtist"]
-                    document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"]
+                    this.id = "Selected";
+                    document.getElementById("BGImage").src = JSON.parse(charts[_mapId])["BG"];
+                    document.getElementById("InfoBanner").src = JSON.parse(charts[_mapId])["BG"];
+                    document.getElementById("Title").innerText = JSON.parse(charts[_mapId])["Name"];
+                    document.getElementById("ChartArtist").innerText = JSON.parse(charts[_mapId])["SongArtist"];
+                    document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"];
 
 
                     // SECTION: Audio
 
                     document.getElementById("audio").src = JSON.parse(charts[_mapId])["Audio"];
-                    document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"]
-                    document.getElementById("audio").play()
+                    document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
+                    document.getElementById("audio").play();
 
                     document.getElementById("audio").onended = () => {
                         setTimeout(() => {
                             document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
-                            document.getElementById("audio").play()
-                        }, 500)
-                    }
+                            document.getElementById("audio").play();
+                        }, 500);
+                    };
 
                     // SECTION: Difficulty stats
 
                     document.getElementById("audio").oncanplay = () => {
-                        id = _mapId
+                        id = _mapId;
                         totalNotes = JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][0].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][1].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][2].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][3].length
                         document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(JSON.parse(charts[_mapId]), i) * 100) / 100
                         document.getElementById("ChartTTNotes").innerText = totalNotes
@@ -479,25 +479,32 @@
         getCharts();
         console.log(charts);
         for (var i in charts) {
-            CreateButton(i)
+            CreateButton(i);
         }
 
-        var creatingButtons = WaitForButtons();
+        const chartChecker = setInterval(() => {
+            let buttons = 0;
+            for (var i in charts) {
+                buttons = i;
+                CreateButton(i)
+            }
+            console.log(parseInt(buttons) + 1);
+            console.log(chartCount - 1);
+            if (parseInt(buttons) + 1 == chartCount - 1) {
+                document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
+                document.getElementById('FadeIn').style.opacity = '0';
+                //reloadChart()
+                clearInterval(chartChecker);
+            }
+            reloadChart()
+        }, 100);
 
-
-        function WaitForButtons() {
-            return setInterval(() => {
-                let buttons = 0;
-                for (var i in charts) {
-                    buttons = i;
-                    CreateButton(i)
-                }
-                if (buttons != 0) {
-                    document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
-                    document.getElementById('FadeIn').style.opacity = '0';
-                }
-            }, 100);
-        }
+        chartCount = 10000
+        fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/count.json")
+            .then(response => response.text())
+            .then(data => {
+                chartCount = JSON.parse(data)["RankedCharts"];
+            });
 
         function SearchForChart() {
             string = document.querySelector("#TitleMenuContainer > input[type=text]").value
