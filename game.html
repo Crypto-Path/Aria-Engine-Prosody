@@ -119,9 +119,7 @@
             chartMetaData = chart.Get_MetaData(); // Things like chart name, creator, etc.
             notes = InitNotes(chart, notes) // Create original note objects and assigns them to the note var
 
-            document.getElementById("BGGradient").src = _chartJSON["BG"]["Gradient"];
-            document.getElementById("BGPattern").src = _chartJSON["BG"]["Pattern"];
-            document.getElementById("BGCenter").src = _chartJSON["BG"]["Center"];
+            document.getElementById("BG").src = _chartJSON["BG"];
 
             totalNotes = chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][0].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][1].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][2].length + chart.map["4Rows"][localStorage["Difficulty"]]["Notes"][3].length
         }
@@ -316,7 +314,7 @@
             var _date = new Date()
             document.getElementById("ResultDate").innerText = `Date: ${_date.getHours()}:${_date.getMinutes()}:${_date.getSeconds()} - ${_date.getDay()}/${_date.getMonth()}/${_date.getFullYear()}`;
 
-            document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos));
+            document.getElementById("ResultScore").innerText = Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos, calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate)));
             console.log("Showing Score Results");
             document.getElementById("ResultAcc").innerText = Math.round(Get_Acc(Judgements, JudgementWeights) * 100000) / 1000 + "%";
             console.log("Showing Acc Results");
@@ -402,7 +400,7 @@
             playing = true; // For the update function to know it can start
             chart.Play_Audio(rate) // Starts the song
 
-            document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHidingRight");
+            //document.getElementById("MapsSettingContainer").classList.add("delay-1", "UIHidingRight");
             //document.getElementById("ScoreBoard").classList.add("delay-1", "UIHidingLeft");
         }
 
@@ -802,10 +800,10 @@
                                 <input id="OptionPlayfieldWidth" onchange="SaveOptions()" type="number" value="26.75"> <label>Playfield Width</label> <br>
                                 <input id="OptionBackgroundDim" onchange="Reload_Chart()" type="number" value="50" min="0" max="100" oninput="{
                                     document.getElementById('OptionBGDim').value = this.value;
-                                    document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" style="width: 2.375rem;">
+                                    document.getElementById('BGDim').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" style="width: 2.375rem;">
                                 <input id="OptionBGDim" oninput="{
                                     document.getElementById('OptionBackgroundDim').value = this.value;
-                                    document.getElementById('BGContainer').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" type="range" min="1" max="100" value="50" style="width: 50%;"> <label>Background Dim</label>
+                                    document.getElementById('BGDim').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" type="range" min="1" max="100" value="50" style="width: 50%;"> <label>Background Dim</label>
                                 <br>
                             </div>
                         </div>
@@ -906,11 +904,9 @@
             <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
             </div>
         </div>
-        <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" />
-            <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" />
-            <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" />
+        <div id="BGContainer" style="position:absolute; z-index: -5; width: 100% !important; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);" />
+            <img id="BG" class="background" style="position: absolute; z-index: -100; margin: 0 auto; width: 100%;" />
         </div>
 </body>
 
