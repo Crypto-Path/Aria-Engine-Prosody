@@ -491,8 +491,10 @@
             console.log(parseInt(buttons) + 1);
             console.log(chartCount - 1);
             if (parseInt(buttons) + 1 == chartCount - 1) {
-                document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
-                document.getElementById('FadeIn').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
+                    document.getElementById('FadeIn').style.opacity = '0';
+                }, 250);
                 //reloadChart()
                 clearInterval(chartChecker);
             }
@@ -621,16 +623,24 @@
                     location.href = 'index.html';
                     break;
                 case 37: // Move selection up
-                    IncDecRementSelection(-1)
+                    try {
+                        IncDecRementSelection(-1)
+                    } catch (error) {}
                     break;
                 case 38: // Move selection up
-                    IncDecRementSelection(-1)
+                    try {
+                        IncDecRementSelection(-1)
+                    } catch (error) {}
                     break;
                 case 39: // Move selection down
-                    IncDecRementSelection(1)
+                    try {
+                        IncDecRementSelection(1)
+                    } catch (error) {}
                     break;
                 case 40: // Move selection down
-                    IncDecRementSelection(1)
+                    try {
+                        IncDecRementSelection(1)
+                    } catch (error) {}
                     break;
                 case 13: // Move selection down
                     try {
