@@ -65,11 +65,8 @@
 </head>
 
 <body>
-    <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-        <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
-        <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" src="Sprites/Background/Pattern.png" />
-        <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
+    <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 1); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <img id="BG" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 100%;" />
     </div>
     <div id="HitBar" style="width: 20rem; height: 0.5rem; background-color: rgba(226, 57, 49, 0.75); position:absolute; bottom: 0; margin-left: calc(50% - 9rem);">
     </div>
@@ -499,26 +496,9 @@
                     Background:
                 </a>
             </div>
-            <label>Main Background:
+            <label>Background:
                 <input id="BGBG" onchange="{var BG = blob.createObjectURL(this.files[0]); document.getElementById('BG').src = BG; convertImageToBase64(BG, 'BG'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
             </label>
-            <label>BG Twist: (Optional)</label>
-            <div class="UIContainer">
-                (Feature may be removed in the future)
-                <br>
-                <label>
-                    Center: 
-                    <input id="BGBGCenter" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-                <label>
-                    Pattern: 
-                    <input id="BGBGPattern" onchange="{var BGPattern = blob.createObjectURL(this.files[0]); document.getElementById('BGPattern').src = BGPattern; convertImageToBase64(BGPattern, 'Pattern'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-                <label>
-                    Gradient: 
-                    <input id="BGBGGradient" onchange="{var BGGradient = blob.createObjectURL(this.files[0]); document.getElementById('BGGradient').src = BGGradient; convertImageToBase64(BGGradient, 'Gradient'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-            </div>
         </div>
         <div class="UIContainer">
             <div>
