@@ -41,6 +41,6 @@ function Get_Value(_judgements, _judgementsWeights, _combosHighest, _chart, _dif
     Acc = Get_Acc(_judgements, _judgementsWeights) * 100;
     console.log(_chart)
     ChartDiff = calculateDifficulty(_chart, _diff, _rate);
-    Value = ChartDiff * Math.pow(Acc / 95, 3);
+    Value = ChartDiff * Math.pow(Acc / 95, (Acc >= 95) ? 3 : 7);
     return Value;
 }
