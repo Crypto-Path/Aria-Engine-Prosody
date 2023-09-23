@@ -10,7 +10,7 @@ function showLetter(letter, font, size, xPos, yPos, lifeTime, fallSpeed, fade = 
 
     setTimeout(function() {
         if (fade) {
-            element.style.transition = 'opacity ' + fadeSpeed + 'ms, top ' + Math.abs(fallSpeed) + 'ms';
+            element.style.transition = 'opacity ' + fadeSpeed + 'ms, top ' + fallSpeed + 'ms';
             element.style.opacity = '0';
         }
 
