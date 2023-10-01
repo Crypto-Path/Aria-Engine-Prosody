@@ -28,7 +28,7 @@ function CheckRow(i) {
             }
         }
         if (NoteID == releasedIdProgress[i]) { // Uses releasedIdProgress so the id doesn't change until the hitter has been released
-            if (PosY >= -(hitRange / 1.5)) {
+            if (PosY >= -(hitRange / 2)) {
                 ABSY = Math.abs(PosY);
                 if (ABSY <= (hitRange / JudgementRanges[0])) { // Perfect Plus hit range
                     if (keys[i]) {
@@ -55,8 +55,8 @@ function CheckRow(i) {
                 }
 
 
-                if (ABSY <= (hitRange / JudgementRanges[3])) { // Good hit range
-                    if (keys[i]) { // Bad hit range
+                if (ABSY <= (hitRange / JudgementRanges[3])) { // Bad hit range
+                    if (keys[i]) {
                         HitNote(PosY, HitErrorTime, i, "rgb(195,206,175)");
                         IncreaseCombo(3);
                         return returnValue;

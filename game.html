@@ -75,7 +75,7 @@
         /*Score Calculation*/
         Judgements = [0, 0, 0, 0, 0];
         JudgementWeights = [1, 1.010101, 1.111111, 1.5, 3];
-        JudgementRanges = [32, 8, 4, 1];
+        JudgementRanges = [32, 16, 8, 4];
         Combos = [0, 0, 0]; // P+, Perfect, Full combo
         HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -86,8 +86,6 @@
         exited = false
         tempNoteId = 0
         hitErrors = [];
-        rotation = [0, 0, 0, 0];
-        rotateProgress = 0
         pause = [true, false, 0] // Can pause, Is paused, Paused amount
         StartTime = null;
         totalNotes = 0;
