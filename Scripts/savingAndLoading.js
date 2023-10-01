@@ -14,8 +14,8 @@ function SaveOptions() {
     document.getElementById("OptionScrollSpeed").value = Math.abs(localStorage['ScrollSpeed']);
     document.getElementById("OptionPlayfieldXOffset").value = localStorage['MapXOffset'];
     UpdateScrollDirection();
-    
-    hitKeys = [ 
+
+    hitKeys = [
         parseInt(document.getElementById("KeyCheck1").value),
         parseInt(document.getElementById("KeyCheck2").value),
         parseInt(document.getElementById("KeyCheck3").value),
@@ -27,27 +27,35 @@ function SaveOptions() {
 function LoadSettings() {
     if (localStorage["ScrollSpeed"] != null) // Makes sure scroll speed was saved
         document.getElementById("OptionScrollSpeed").value = localStorage["ScrollSpeed"];
-        
+
     if (localStorage["MapXOffset"] != null) // Makes sure map x offset was saved
         document.getElementById("OptionPlayfieldXOffset").value = localStorage["MapXOffset"];
 
     if (localStorage["Upscroll"] == 'true') // Makes sure upscroll was saved
         document.getElementById("OptionUpscroll").checked = true;
 
-    if (!isNaN(localStorage['KeyBinding1'])) // Makes sure key binding 1 was saved
+    if (!isNaN(localStorage['KeyBinding1'])) { // Makes sure key binding 1 was saved
         document.getElementById("KeyCheck1").value = localStorage['KeyBinding1'];
-        
-    if (!isNaN(localStorage['KeyBinding2'])) // Makes sure key binding 2 was saved
+        document.getElementById("KeyLetter1").value = String.fromCharCode(localStorage['KeyBinding1']);
+    }
+
+    if (!isNaN(localStorage['KeyBinding2'])) { // Makes sure key binding 2 was saved
         document.getElementById("KeyCheck2").value = localStorage['KeyBinding2'];
-        
-    if (!isNaN(localStorage['KeyBinding3'])) // Makes sure key binding 3 was saved
+        document.getElementById("KeyLetter2").value = String.fromCharCode(localStorage['KeyBinding2']);
+    }
+
+    if (!isNaN(localStorage['KeyBinding3'])) { // Makes sure key binding 3 was saved
         document.getElementById("KeyCheck3").value = localStorage['KeyBinding3'];
-        
-    if (!isNaN(localStorage['KeyBinding4'])) // Makes sure key binding 4 was saved
+        document.getElementById("KeyLetter3").value = String.fromCharCode(localStorage['KeyBinding3']);
+    }
+
+    if (!isNaN(localStorage['KeyBinding4'])) { // Makes sure key binding 4 was saved
         document.getElementById("KeyCheck4").value = localStorage['KeyBinding4'];
-        
+        document.getElementById("KeyLetter4").value = String.fromCharCode(localStorage['KeyBinding4']);
+    }
+
     // Assigns keybindings to what was saved
-    hitKeys = [ 
+    hitKeys = [
         parseInt(document.getElementById("KeyCheck1").value),
         parseInt(document.getElementById("KeyCheck2").value),
         parseInt(document.getElementById("KeyCheck3").value),
