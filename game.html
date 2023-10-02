@@ -75,7 +75,7 @@
         /*Score Calculation*/
         Judgements = [0, 0, 0, 0, 0];
         JudgementWeights = [1, 1.010101, 1.111111, 1.5, 3];
-        JudgementRanges = [32, 16, 8, 4];
+        JudgementRanges = [16, 12, 8, 4];
         Combos = [0, 0, 0]; // P+, Perfect, Full combo
         HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -332,6 +332,26 @@
 
             Set_Score_Rank_Image()
             Set_Acc_Rank_Image()
+
+
+            if (!document.getElementById("OptionModAuto").checked) {
+                fetch('https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/uploadScore', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: sessionStorage["username"],
+                        password: sessionStorage["password"],
+                        length: chart.audio.duration,
+                        score: Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos, calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate))),
+                        acc: Get_Acc(Judgements, JudgementWeights),
+                        value: Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, localStorage["Difficulty"], rate),
+                        notesHit: Judgements[1] + Judgements[2] + Judgements[3] + Judgements[4]
+                    })
+                });
+            }
         }
 
 
