@@ -437,12 +437,14 @@
                     // SECTION: Difficulty stats
 
                     document.getElementById("audio").oncanplay = () => {
-                        id = _mapId;
-                        totalNotes = JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][0].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][1].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][2].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][3].length
-                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(JSON.parse(charts[_mapId]), i) * 100) / 100
-                        document.getElementById("ChartTTNotes").innerText = totalNotes
-                        document.getElementById("ChartBPM").innerText = JSON.parse(charts[_mapId])["BPM"]
-                        document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
+                        if (id != _mapId) {
+                            id = _mapId;
+                            totalNotes = JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][0].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][1].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][2].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][3].length;
+                            document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(JSON.parse(charts[_mapId]), i) * 100) / 100;
+                            document.getElementById("ChartTTNotes").innerText = totalNotes;
+                            document.getElementById("ChartBPM").innerText = JSON.parse(charts[_mapId])["BPM"];
+                            document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10;
+                        }
                     }
 
                     // SECTION: Description
