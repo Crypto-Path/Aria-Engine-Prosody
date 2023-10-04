@@ -75,7 +75,7 @@
         /*Score Calculation*/
         Judgements = [0, 0, 0, 0, 0];
         JudgementWeights = [1, 1.010101, 1.111111, 1.5, 3];
-        JudgementRanges = [16, 12, 8, 4];
+        JudgementRanges = [32, 10, 6, 3];
         Combos = [0, 0, 0]; // P+, Perfect, Full combo
         HighestCombos = [0, 0, 0]; // P+, Perfect, Full combo
 
@@ -248,43 +248,43 @@
         }
 
         function Set_Score_Rank_Image() {
-            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_F.png"
+            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_F.png";
             if (Get_Acc(Judgements, JudgementWeights) < 0.7) return;
 
-            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
+            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png";
             if (Judgements[4] != 0) return;
 
             if (Judgements[3] == 0) {
                 if (Judgements[2] == 0) {
                     if (Judgements[1] == 0) {
-                        document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC+.png"
+                        document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC+.png";
                         return;
                     }
-                    document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC.png"
+                    document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_PC.png";
                     return;
                 }
-                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_FC.png"
+                document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_FC.png";
                 return;
             }
-            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png"
+            document.getElementById("ResultRankScore").src = "Sprites/Ranks/Rank_C.png";
         }
 
         function Set_Acc_Rank_Image() {
             const _acc = Get_Acc(Judgements, JudgementWeights);
 
-            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_F.png"
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_F.png";
             if (_acc < 0.7) return;
 
-            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_C.png"
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_C.png";
             if (_acc < 0.8) return;
 
-            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_B.png"
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_B.png";
             if (_acc < 0.9) return;
 
-            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_A.png"
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_A.png";
             if (_acc < 0.95) return;
 
-            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_S.png"
+            document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_S.png";
             if (_acc < 1) return;
 
             if (_acc == 1) document.getElementById("ResultRankAcc").src = "Sprites/Ranks/Rank_EX.png";
@@ -344,7 +344,8 @@
                     body: JSON.stringify({
                         username: sessionStorage["username"],
                         password: sessionStorage["password"],
-                        length: chart.audio.duration,
+                        chart: chartMetaData[0] + chartMetaData[4],
+                        length: chart.audio.duration / rate,
                         score: Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos, calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate))),
                         acc: Get_Acc(Judgements, JudgementWeights),
                         value: Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, localStorage["Difficulty"], rate),
