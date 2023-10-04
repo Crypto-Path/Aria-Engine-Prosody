@@ -150,25 +150,6 @@
         <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
     </div>
     <div class="InfoContainer" style="width: 20%; height: 40%; overflow-y: scroll; top: 38%; padding-top: 5px; ">
-        <div id="AboutPanel" style="display: block;">
-            <div class="InfoContainer">
-                <a>
-                        Description:
-                    </a>
-                <p id="description">
-                    Just a simple browser rhythm game
-                </p>
-            </div>
-            <div class="InfoContainer" style="overflow-wrap:normal;">
-                <a>
-                        Tags:
-                    </a>
-                <br><br>
-                <div id="TagContainer">
-                    <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
-                </div>
-            </div>
-        </div>
         <div id="InfoPanel" style="display: block;">
             <div class="InfoContainer" style="overflow-wrap:normal;">
                 <br>
@@ -200,17 +181,36 @@
                         ∞
                     </a>
             </div>
+        </div>
+        <div id="AboutPanel" style="display: block;">
+            <div class="InfoContainer">
+                <a>
+                        Description:
+                    </a>
+                <p id="description">
+                    Just a simple browser rhythm game
+                </p>
+            </div>
             <div class="InfoContainer" style="overflow-wrap:normal;">
                 <a>
-                        Artist: 
+                        Tags:
                     </a>
+                <br><br>
+                <div id="TagContainer">
+                    <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
+                </div>
+            </div>
+            <div class="InfoContainer" style="overflow-wrap:normal;">
+                <a>
+                    Artist: 
+                </a>
                 <a id="ChartArtist">
                 </a>
                 <br>
-                <a id="ChartCreator">
-                        Creator: 
-                    </a>
                 <a>
+                    Creator: 
+                </a>
+                <a id="ChartCreator">
                 </a>
             </div>
         </div>
