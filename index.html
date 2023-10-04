@@ -160,9 +160,9 @@
                 <button onClick="{login(document.getElementById('username').value, document.getElementById('password').value)}" style="background-color: rgb(0 0 0 / 66%); width: auto; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; cursor: pointer; transition: background-color 0.3s ease; margin: 5px;">Login</button>
             </div>
             <div style="display: none;" id="userPanel">
-                <div id="background" style="z-index: -1; position: absolute; width:100%; height: 27%; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; top: 0;">
+                <div id="background" style="z-index: -1; position: absolute; width:100%; height: 150px; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; top: 0;">
                 </div>
-                <div style="position: relative;width: 100%; background-color: rgba(62, 86, 114, 0.5); margin-top: 40%;">
+                <div style="position: relative;width: 100%; background-color: rgba(62, 86, 114, 0.5); margin-top: 150px;">
                     <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px;">
                     </img>
                     <div>
@@ -248,7 +248,7 @@
                         document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
                         document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
                         console.log(user);
-                        document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 3600)
+                        document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 360) / 10
                         document.getElementById("userStatPlaycount").innerText = user["playcount"]
                         document.getElementById("userStatScore").innerText = user["score"]
                         document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
@@ -259,6 +259,8 @@
     }
     if (sessionStorage["username"] != null) {
         login(sessionStorage["username"], sessionStorage["password"])
+    } else if (sessionStorage["session"] != null) {
+        document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
     }
 </script>
 
