@@ -30,6 +30,32 @@
             opacity: 0.825;
         }
     </style>
+    <style>
+        #userPanel {
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -ms-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            width: 16.66%;
+            top: 25%;
+            left: calc(50% - 8.33%);
+            z-index: 1;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .hidden {
+            top: 98% !important;
+        }
+        
+        .gone {
+            top: 100% !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -91,6 +117,17 @@
         totalNotes = 0;
         //FinalNoteTime = null;
 
+        var ht1 = new Audio('Audio/hitsound.wav');
+        var ht2 = new Audio('Audio/hitsound.wav');
+        var ht3 = new Audio('Audio/hitsound.wav');
+        var ht4 = new Audio('Audio/hitsound.wav');
+
+        ht1.volume = 0.1;
+        ht2.volume = 0.1;
+        ht3.volume = 0.1;
+        ht4.volume = 0.1;
+
+
         function LoadChart(_chart) {
             try { // TFGo avoid error 
                 _chartJSON = JSON.parse(_chart);
@@ -128,6 +165,7 @@
         }
 
         function KeyDown(_index) {
+
             key[_index] = true
             hitters[_index].src = "Sprites/Notes/Hitter_Lit_1.png";
 
@@ -167,21 +205,34 @@
                 }
                 switch (e.keyCode) {
                     case hitKeys[0]:
+                        ht1.pause();
+                        ht1.currentTime = 0;
+                        ht1.play();
                         if (!pause[1] & !auto) {
                             KeyDown(0);
                         }
                         break;
                     case hitKeys[1]:
+                        ht2.pause();
+                        ht2.currentTime = 0;
+                        ht2.play();
                         if (!pause[1] & !auto) {
                             KeyDown(1);
                         }
                         break;
                     case hitKeys[2]:
+                        ht3.pause();
+                        ht3.currentTime = 0;
+                        ht3.play();
                         if (!pause[1] & !auto) {
                             KeyDown(2);
                         }
                         break;
                     case hitKeys[3]:
+
+                        ht4.pause();
+                        ht4.currentTime = 0;
+                        ht4.play();
                         if (!pause[1] & !auto) {
                             KeyDown(3);
                         }
@@ -298,6 +349,8 @@
             document.getElementById("StatsMenu").style.display = "block";
             console.log("Showing Results");
             document.getElementById("PauseMenu").style.display = "none";
+            document.getElementById("userPanel").style.display = "flex";
+            document.getElementById("userPanel").classList.remove("gone");
             document.getElementById("ResultPPAmount").innerText = Judgements[0] + " (x" + HighestCombos[0] + ")";
             console.log("Showing Judgement & Combo Results");
             document.getElementById("ResultPAmount").innerText = Judgements[1] + " (x" + HighestCombos[1] + ")";
@@ -352,6 +405,29 @@
                         notesHit: Judgements[1] + Judgements[2] + Judgements[3] + Judgements[4]
                     })
                 });
+            }
+
+
+            document.getElementById("userStatPlaycount").innerText = user["playcount"]
+            document.getElementById("userStatScore").innerText = user["score"]
+            document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
+            document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
+            document.getElementById("userStatNotesHit").innerText = user["hits"]
+
+            document.getElementById("userStatPlaytimeAdded").innerText = `( +${Math.ceil(chart.audio.duration / rate / 36) / 100} )`
+            document.getElementById("userStatPlaycountAdded").innerText = "( +1 )"
+            document.getElementById("userStatScoreAdded").innerText = `( +${Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos, calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate)))} )`
+                // newAcc = (Math.floor((parseFloat(document.getElementById("userStatAccuracy").innerText) + Get_Acc(Judgements, JudgementWeights)) / (parseInt(document.getElementById("userStatPlaycount").innerText) + 1) * 10000) / 100);
+                // oldAcc = (document.getElementById("userStatAccuracy").innerText)
+                // document.getElementById("userStatAccuracyAdded").innerText = `(${newAcc - oldAcc})`
+                // document.getElementById("userStatValueAdded").innerText =
+                //     document.getElementById("userStatNotesHitAdded").innerText =
+
+
+            if (sessionStorage["username"] != null) {
+                login(sessionStorage["username"], sessionStorage["password"])
+            } else if (sessionStorage["session"] != null) {
+                document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
             }
         }
 
@@ -413,6 +489,8 @@
         function startMap() {
             document.body.style.cursor = 'none';
             document.getElementById('MainPanel').style.display = 'none'
+                //document.getElementById("userPanel").style.display = "none"; // Hides result screen
+            document.getElementById("userPanel").classList.add("gone");
 
             auto = document.getElementById("OptionModAuto").checked; // Check if auto mod is active
 
@@ -455,6 +533,8 @@
             document.getElementById("ComboText").innerHTML = ""; // Visual so people know how to start
             document.getElementById("StatsMenu").style.display = "none"; // Hides result screen
             document.getElementById("PauseMenu").style.display = "none"; // Hides result screen
+            document.getElementById("userPanel").style.display = "flex"; // Hides result screen
+            document.getElementById("userPanel").classList.remove("gone");
 
             //document.getElementById("MapsSettingContainer").classList.remove("UIHidingRight");
             //document.getElementById("ScoreBoard").classList.remove("UIHidingLeft");
@@ -919,6 +999,35 @@
                 }
             });
         </script>
+        <div id="userPanel" class="hidden">
+            <button onclick="{document.getElementById('userPanel').classList.toggle('hidden');}" style="position: absolute; width: 100%; height: 5%">
+                Hide/Show Profile
+            </button>
+            <div id="background" style="z-index: -1; position: absolute; width:100%; height: 150px; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; background-position-x: center; top: 0; border-radius: 10px 10px 0px 0px;">
+            </div>
+            <div style="position: relative;width: 100%; background-color: rgba(0, 0, 0, 0.75); margin-top: 150px; border-radius: 0px 0px 10px 10px;">
+                <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.66);">
+                </img>
+                <div>
+                    <h1 id="userUsername">Username</h1>
+                    <h3>Stats</h3>
+                    <div>
+                        <p>
+                            Playtime: <a id="userStatPlaytime">0</a>h
+                            <a id="userStatPlaytimeAdded"></a>
+                            <br> playcount: <a id="userStatPlaycount">0</a>
+                            <a id="userStatPlaycountAdded"></a>
+                            <br> Score: <a id="userStatScore">0</a>
+                            <a id="userStatScoreAdded"></a>
+                            <br> Acc: <a id="userStatAccuracy">0</a>%
+                            <a id="userStatAccuracyAdded"></a>
+                            <br> Value: <a id="userStatValue">0</a> <a id="userStatValueAdded">0</a>
+                            <br> Notes hit: <a id="userStatNotesHit">0</a> <a id="userStatNotesHitAdded">0</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="ProgressBarContainer" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 5px; background-color: #ccc; z-index: 999;">
             <div id="ProgressBar" style="width: 0; height: 100%;background-color: #00aaff;">
             </div>
@@ -927,6 +1036,40 @@
             <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);" />
             <img id="BG" class="background" style="position: absolute; z-index: -100; margin: 0 auto; width: 100%;" />
         </div>
+        <script>
+            ud = {};
+
+            function login(username, password) {
+                fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const a = JSON.parse(data)["correctUser"];
+                        sessionStorage["username"] = username;
+                        sessionStorage["password"] = password;
+                        fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/userData.json`)
+                            .then(response => response.text())
+                            .then(userData => {
+                                user = JSON.parse(userData);
+                                us = user;
+                                document.getElementById("userUsername").innerText = username;
+                                document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
+                                document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
+                                console.log(user);
+                                document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 360) / 10
+                                document.getElementById("userStatPlaycount").innerText = user["playcount"]
+                                document.getElementById("userStatScore").innerText = user["score"]
+                                document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
+                                document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
+                                document.getElementById("userStatNotesHit").innerText = user["hits"]
+                            });
+                    });
+            }
+            if (sessionStorage["username"] != null) {
+                login(sessionStorage["username"], sessionStorage["password"])
+            } else if (sessionStorage["session"] != null) {
+                document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
+            }
+        </script>
 </body>
 
 </html>
