@@ -166,7 +166,7 @@
                     <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px;">
                     </img>
                     <div>
-                        <h1 id="userUsername">Username</h1>
+                        <h1><a id="userUsername" href="">Some Title</a></h1>
                         <h3>Stats</h3>
                         <div>
                             <p>
@@ -245,6 +245,7 @@
                     .then(userData => {
                         user = JSON.parse(userData);
                         document.getElementById("userUsername").innerText = username;
+                        document.getElementById("userUsername").href = `https://prosody-server.schiytu37.repl.co/profiles/user.html?user=${username.replace(/ /g, "_")}`;
                         document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
                         document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
                         console.log(user);

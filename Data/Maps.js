@@ -6,7 +6,7 @@ function getCharts() {
     fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/count.json")
         .then(response => response.text())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             chartCount = JSON.parse(data)["RankedCharts"];
 
             let value = 0;
@@ -38,13 +38,13 @@ function getCharts() {
 
                         if (i == chartCount - 1) {
                             _alt.length = _charts.length; // Sets the length of _alt so the exact index can be reached
-                            console.log(_alt);
+                            //console.log(_alt);
                             sortCharts(_charts)
                                 // if (_alt[-1] != null) {
                                 //     //_alt.shift(); // 
                                 //     console.log("System: Removed negative index")
                                 // }
-                            console.log(_alt);
+                                //console.log(_alt);
                             charts = _alt;
                         }
                     })

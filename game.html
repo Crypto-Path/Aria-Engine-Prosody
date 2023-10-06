@@ -883,6 +883,19 @@
                                 <input id="OptionSwitcher" onchange="Reload_Chart()" type="checkbox"> <label>Switcher</label> <br>
                             </div>
                         </div>
+                        <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px;">
+                            <div style="text-align: center; font-size: 32px; color: white;">
+                                <p>
+                                    Expirimental
+                                </p>
+                            </div>
+                            <hr>
+                            <div style="margin-left: 10px;">
+                                <a> Features that are either work in progress or are deemed to confusing and take up useful space. </a> <br>
+                                <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <label>Playfield X Offset</label> <br>
+                                <input id="OptionPlayfieldWidth" onchange="SaveOptions()" type="number" value="26.75"> <label>Playfield Width</label> <br>
+                            </div>
+                        </div>
                     </div>
                     <div style="width: 45%; height: auto;">
                         <div class="UIContainer" style="text-align: left; background-color: rgba(35, 54, 75, 0.9); border-radius: 5px; ">
@@ -895,8 +908,6 @@
                             <div style="margin-left: 10px;">
                                 <input id="OptionUpscroll" onchange="SaveOptions()" type="checkbox"> <label>Upscroll</label> <br>
                                 <input id="OptionScrollSpeed" onchange="SaveOptions()" type="number" value="15"> <label>Scroll Speed</label> <br>
-                                <input id="OptionPlayfieldXOffset" onchange="SaveOptions()" type="number" value="366"> <label>Playfield X Offset</label> <br>
-                                <input id="OptionPlayfieldWidth" onchange="SaveOptions()" type="number" value="26.75"> <label>Playfield Width</label> <br>
                                 <input id="OptionBackgroundDim" onchange="Reload_Chart()" type="number" value="50" min="0" max="100" oninput="{
                                     document.getElementById('OptionBGDim').value = this.value;
                                     document.getElementById('BGDim').style.backgroundColor = 'rgba(0, 0, 0, ' + this.value / 100 + ')';}" style="width: 2.375rem;">
@@ -939,7 +950,7 @@
                             </div>
                             <div>
                                 <div class="UIContainer">
-                                    <iframe src="https://discord.com/widget?id=1082208425582276700&theme=dark" width="66%" height="400" style="margin-left: 16.6%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                                    <iframe src="https://discord.com/widget?id=1082208425582276700&theme=dark" width="90%" height="400px" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                                 </div>
                             </div>
                         </div>
