@@ -122,6 +122,28 @@
             margin-top: 0.625rem;
         }
     </style>
+    <style>
+        #userPanel {
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -ms-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            width: 16.66%;
+            top: 25%;
+            left: calc(50% - 8.33%);
+            z-index: 1;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .hidden {
+            top: 98% !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -303,6 +325,31 @@
             </div>
         </div>
     </div>
+    <div id="userPanel" class="hidden">
+        <button onclick="{document.getElementById('userPanel').classList.toggle('hidden');}" style="position: absolute; width: 100%; height: 5%">
+            Hide/Show Profile
+        </button>
+        <div id="background" style="z-index: -1; position: absolute; width:100%; height: 150px; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; background-position-x: center; top: 0; border-radius: 10px 10px 0px 0px;">
+        </div>
+        <div style="position: relative;width: 100%; background-color: rgba(0, 0, 0, 0.75); margin-top: 150px; border-radius: 0px 0px 10px 10px;">
+            <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.66);">
+            </img>
+            <div>
+                <h1 id="userUsername">Username</h1>
+                <h3>Stats</h3>
+                <div>
+                    <p>
+                        Playtime: <a id="userStatPlaytime">0</a>h
+                        <br> playcount: <a id="userStatPlaycount">0</a>
+                        <br> Score: <a id="userStatScore">0</a>
+                        <br> Acc: <a id="userStatAccuracy">0</a>%
+                        <br> Value: <a id="userStatValue">0</a>
+                        <br> Notes hit: <a id="userStatNotesHit">0</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="Scripts/statCalculations.js"></script>
     <script src="Scripts/DifficultyCalculator.js"></script>
     <script>
@@ -349,7 +396,7 @@
         //     document.getElementById("SongsContainer").appendChild(main);
         // }
 
-        id = 0
+        id = -1
         const searchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()-=_+[]{}\\|\'\";:/?.>,<`~"
 
 
@@ -422,10 +469,11 @@
                     document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"];
 
                     // SECTION: Audio
-
-                    document.getElementById("audio").src = JSON.parse(charts[_mapId])["Audio"];
-                    document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
-                    document.getElementById("audio").play();
+                    if (id != _mapId) {
+                        document.getElementById("audio").src = JSON.parse(charts[_mapId])["Audio"];
+                        document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
+                        document.getElementById("audio").play();
+                    }
 
 
                     document.getElementById("audio").onended = () => {
@@ -677,6 +725,37 @@
                 SearchForChart()
             }
         }, 500);
+    </script>
+    <script>
+        function login(username, password) {
+            fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+                .then(response => response.text())
+                .then(data => {
+                    const a = JSON.parse(data)["correctUser"];
+                    sessionStorage["username"] = username;
+                    sessionStorage["password"] = password;
+                    fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/userData.json`)
+                        .then(response => response.text())
+                        .then(userData => {
+                            user = JSON.parse(userData);
+                            document.getElementById("userUsername").innerText = username;
+                            document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
+                            document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
+                            console.log(user);
+                            document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 360) / 10
+                            document.getElementById("userStatPlaycount").innerText = user["playcount"]
+                            document.getElementById("userStatScore").innerText = user["score"]
+                            document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
+                            document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
+                            document.getElementById("userStatNotesHit").innerText = user["hits"]
+                        });
+                });
+        }
+        if (sessionStorage["username"] != null) {
+            login(sessionStorage["username"], sessionStorage["password"])
+        } else if (sessionStorage["session"] != null) {
+            document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
+        }
     </script>
 </body>
 
