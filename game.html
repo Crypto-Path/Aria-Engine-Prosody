@@ -397,7 +397,7 @@
                     body: JSON.stringify({
                         username: sessionStorage["username"],
                         password: sessionStorage["password"],
-                        chart: chartMetaData[0] + chartMetaData[4],
+                        chart: localStorage["ID"] + ":" + localStorage["Difficulty"],
                         length: chart.audio.duration / rate,
                         score: Math.round(Get_Score(Judgements, JudgementWeights, HighestCombos, calculateDifficulty(chart.map, localStorage["Difficulty"], chart.rate))),
                         acc: Get_Acc(Judgements, JudgementWeights),
