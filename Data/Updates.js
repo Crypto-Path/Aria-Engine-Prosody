@@ -1,4 +1,4 @@
-AddUpdate("Version: Minor improvements", "Theta &Theta;v0.6.", `
+AddUpdate("Version: Minor improvements", "Theta &Theta;v0.6.227", `
 Whats new?
 
 // Index.html
