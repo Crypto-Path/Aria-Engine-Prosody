@@ -6,25 +6,24 @@
 [Discord](https://discord.gg/ajWJNUHFq7)
 
 # Features
- + Chart loads from JSON
- + Playable chart
- + Adjustable Keybinds
- + Mods for adjustable difficulty
- + Mapping/Editor system
- + Main menu listing all charts
+ + Charts loading from a server user can upload charts to
+ + Account system that contains stats for overall leaderboards and view them after completing a chart
+ + Play or make your favorite song into a chart
 
 ## Goals
  - [x] Audio
  - [ ] Modifiers
+   - [ ] Score and Value adjustment
    - [x] Auto
    - [x] Rate
    - [ ] Hidden
    - [x] Switcher
-   - [ ] Timing
+   - [ ] Judgements adjustment
  - [x] Option Saving
  - [x] Map selection
- - [ ] Maps loaded from a server 
+ - [x] Maps loaded from a server 
  - [x] Mapping 
- - [x] Uploading maps
- - [ ] Profiles/Accounts
+ - [ ] Uploading maps
+ - [x] Profiles/Accounts
  - [ ] Leaderboards
+ - [ ] Skinning system

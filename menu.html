@@ -1,253 +1,425 @@
-<html> 
-    <head>
-        <title>
-            Prosody - Menu
-        </title>
-        <link rel="stylesheet" href="CSS/UI.css">
-        <link rel="stylesheet" href="CSS/BG.css">
-        <style>
-            a {
-                font-size: 1rem;
-            }
+<html>
 
-            p {
-                font-size: 1rem;
-            }
+<head>
+    <title>
+        Prosody - Menu
+    </title>
+    <link rel="stylesheet" href="CSS/UI.css">
+    <link rel="stylesheet" href="CSS/BG.css">
+    <link rel="stylesheet" href="CSS/NoSelect.css">
+    <style>
+        a {
+            font-size: 1rem;
+        }
+        
+        p {
+            font-size: 1rem;
+        }
+        
+        .SongSelector {
+            display: block;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 64px;
+            text-align: left;
+            cursor: pointer;
+            opacity: 80%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-size: 133%;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .SongSelector:hover {
+            background-color: rgba(0, 0, 0, 0.75);
+            background-size: 150%;
+        }
+        
+        #Selected {
+            margin-left: -1px;
+            background-size: 166%;
+        }
+        
+        .miniIcon {
+            background-color: rgba(62, 86, 114, 0.5);
+            border-radius: 15%;
+            width: 0.875rem;
+        }
+        
+        .SongBanner {
+            background-image: url('Sprites/Background/BG.png');
+            background-size: 100%;
+            height: 6rem;
+            background-position: center;
+            text-align: left;
+            border-radius: 0 0 1rem 1rem;
+        }
+        
+        .BannerImg {
+            margin-top: 2rem;
+        }
+        
+         ::-webkit-scrollbar {
+            -webkit-appearance: scrollbartrack-vertical;
+            -webkit-appearance: scrollbarthumb-vertical;
+        }
+        
+        .chartContainer {
+            display: flex;
+            overflow-wrap: break-word;
+            flex-direction: row;
+            flex-wrap: wrap;
+            overflow-y: scroll;
+            height: auto;
+        }
+        
+        .big {
+            font-size: 2rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            margin: 2px;
+            padding: 4px 8px;
+            background-color: rgba(0, 0, 0, 0.15);
+            ;
+            color: #fff;
+            border-radius: 3px;
+        }
+        
+        .tab {
+            text-decoration: none;
+            padding: 2% 4%;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+        }
+        
+        .tabs-container {
+            width: 15%;
+            display: flex;
+            justify-content: normal;
+            top: 37%;
+            margin-left: 3%;
+        }
+        
+        .InfoContainer {
+            /*Most Divs*/
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+            Width: 95%;
+            border-radius: 0.625rem;
+            background-color: rgba(62, 86, 114, 0.5);
+            text-align: center;
+            height: fit-content;
+            min-height: 1rem;
+            max-width: 100%;
+            padding-bottom: 0.625rem;
+            margin-top: 0.625rem;
+        }
+    </style>
+    <style>
+        #userPanel {
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -ms-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            width: 16.66%;
+            top: 25%;
+            left: calc(50% - 8.33%);
+            z-index: 1;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .hidden {
+            top: 98% !important;
+        }
+    </style>
+</head>
 
-            .SongSelector {
-                display: block;
-                background-color: rgba(0, 0, 0, 0.5);
-                width: 100%;
-                cursor: pointer;
-            }
-            .SongSelector:hover {
-                background-color: rgba(0, 0, 0, 0.75);
-            }
-
-            .miniIcon {
-                background-color: rgba(62, 86, 114, 0.5);
-                border-radius: 15%;
-                width: 0.875rem;
-            }
-
-            .SongBanner {
-                background-image: url('Sprites/Background/BG.png');
-                background-size: 100%;
-                height: 6rem;
-                background-position: center;
-                text-align: left;
-                border-radius: 0 0 1rem 1rem;
-            }
-
-            .BannerImg {
-                margin-top: 2rem;
-            }
-
-            ::-webkit-scrollbar {
-                -webkit-appearance: scrollbartrack-vertical;
-                -webkit-appearance: scrollbarthumb-vertical;
-            }   
-
-            .chartContainer {
-                display: flex; overflow-wrap: break-word; flex-direction: row; flex-wrap: wrap; overflow-y: scroll;height: auto;
-            }
-
-            .big {
-                font-size: 2rem;
-            }
-
-            .tag {
-                background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 25%;
-                margin: 2px;
-            }
-
-            .tab {
-                color: lightskyblue;
-                text-decoration: underline;
-                cursor:pointer;
-            }
-        </style>
-        </head>
-        <body>
-        <div class="UIContainer" style="width: 25%; background-color: rgba(0, 0, 0, 0);">
-            <div style="width: 100%; height: 20%;">
-                <img id="InfoBanner" style="width: 100%; aspect-ratio : 16 / 9; border-radius: 10px;" src="Sprites/Game.png"/>
-                <a id="Title" class="big">
+<body>
+    <div id="FadeIn" style="position: absolute; width: 100%; height: 100%; background-color: #fff; z-index: 999; pointer-events:none; top: 0; left: 0; display: flex; justify-content: center; align-items: center;">
+        <div>
+            <a id="myProgressBarText" style="color: black;">
+                0/0 charts loaded
+            </a>
+            <br>
+            <progress id="myProgressBar" max="100" value="0"></progress>
+        </div>
+    </div>
+    <div class="UIContainer" style="width: 25%; background-color: rgba(0, 0, 0, 0);">
+        <div style="width: 100%; height: 20%;">
+            <img id="InfoBanner" style="width: 100%; aspect-ratio : 16 / 9; border-radius: 10px;" src="Sprites/Game.png" />
+            <a id="Title" class="big" style="background-color: #0000007d; border-radius: 0rem 0rem 1rem 1rem; padding: 0rem 1rem 0.25rem 1rem;">
                     Prosody
                 </a>
-            </div> 
-            <audio id="audio" style="position:sticky;top: 200%; float: left; display:none" controls></audio><br>
         </div>
-        <div style="width: 20%; display: flex; top: 37%; margin-left: 2rem; justify-content: space-evenly;">
-            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">Basic</a>
-            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
-            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
-            <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
-        </div>
-        <div  class="UIContainer" style="width: 20%; height: auto; top: 38%; padding-top: 5px; ">
-            <div id="AboutPanel" style="display: block;">
-                <div class="UIContainer">
-                    <a>
-                        Description:
-                    </a>
-                    <p id = "description">
-                        Just a simple browser rhythm game
-                    </p>
-                </div>
-                <div class="UIContainer" style="overflow-wrap:normal;">
-                    <a>
-                        Tags:
-                    </a>
-                    <br><br>
-                    <div id="TagContainer">
-                        <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
-                    </div>
-                </div>
-            </div>
-            <div id="InfoPanel" style="display: block;">
-                <div class="UIContainer" style="overflow-wrap:normal;">
-                    <br>
-                    <a>
+        <audio id="audio" style="position:sticky;top: 200%; float: left; display:none" controls></audio><br>
+    </div>
+    <div class="tabs-container" style="width: 10%">
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">Basic</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'block';}">About</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'block';document.getElementById('ScoresPanel').style.display = 'none';document.getElementById('AboutPanel').style.display = 'none';}">Info</a>
+        <a class="tab" onclick="{document.getElementById('InfoPanel').style.display = 'none';document.getElementById('ScoresPanel').style.display = 'block';document.getElementById('AboutPanel').style.display = 'none';}">Leaderboard</a>
+    </div>
+    <div class="InfoContainer" style="width: 20%; height: 40%; overflow-y: scroll; top: 38%; padding-top: 5px; ">
+        <div id="InfoPanel" style="display: block;">
+            <div class="InfoContainer" style="overflow-wrap:normal;">
+                <br>
+                <a>
                         Difficulty: 
                     </a>
-                    <a id="ChartDifficulty">
+                <a id="ChartDifficulty">
                         ∞
                     </a>
-                    <br><br>
-                    <a>
+                <br><br>
+                <a>
                         Max combo: 
                     </a>
-                    <a id="ChartTTNotes">
+                <a id="ChartTTNotes">
                         ∞
                     </a>
-                    <br><br>
-                    <a>
+                <br><br>
+                <a>
                         BPM: 
                     </a>
-                    <a id="ChartBPM">
+                <a id="ChartBPM">
                         ∞
                     </a>
-                    <br><br>
-                    <a>
+                <br><br>
+                <a>
                         NPS: 
                     </a>
-                    <a id="ChartNPS">
+                <a id="ChartNPS">
                         ∞
                     </a>
-                </div>
-                <div class="UIContainer" style="overflow-wrap:normal;">
-                    <a>
-                        Artist: 
+            </div>
+        </div>
+        <div id="AboutPanel" style="display: block;">
+            <div class="InfoContainer">
+                <a>
+                        Description:
                     </a>
-                    <a id="ChartArtist">
+                <p id="description">
+                    Just a simple browser rhythm game
+                </p>
+            </div>
+            <div class="InfoContainer" style="overflow-wrap:normal;">
+                <a>
+                        Tags:
                     </a>
-                    <br>
-                    <a id="ChartCreator">
-                        Creator: 
-                    </a>
-                    <a>
-                    </a>
+                <br><br>
+                <div id="TagContainer">
+                    <a class="tag">Prosody </a><a class="tag">4K </a><a class="tag">4Key </a><a class="tag">VSRG </a><a class="tag">Vertical </a><a class="tag">Scrolling </a><a class="tag">Rhythm </a><a class="tag">Game </a>
                 </div>
             </div>
-            <div id="ScoresPanel" style="display: none;">
-                WORK IN PROGRESS
+            <div class="InfoContainer" style="overflow-wrap:normal;">
+                <a>
+                    Artist: 
+                </a>
+                <a id="ChartArtist">
+                </a>
                 <br>
-                <a style="font-size: 0.66rem;">
+                <a>
+                    Creator: 
+                </a>
+                <a id="ChartCreator">
+                </a>
+            </div>
+        </div>
+        <div id="ScoresPanel" style="display: none;">
+            WORK IN PROGRESS
+            <br>
+            <a style="font-size: 0.66rem;">
                     Currently only shows contributers to the development of prosody. (Likely not up to date, this is just a placeholder for now)
                 </a>
-                <div class="UIContainer">
-                    <div class="score">
-                        <a>
+            <div class="InfoContainer">
+                <div class="score">
+                    <a>
                             Cyphe Mercury
                         </a>
-                        <br>
-                        <a style="font-size: 0.7rem;">
+                    <br>
+                    <a style="font-size: 0.7rem;">
                             Score: [Lead developer]<br>Accuracy: [Mainly weekends]<br>Value: [UX/UI, Art, Music, Script, Gameplay, Charter]
                         </a>
-                    </div>
-                    <div class="score">
-                        <a>
+                </div>
+                <div class="score">
+                    <a>
                             Inaji
                         </a>
-                        <br>
-                        <a style="font-size: 0.7rem;">
+                    <br>
+                    <a style="font-size: 0.7rem;">
                             Score: [Producer]<br>Accuracy: [The Pathbreaking]<br>Value: [Music]
                         </a>
-                    </div>
+                </div>
+                <div class="score">
+                    <a>
+                            Xellen
+                        </a>
+                    <br>
+                    <a style="font-size: 0.7rem;">
+                            Score: [Producer]<br>Accuracy: [Spatium Cursu]<br>Value: [Music]
+                        </a>
                 </div>
             </div>
         </div>
-        <script src="Data/Maps.js"></script>
-        <div class="bg"></div>
-        <div class="bg bg2"></div>
-        <div class="bg bg3"></div>
-        </div>
-        <div id="Container" class = "UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 37%; right: 0; top: 0;">
-            <div id="TitleMenuContainer" class="UIContainer">
-                <input type="text" style="width: 75%; height: 2rem; font-size: 22px;" placeholder="Work In Progress" /> <br>
-                <button>
+    </div>
+    <button style="width: 10rem; height: 6%; position: absolute; bottom: 0; margin: 2%;" onclick="{location.href = 'index.html';}">Back</button>
+    <script src="Data/Maps.js"></script>
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+    </div>
+    <div id="Container" class="UIContainer" style="background-color: rgba(0, 0, 0, 0) ; position: absolute; height: 95%; width: 42%; right: 0; top: 0;">
+        <div id="TitleMenuContainer" class="UIContainer">
+            <input id="SearchBar" type="text" pattern="[a-zA-Z0-9!@#$%^*_|]{6,25}" style="width: 75%; height: 2rem; font-size: 22px;" oninput="SearchForChart()" placeholder="Search" /> <br>
+            <button>
                     Search
-                </button>
+            </button>
+        </div>
+        <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0);">
+        </div>
+    </div>
+
+    <div id="BGContainer" style="position:absolute; top: 0; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
+        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.5);" />
+        <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="" />
+    </div>
+    <div id="ContextMenu" onmouseover="{this.mouseIsOver = true;}" onmouseout="{this.mouseIsOver = false;}" style="background-color: rgb(200, 200, 200, 0.75); position: absolute; margin: 0 0 0 0; width: 150px; height: calc(auto + 10px); border-radius: 10px; padding-bottom: 10px; display: none;">
+        <div style="text-align: center;">
+            <a style="color: black;">
+                Menu
+            </a>
+            <hr>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <div id="ContextButtonATP" onmouseover="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0.5)';
+            }" onmouseout="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0)';
+            }" style="padding-left: 5px; color: black; width: 100%; cursor: pointer; background-color: rgba(51, 51, 51, 0);">
+                Add to Playlist
             </div>
-            <div id="SongsContainer" class="UIContainer chartContainer" style="background-color: rgba(0, 0, 0, 0)">
+            <div id="ContextButtonCP" onmouseover="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0.5)';
+            }" onmouseout="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0)';
+            }" style="padding-left: 5px; color: black; width: 100%; cursor: pointer; background-color: rgba(51, 51, 51, 0);">
+                Copy Link
+            </div>
+            <div id="ContextButtonHS" onmouseover="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0.5)';
+            }" onmouseout="{
+                this.style.backgroundColor = 'rgba(51, 51, 51, 0)';
+            }" style="padding-left: 5px; color: black; width: 100%; cursor: pointer; background-color: rgba(51, 51, 51, 0);">
+                Hide Song
             </div>
         </div>
-        
-        <div id="BGContainer" style="position:absolute; top: 0; background-color: rgba(0, 0, 0, 0.65); z-index: -5; width: 100% !important; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center;">
-            <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-            <img id="BGImage" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%; filter: blur(8px);" src="Sprites/Background/BG.png"/>
-        <script src = "Scripts/statCalculations.js" ></script>
-        <script src="Scripts/DifficultyCalculator.js"></script>
-        <script>
+    </div>
+    <div id="userPanel" class="hidden">
+        <button onclick="{document.getElementById('userPanel').classList.toggle('hidden');}" style="position: absolute; width: 100%; height: 5%">
+            Hide/Show Profile
+        </button>
+        <div id="background" style="z-index: -1; position: absolute; width:100%; height: 150px; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; background-position-x: center; top: 0; border-radius: 10px 10px 0px 0px;">
+        </div>
+        <div style="position: relative;width: 100%; background-color: rgba(0, 0, 0, 0.75); margin-top: 150px; border-radius: 0px 0px 10px 10px;">
+            <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.66);">
+            </img>
+            <div>
+                <h1 id="userUsername">Username</h1>
+                <!--<h3>Stats</h3>-->
+                <div>
+                    <p>
+                        Playtime: <a id="userStatPlaytime">0</a>h
+                        <br> playcount: <a id="userStatPlaycount">0</a>
+                        <br> Score: <a id="userStatScore">0</a>
+                        <br> Acc: <a id="userStatAccuracy">0</a>%
+                        <br> Value: <a id="userStatValue">0</a>
+                        <br> Notes hit: <a id="userStatNotesHit">0</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="Scripts/statCalculations.js"></script>
+    <script src="Scripts/DifficultyCalculator.js"></script>
+    <script>
+        // function CreateButton(_mapId) {
+        //     console.log(`Loading map: ${_mapId}`)
+        //     var main = document.createElement("button")
 
-            // function CreateButton(_mapId) {
-            //     console.log(`Loading map: ${_mapId}`)
-            //     var main = document.createElement("button")
+        //     var banner = document.createElement("div")
+        //     var bannerImg = document.createElement("img")
+        //     var bannerTitle = document.createElement("a")
 
-            //     var banner = document.createElement("div")
-            //     var bannerImg = document.createElement("img")
-            //     var bannerTitle = document.createElement("a")
-                
-            //     var info = document.createElement("div")
-            //     var infoStats = document.createElement("p")
+        //     var info = document.createElement("div")
+        //     var infoStats = document.createElement("p")
 
-            //     info.appendChild(infoStats);
+        //     info.appendChild(infoStats);
 
-            //     banner.appendChild(bannerImg);
-            //     banner.appendChild(bannerTitle);
+        //     banner.appendChild(bannerImg);
+        //     banner.appendChild(bannerTitle);
 
-            //     main.appendChild(banner);
-            //     main.appendChild(info);
+        //     main.appendChild(banner);
+        //     main.appendChild(info);
 
-            //     main.classList.add("UIContainer")
-            //     main.classList.add("SongSelector")
-            //     main.onclick = function name(params) {
-            //         localStorage['Chart'] = JSON.stringify(charts[_mapId])
-            //         window.location.href='game.html'
-            //     }
+        //     main.classList.add("UIContainer")
+        //     main.classList.add("SongSelector")
+        //     main.onclick = function name(params) {
+        //         localStorage['Chart'] = JSON.stringify(charts[_mapId])
+        //         window.location.href='game.html'
+        //     }
 
-            //     banner.classList.add("SongBanner", "UIContainer")
-            //     bannerImg.classList.add("BannerImg")
+        //     banner.classList.add("SongBanner", "UIContainer")
+        //     bannerImg.classList.add("BannerImg")
 
-            //     bannerImg.src = "Sprites/Icon.png";
-            //     bannerTitle.innerText = charts[_mapId]["Name"]
+        //     bannerImg.src = "Sprites/Icon.png";
+        //     bannerTitle.innerText = charts[_mapId]["Name"]
 
-            //     var au = document.createElement('audio');
-            //     au.src = charts[_mapId]["Audio"]
-            //     au.addEventListener('loadedmetadata', function(){
-            //         infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
-            //     })
+        //     var au = document.createElement('audio');
+        //     au.src = charts[_mapId]["Audio"]
+        //     au.addEventListener('loadedmetadata', function(){
+        //         infoStats.innerHTML = `Length: ${Math.floor(au.duration/60)}:${(au.duration % 60 < 10) ? '0' : ''}${Math.floor(au.duration % 60)}` + "<br>Difficulty: WIP<br>Score: 1000000 <img src='Sprites/Ranks/Rank_PC+.png' class='miniIcon'> <img src='Sprites/Ranks/Rank_EX.png' class='miniIcon'>"
+        //     })
 
-            //     info.classList.add("UIContainer")
+        //     info.classList.add("UIContainer")
 
-            //     document.getElementById("SongsContainer").appendChild(main);
-            // }
+        //     document.getElementById("SongsContainer").appendChild(main);
+        // }
 
-            function CreateButton(_mapId) {
-                console.log(`Loading map: ${_mapId}`)
+        id = -1
+        const searchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()-=_+[]{}\\|\'\";:/?.>,<`~"
+
+
+        function Update() {
+            try {
+                const bps = JSON.parse(charts[id])["BPM"] / 60;
+                const off = JSON.parse(charts[id])["4Rows"][0]["Offset"] / JSON.parse(charts[id])["BPM"];
+                document.getElementById("BGImage").style.transform = `Scale(${1.1 + (((-document.getElementById("audio").currentTime - off) % (1 / bps)) * bps / 20)})`;
+
+            } catch (error) {}
+        }
+        setInterval(Update, 1000 / 60)
+
+        function CreateButton(_mapId) {
+            //clearInterval(creatingButtons);
+            //console.log(JSON.parse(charts[_mapId])["4Rows"].length)
+            for (let i = 0; i < JSON.parse(charts[_mapId])["4Rows"].length; i++) {
+                //console.log(`Loading map: ${_mapId}`)
                 var main = document.createElement("button")
-                
+
+                //console.log(`url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/chartData.json')`);
+                main.style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/bg.png')`;
+
                 var info = document.createElement("div")
                 var title = document.createElement("a")
                 var other = document.createElement("a")
@@ -256,68 +428,87 @@
                 info.appendChild(title);
                 info.appendChild(other);
 
+                title.style = "background-color: rgba(0, 0, 0, 0.66); border-radius: 3px; color: white;"
+                other.style = "background-color: rgba(0, 0, 0, 0.66); border-radius: 3px; color: white;"
+
                 other.style.fontSize = "0.66rem"
-                
+
                 main.classList.add("UIContainer")
                 main.classList.add("SongSelector")
+                main.oncontextmenu = function(event) {
+                    contextMenu = document.getElementById("ContextMenu");
+                    contextMenu.style.display = "block";
+                    contextMenu.style.top = `${event.clientY}px`;
+                    contextMenu.style.left = `${event.clientX}px`;
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                };
                 main.onclick = function name(params) {
+                    //console.log(params)
                     document.getElementById("BGContainer").style.display = "flex";
                     document.querySelectorAll('.bg').forEach(e => e.remove());
-                    this.style.backgroundColor = "rgba(127,127,127,127.2)"
-                    if(this.id == "Selected") {
-                        localStorage['Chart'] = JSON.stringify(charts[_mapId])
-                        window.location.href='game.html'
+                    this.style.backgroundColor = "rgba(127,127,127,127.2)";
+                    if (this.id == "Selected") {
+                        localStorage['Chart'] = charts[_mapId];
+                        localStorage['Difficulty'] = i;
+                        localStorage['ID'] = id;
+                        window.location.href = 'game.html';
                     }
                     try {
-                        let Deselect = document.getElementById("Selected")
-                        Deselect.id = ""
-                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)"
-                    } catch (error) { }
-                    this.id = "Selected"
-                    document.getElementById("BGImage").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("InfoBanner").src = charts[_mapId]["BG"]["BG"]
-                    document.getElementById("Title").innerText = charts[_mapId]["Name"]
-                    document.getElementById("ChartArtist").innerText = charts[_mapId]["SongArtist"]
-                    document.getElementById("ChartCreator").innerText = charts[_mapId]["Creator"]
+                        let Deselect = document.getElementById("Selected");
+                        Deselect.id = "";
+                        Deselect.style.backgroundColor = "rgba(0,0,0,0.5)";
+                    } catch (error) {}
+                    this.id = "Selected";
+                    document.getElementById("BGImage").src = JSON.parse(charts[_mapId])["BG"];
+                    document.getElementById("InfoBanner").src = JSON.parse(charts[_mapId])["BG"];
+                    document.getElementById("Title").innerText = JSON.parse(charts[_mapId])["Name"];
+                    document.getElementById("ChartArtist").innerText = JSON.parse(charts[_mapId])["SongArtist"];
+                    document.getElementById("ChartCreator").innerText = JSON.parse(charts[_mapId])["Creator"];
 
                     // SECTION: Audio
+                    if (id != _mapId) {
+                        document.getElementById("audio").src = JSON.parse(charts[_mapId])["Audio"];
+                        document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
+                        document.getElementById("audio").play();
+                    }
 
-                    document.getElementById("audio").src = charts[_mapId]["Audio"];
-                    document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"]
-                    document.getElementById("audio").play()
 
                     document.getElementById("audio").onended = () => {
                         setTimeout(() => {
-                            document.getElementById("audio").currentTime = charts[_mapId]["4Rows"]["Difficulty1"]["PreviewPoint"];
-                            document.getElementById("audio").play()
-                        },500)
-                    }
+                            document.getElementById("audio").currentTime = JSON.parse(charts[_mapId])["4Rows"][i]["PreviewPoint"];
+                            document.getElementById("audio").play();
+                        }, 500);
+                    };
 
                     // SECTION: Difficulty stats
 
                     document.getElementById("audio").oncanplay = () => {
-                        totalNotes = charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][0].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][1].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][2].length+charts[_mapId]["4Rows"]["Difficulty1"]["Notes"][3].length
-                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(charts[_mapId]) * 100) / 100
-                        document.getElementById("ChartTTNotes").innerText = totalNotes
-                        document.getElementById("ChartBPM").innerText = charts[_mapId]["BPM"]
-                        document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10
+                        id = _mapId;
+                        totalNotes = JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][0].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][1].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][2].length + JSON.parse(charts[_mapId])["4Rows"][i]["Notes"][3].length;
+                        document.getElementById("ChartDifficulty").innerText = Math.round(calculateDifficulty(JSON.parse(charts[_mapId]), i) * 100) / 100;
+                        document.getElementById("ChartTTNotes").innerText = totalNotes;
+                        document.getElementById("ChartBPM").innerText = JSON.parse(charts[_mapId])["BPM"];
+                        document.getElementById("ChartNPS").innerText = Math.round(totalNotes / document.getElementById("audio").duration * 10) / 10;
                     }
 
                     // SECTION: Description
 
-                    const Desc = charts[_mapId]["Description"]
+                    const Desc = JSON.parse(charts[_mapId])["Description"]
                     document.getElementById("description").innerText = (Desc != undefined) ? Desc : "This chart does not have a description!";
-                    
+
                     // SECTION: Tags
                     var tags = document.getElementsByClassName('tag');
 
-                    while(tags[0]) {
+                    while (tags[0]) {
                         tags[0].parentNode.removeChild(tags[0]);
                     }
 
-                    for (let i = 0; i < charts[_mapId]["Tags"].length; i++) {
-                        
-                        const element = charts[_mapId]["Tags"][i];
+                    for (let i = 0; i < JSON.parse(charts[_mapId])["Tags"].length; i++) {
+
+                        const element = JSON.parse(charts[_mapId])["Tags"][i];
 
                         let tag = document.createElement("a");
                         tag.innerText = element;
@@ -326,64 +517,246 @@
                         document.getElementById("TagContainer").appendChild(tag);
                     }
                 }
-                title.innerText = charts[_mapId]["Name"];
-                other.innerText = `\nArtist: ${charts[_mapId]["SongArtist"]}, By: ${charts[_mapId]["Creator"]}`
+                title.innerText = JSON.parse(charts[_mapId])["Name"];
+                other.innerText = `\nArtist: ${JSON.parse(charts[_mapId])["SongArtist"]}, By: ${JSON.parse(charts[_mapId])["Creator"]}`
 
                 //info.classList.add("UIContainer")
 
                 document.getElementById("SongsContainer").appendChild(main);
 
             }
+        }
 
+        //console.log(charts);
+        getCharts();
+        //console.log(charts);
+        for (var i in charts) {
+            CreateButton(i);
+        }
+
+        const chartChecker = setInterval(() => {
+            let buttons = 0;
             for (var i in charts) {
+                buttons = i;
                 CreateButton(i)
             }
-        </script>
-        <script>
-            function getRandomInt(_max) {
-                return Math.floor(Math.random() * _max);
+            //console.log(parseInt(buttons) + 1);
+            //console.log(chartCount - 1);
+            if (parseInt(buttons) + 1 == chartCount - 1) {
+                setTimeout(() => {
+                    document.getElementById('FadeIn').style.transition = 'opacity ' + 750 + 'ms';
+                    document.getElementById('FadeIn').style.opacity = '0';
+                }, 250);
+                //reloadChart()
+                clearInterval(chartChecker);
             }
+            reloadChart()
+        }, 100);
 
-            function IncDecRementSelection(_dir) {
-                try {
-                    (_dir == 1) ? document.getElementById('Selected').nextSibling.click() : document.getElementById('Selected').previousSibling.click()
-                } catch (error) {
-                    (_dir == 1) ? document.getElementById("SongsContainer").children[0].click() : document.getElementById("SongsContainer").children[document.getElementById("SongsContainer").children.length-1].click()
+        chartCount = 10000
+        fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/count.json")
+            .then(response => response.text())
+            .then(data => {
+                chartCount = JSON.parse(data)["RankedCharts"];
+            });
+
+        function SearchForChart() {
+            string = document.querySelector("#TitleMenuContainer > input[type=text]").value
+            while (document.getElementsByClassName('SongSelector').length > 0) {
+                document.getElementsByClassName('SongSelector')[0].remove()
+            }
+            if (string != "") {
+                //console.log(charts[i])
+                console.log(`Searching for: ${string}`)
+                for (var i in charts) {
+                    if (string.includes("ID = ")) {
+                        try {
+                            if (i == string.split('ID = ')[1] - 1) {
+                                CreateButton(i)
+                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                    }
+                    if (JSON.parse(charts[i])["Name"].includes(string)) {
+                        CreateButton(i)
+                        console.log(`Found Matching Name: "${string}" in "${JSON.parse(charts[i])["Name"]}"`)
+                        continue;
+                    }
+                    if (JSON.parse(charts[i])["Creator"].includes(string)) {
+                        CreateButton(i)
+                        console.log(`Found Matching Creator: "${string}" in "${JSON.parse(charts[i])["Creator"]}"`)
+                        continue;
+                    }
+                    if (JSON.parse(charts[i])["SongArtist"].includes(string)) {
+                        CreateButton(i)
+                        console.log(`Found Matching SongArtist: "${string}" in "${JSON.parse(charts[i])["SongArtist"]}"`)
+                        continue;
+                    }
+                    if (string.includes(" = ") || string.includes(" > ") || string.includes(" < ") || string.includes(" >= ") || string.includes(" <= ")) {
+                        try {
+                            if (JSON.parse(charts[i])[string.split(' = ')[0]] == string.split(' = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Equal Value: "${string.split(' = ')[1]}" == "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                        try {
+                            if (JSON.parse(charts[i])[string.split(' >= ')[0]] >= string.split(' = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Greater Than Equal Value: "${string.split(' = ')[1]}" <= "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                        try {
+                            if (JSON.parse(charts[i])[string.split(' <= ')[0]] <= string.split(' = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Less Than Equal Value: "${string.split(' = ')[1]}" >= "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                        try {
+                            if (JSON.parse(charts[i])[string.split(' > ')[0]] > string.split(' = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Greater Than Value: "${string.split(' = ')[1]}" < "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                        try {
+                            if (JSON.parse(charts[i])[string.split(' < ')[0]] < string.split(' = ')[1]) {
+                                CreateButton(i)
+                                console.log(`Found Less Than Value: "${string.split(' = ')[1]}" > "${JSON.parse(charts[i])[string.split(' = ')[0]]}"`)
+                                continue;
+                            }
+                        } catch (error) {}
+                    }
+                    for (let j = 0; j < JSON.parse(charts[i])["Tags"].length; j++) {
+                        if (JSON.parse(charts[i])["Tags"][j].includes(string)) {
+                            CreateButton(i)
+                            console.log(`Found Matching Tag: "${string}" in "${JSON.parse(charts[i])["Tags"][j]}"`)
+                            break;
+                        }
+                    }
+                }
+                return;
+            } else
+                for (var i in charts) {
+                    CreateButton(i)
+                }
+        }
+        document.onclick = function(event) {
+            contextMenu = document.getElementById("ContextMenu");
+            if (contextMenu.mouseIsOver) {
+                return;
+            }
+            contextMenu.style.display = "none";
+        };
+    </script>
+    <script>
+        function getRandomInt(_max) {
+            return Math.floor(Math.random() * _max);
+        }
+
+        function IncDecRementSelection(_dir) {
+            try {
+                (_dir == 1) ? document.getElementById('Selected').nextSibling.click(): document.getElementById('Selected').previousSibling.click()
+            } catch (error) {
+                (_dir == 1) ? document.getElementById("SongsContainer").children[0].click(): document.getElementById("SongsContainer").children[document.getElementById("SongsContainer").children.length - 1].click()
                     // if (document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)] != document.getElementById("Selected")) {
                     //     document.getElementById("SongsContainer").children[getRandomInt(document.getElementById("SongsContainer").children.length)].click()
                     // }
-                }
             }
-        </script>
-        <script>
-
-
-            window.onkeydown = function(e) {
-                switch (e.keyCode) {
-                    case 27: 
-                        location.href = 'index.html';
-                        break;
-                    case 37: // Move selection up
+        }
+    </script>
+    <script>
+        window.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 27:
+                    location.href = 'index.html';
+                    break;
+                case 37: // Move selection up
+                    try {
                         IncDecRementSelection(-1)
-                        break;
-                    case 38: // Move selection up
+                    } catch (error) {}
+                    break;
+                case 38: // Move selection up
+                    try {
                         IncDecRementSelection(-1)
-                        break;
-                    case 39: // Move selection down
+                    } catch (error) {}
+                    break;
+                case 39: // Move selection down
+                    try {
                         IncDecRementSelection(1)
-                        break;
-                    case 40: // Move selection down
+                    } catch (error) {}
+                    break;
+                case 40: // Move selection down
+                    try {
                         IncDecRementSelection(1)
-                        break;
-                    case 13: // Move selection down
+                    } catch (error) {}
+                    break;
+                case 13: // Move selection down
+                    try {
                         document.getElementById('Selected').click()
-                        break;
-                
-                    default:
-                        console.log(e.keyCode)
-                        break;
-                }
+                    } catch (error) {}
+                    break;
+                case 8: // Backspace
+                    if (document.activeElement !== document.getElementById('SearchBar')) {
+                        document.getElementById("SearchBar").value = document.getElementById("SearchBar").value.slice(0, -1)
+                        SearchForChart()
+                    }
+                    break;
+                default:
+                    char = (e.getModifierState('CapsLock') || e.shiftKey) ? String.fromCharCode(e.keyCode) : String.fromCharCode(e.keyCode).toLowerCase();
+                    if (document.activeElement !== document.getElementById('SearchBar') && searchChars.includes(char)) {
+                        document.getElementById("SearchBar").value += char;
+                        SearchForChart()
+                    }
+                    console.log(e.keyCode + " " + char)
+                    break;
             }
-        </script>
-    </body>
+        }
+    </script>
+    <!--<script src="Scripts/Fullscreenify.js"></script>-->
+    <script>
+        setTimeout(() => {
+            urlSearchResult = new URLSearchParams(window.location.search).get("search") || new URLSearchParams(window.location.search).get("Search")
+            if (urlSearchResult) {
+                document.getElementById("SearchBar").value = urlSearchResult;
+                SearchForChart()
+            }
+        }, 500);
+    </script>
+    <script>
+        function login(username, password) {
+            fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+                .then(response => response.text())
+                .then(data => {
+                    const a = JSON.parse(data)["correctUser"];
+                    sessionStorage["username"] = username;
+                    sessionStorage["password"] = password;
+                    fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/userData.json`)
+                        .then(response => response.text())
+                        .then(userData => {
+                            user = JSON.parse(userData);
+                            document.getElementById("userUsername").innerText = username;
+                            document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
+                            document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
+                            console.log(user);
+                            document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 360) / 10
+                            document.getElementById("userStatPlaycount").innerText = user["playcount"]
+                            document.getElementById("userStatScore").innerText = user["score"]
+                            document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
+                            document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
+                            document.getElementById("userStatNotesHit").innerText = user["hits"]
+                        });
+                });
+        }
+        if (sessionStorage["username"] != null) {
+            login(sessionStorage["username"], sessionStorage["password"])
+        } else if (sessionStorage["session"] != null) {
+            document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
+        }
+    </script>
+</body>
+
 </html>

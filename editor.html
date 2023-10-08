@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>
         Prosody - Editor
     </title>
+    <link rel="shortcut icon" type="image/png" href="Sprites/Icon.png" />
     <link rel="stylesheet" href="CSS/UI.css">
     <style>
-        
         #map-editor {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -17,7 +18,7 @@
             background-color: rgba(0, 0, 0, 0.4);
             border: 1px solid #888;
             position: fixed;
-            bottom:0%;
+            bottom: 0%;
             transform: rotate(180deg);
         }
         
@@ -28,51 +29,44 @@
             background-color: rgba(0, 0, 0, 0.4);
             border: 1px solid #888;
             position: relative;
-            
         }
-
+        
         .grid-cell {
             border: 1px solid #ccc;
             margin-top: -2px;
         }
-
+        
         .note {
             background-image: url("Sprites/Notes/Note_Hit_1.png");
             background-repeat: no-repeat;
             background-size: contain;
             background-position-x: center;
         }
-
+        
         .TextButton {
             background-color: rgba(0, 0, 0, 0.5);
             aspect-ratio: 1 / 1;
             border-radius: 50%;
         }
-
+        
         .TextButton:hover {
             background-color: rgba(127, 127, 127, 0.75);
             transform: scale(1.5);
             cursor: pointer;
         }
         
-
         input {
             width: auto;
             height: 1.5625rem;
             border-radius: 0.625rem;
             font-size: 0.625rem;
         }
-
-        
-
     </style>
-  </head>
-  <body>
-    <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 0.5); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <img id="BGDim" class="background" style="position: absolute; z-index: -7; margin: 0 auto; width: 100%; background-color: inherit;" src="Sprites/Background/Dim.png" />
-        <img id="BGCenter" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 80%;" src="Sprites/Background/Center.png" />
-        <img id="BGPattern" class="background" style="position: absolute; z-index: -9; margin: 0 auto; width: 120%;" src="Sprites/Background/Pattern.png" />
-        <img id="BGGradient" class="background" style="position: absolute; z-index: -10; margin: 0 auto; width: 100%;" src="Sprites/Background/Gradient.png" />
+</head>
+
+<body>
+    <div id="BGContainer" style="position:absolute; background-color: rgba(0, 0, 0, 1); z-index: -5; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <img id="BG" class="background" style="position: absolute; z-index: -8; margin: 0 auto; width: 100%;" />
     </div>
     <div id="HitBar" style="width: 20rem; height: 0.5rem; background-color: rgba(226, 57, 49, 0.75); position:absolute; bottom: 0; margin-left: calc(50% - 9rem);">
     </div>
@@ -80,7 +74,7 @@
         <div id="map-editor">
         </div>
     </div>
-    <script> 
+    <script>
         // Get the map editor container
         const mapEditor = document.querySelector('#map-editor');
         let offsetY = 0;
@@ -91,6 +85,8 @@
 
         let file;
 
+        let editorHasTiles = false;
+
         let Json = {
             "Name": "???",
             "Audio": "???",
@@ -98,19 +94,22 @@
             "Creator": "???",
             "BPM": 60,
             "BG": {
-                "BG":"Sprites/Background/BG.png",
-                "Gradient":"Sprites/Background/Gradient.png",
-                "Pattern":"Sprites/Background/Pattern.png",
-                "Center":"Sprites/Background/Center.png"
+                "BG": "Sprites/Background/BG.png",
+                "Gradient": "Sprites/Background/Gradient.png",
+                "Pattern": "Sprites/Background/Pattern.png",
+                "Center": "Sprites/Background/Center.png"
             },
-            "4Rows": {
-                "Difficulty1": {
-                    "PreviewPoint": "0",
-                    "Map Name": "???",
-                    "Offset": 0,
-                    "Notes":[[],[],[],[]]
-                }
-            },
+            "4Rows": [{
+                "PreviewPoint": "0",
+                "Map Name": "???",
+                "Offset": 0,
+                "Notes": [
+                    [],
+                    [],
+                    [],
+                    []
+                ]
+            }],
             "Tags": [],
             "Description": "???"
         }
@@ -128,10 +127,10 @@
             const col = 3 - cell.getAttribute('data-col');
             console.log(`Note at row ${row}, column ${col} is ${cell.classList.contains('note') ? 'on' : 'off'}.`);
 
-            const index = Json["4Rows"]["Difficulty1"]["Notes"][col].indexOf(parseInt(row)/4);
-            cell.classList.contains('note') ? Json["4Rows"]["Difficulty1"]["Notes"][col].push(parseInt(row)/4) : Json["4Rows"]["Difficulty1"]["Notes"][col].splice(index,1);
+            const index = Json["4Rows"][0]["Notes"][col].indexOf(parseInt(row) / 4);
+            cell.classList.contains('note') ? Json["4Rows"][0]["Notes"][col].push(parseInt(row) / 4) : Json["4Rows"][0]["Notes"][col].splice(index, 1);
 
-            Json["4Rows"]["Difficulty1"]["Notes"][col].sort(function(a, b){
+            Json["4Rows"][0]["Notes"][col].sort(function(a, b) {
                 return a - b;
             });
 
@@ -139,22 +138,27 @@
         }
 
         function UpdateChartJson() {
+            console.log("Updating Chart Json");
             Json["Audio"] = (document.getElementById("MDPreAudio").value != "Custom") ? document.getElementById("MDPreAudio").value : Json["Audio"];
             Json["Name"] = document.getElementById("MDChartName").value;
             Json["SongArtist"] = document.getElementById("MDArtist").value;
             Json["Creator"] = document.getElementById("MDCreator").value;
             Json["BPM"] = document.getElementById("MDBPM").value;
-            Json["4Rows"]["Difficulty1"]["Offset"] = document.getElementById("MDOffset").value;
-            Json['4Rows']['Difficulty1']['PreviewPoint'] = document.getElementById("ChartPreview").value;
+            Json["4Rows"][0]["Offset"] = document.getElementById("MDOffset").value;
+            Json['4Rows'][0]['PreviewPoint'] = document.getElementById("ChartPreview").value;
 
             //document.getElementById("OptionChartData").innerHTML = JSON.stringify(Json);
-            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 1);
+            document.getElementById("ChartDiff").innerHTML = calculateDifficulty(Json, 0, 1);
 
             Json["Description"] = document.getElementById("InpDesc").innerHTML;
-            
+
+            Json["Tags"] = [];
             for (let i = 0; i < document.getElementById("InpTags").innerHTML.split(' ').length; i++) {
                 const element = document.getElementById("InpTags").innerHTML.split(' ')[i];
-                Json["Tags"].push(element);
+                if (element != ' ' || element != "" || element != "\\n" || element != null || element != ``) {
+                    console.log(element)
+                    Json["Tags"].push(element);
+                }
             }
 
             setTimeout(() => {
@@ -175,6 +179,7 @@
         }
 
         window.onload = function() {
+            console.log("Loading Editor...");
             // Updates the game, basically the play
             function Update() {
                 if (audio != null) {
@@ -183,32 +188,33 @@
                     //document.getElementById("HitBar").style.transform = `translateY(${(audio.currentTime*BPM*4)/16}rem)`;
                 }
             }
-            setInterval(Update, 1000/240)
+            setInterval(Update, 1000 / 240)
             if (!blob) {
-                console.log('Your browser does not support Blob URLs :(');     
+                console.log('Your browser does not support Blob URLs :(');
             }
 
-            document.getElementById('MDAudio').addEventListener('change', function(event){
+            document.getElementById('MDAudio').addEventListener('change', function(event) {
                 document.getElementById('MDPreAudio').value = "Custom"
                 console.log('change on input#file triggered');
                 file = this.files[0],
-                fileURL = blob.createObjectURL(file);
+                    fileURL = blob.createObjectURL(file);
                 console.log(file);
-                console.log('File name: '+file.name);
+                console.log('File name: ' + file.name);
                 if (document.getElementById("MDChartName").value == "") {
                     document.getElementById("MDChartName").value = file.name
                 }
-                console.log('File type: '+file.type);
-                console.log('File BlobURL: '+ fileURL);
+                console.log('File type: ' + file.type);
+                console.log('File BlobURL: ' + fileURL);
                 document.getElementById('audio').src = fileURL;
                 setTimeout(() => {
                     ReloadChart();
                 }, 100);
             });
-            
-            document.getElementById('MDPreAudio').addEventListener('change', function(){
+
+            document.getElementById('MDPreAudio').addEventListener('change', function() {
+                console.log("Detecting New Audio");
                 console.log(`${this.value}`);
-                console.log('File name: '+this.value);
+                console.log('File name: ' + this.value);
                 file = this.value;
                 fileURL = this.value;
                 console.log('File type: mp3');
@@ -216,20 +222,27 @@
 
                 switch (this.value.split('/')[1]) {
                     case "Inaji-The_Pathbreaking.mp3":
-                            document.getElementById("MDChartName").value = "The Pathbreaking"
-                            document.getElementById("MDBPM").value = 120;
-                            BPM = 120;
-                            document.getElementById("MDOffset").value = 2.07;
-                            document.getElementById("MDArtist").value = "Inaji";
+                        document.getElementById("MDChartName").value = "The Pathbreaking"
+                        document.getElementById("MDBPM").value = 120;
+                        BPM = 120;
+                        document.getElementById("MDOffset").value = 2.07;
+                        document.getElementById("MDArtist").value = "Inaji";
                         break;
                     case "Cyberspace Abyss.mp3":
-                            document.getElementById("MDChartName").value = "Cyberspace Abyss"
-                            document.getElementById("MDBPM").value = 170;
-                            BPM = 170;
-                            document.getElementById("MDOffset").value = 0;
-                            document.getElementById("MDArtist").value = "Cyphe Mercury";
+                        document.getElementById("MDChartName").value = "Cyberspace Abyss"
+                        document.getElementById("MDBPM").value = 170;
+                        BPM = 170;
+                        document.getElementById("MDOffset").value = 0;
+                        document.getElementById("MDArtist").value = "Cyphe Mercury";
                         break;
-                
+                    case "X3ll3n-Spatium_Cursu.mp3":
+                        document.getElementById("MDChartName").value = "Spatium Cursu"
+                        document.getElementById("MDBPM").value = 170;
+                        BPM = 170;
+                        document.getElementById("MDOffset").value = 0;
+                        document.getElementById("MDArtist").value = "X3LL3N";
+                        break;
+
                     default:
                         break;
                 }
@@ -240,7 +253,7 @@
         }
 
         document.body.onkeyup = function(e) {
-            if (e.key == " " || e.code == "Space" || e.keyCode == 32 ) {
+            if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
                 if (!audio.paused) {
                     pause();
                     return;
@@ -250,35 +263,55 @@
         }
 
         addEventListener("wheel", (event) => {
-            audio.currentTime += event.deltaY/BPM/audio.duration*10;
+            try {
+                audio.currentTime += event.deltaY / BPM / audio.duration * 10;
+            } catch (error) {
+
+            }
         });
-        
+
 
         var blob = window.URL || window.webkitURL;
-        
+
         function ReloadChart() {
             if (audio != 0) {
-                pause()
+                pause();
             }
             audio = document.getElementById("audio");
+            console.log("Audio Set");
 
             RemoveAllTiles();
-            Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]
+            console.log("Removing all tiles");
+            Json['4Rows'][0]['Notes'] = [
+                [],
+                [],
+                [],
+                []
+            ];
 
             offset = document.getElementById("MDOffset").value;
             BPM = parseInt(document.getElementById("MDBPM").value);
-            mapLength = audio.duration
+            setTimeout(() => {
+                mapLength = audio.duration;
+                console.log("audio:");
+                console.log(audio);
+                console.log("Editor data set");
 
-            AppendTiles(BPM*mapLength);
-            
-            console.log("Reloaded")
+                AppendTiles(BPM * mapLength);
+                console.log(BPM);
+                console.log(mapLength);
+                console.log(`Appended ${BPM * mapLength} Notes`);
+
+                console.log(`Reloaded ${mapEditor.childElementCount}`);
+            }, 100);
         }
 
         async function LoadJson(_Chart) {
+            console.log("Loading Chart Json");
 
             //Convert file Json to editor Json
 
-            console.log("Loading Chart Json")
+            console.log("Loading Chart Json");
 
             let reader = new FileReader();
             reader.readAsText(_Chart);
@@ -289,17 +322,19 @@
                 document.getElementById("MDArtist").value = _chart["SongArtist"];
                 document.getElementById("MDCreator").value = _chart["Creator"];
                 document.getElementById("MDBPM").value = _chart["BPM"];
-                document.getElementById("MDOffset").value = _chart["4Rows"]["Difficulty1"]["Offset"];
+                document.getElementById("MDOffset").value = _chart["4Rows"][0]["Offset"];
                 Json["Audio"] = _chart["Audio"];
+
+                document.getElementById("audio").src = _chart["Audio"]
 
                 document.getElementById("BGBGCenter").src = _chart["BG"]["Center"]
 
                 setTimeout(() => {
                     ReloadChart()
                     setTimeout(() => {
-                        LoadNotes(_chart["4Rows"]["Difficulty1"]["Notes"])
+                        LoadNotes(_chart["4Rows"][0]["Notes"])
                         console.log("Loaded Chart Json")
-                    }, 3000);
+                    }, 10000);
                 }, 100);
             };
         }
@@ -307,20 +342,21 @@
         function RemoveAllTiles() {
             var cells = document.getElementsByClassName('grid-cell');
 
-            while(cells[0]) {
+            while (cells[0]) {
                 cells[0].parentNode.removeChild(cells[0]);
             }
         }
 
         function AppendTiles(_AMNT) {
-            console.log("Creating Tiles")
+            console.log(`Creating ${_AMNT} Tiles`)
             for (let i = 0; i < _AMNT; i++) {
+                console.log(i)
                 const cell = document.createElement('div');
                 cell.classList.add('grid-cell');
                 cell.addEventListener('click', toggleNote);
                 cell.setAttribute('data-row', Math.floor(i / 4));
                 cell.setAttribute('data-col', i % 4);
-                if (Math.floor(i / 4) % 4 === 0 ) {
+                if (Math.floor(i / 4) % 4 === 0) {
                     cell.style.border = '1px solid #000';
                 }
                 mapEditor.appendChild(cell);
@@ -337,7 +373,7 @@
                 for (let _NoteY = 0; _NoteY < _Notes[_NoteX].length; _NoteY++) { // Cycles threw all the notes
                     for (let i = 0; i < _XNotes.length; i++) {
                         const element = _XNotes[i];
-                        if (element.getAttribute("data-row") == _Notes[_NoteX][_NoteY]*4) {
+                        if (element.getAttribute("data-row") == _Notes[_NoteX][_NoteY] * 4) {
                             toggleCell(element)
                             break;
                         }
@@ -349,18 +385,18 @@
         function UpdateTileHeight(_BPM) {
             var _Tiles = document.getElementsByClassName("grid-cell");
             for (let i = 0; i < _Tiles.length; i++) {
-                _Tiles[i].style.height = 7030/_BPM+"px"
-                
+                _Tiles[i].style.height = 7030 / _BPM + "px"
+
             }
         }
         window.onkeydown = function(e) {
             switch (e.keyCode) {
-                case 27: 
-                    (document.getElementById("HelpMenu").style.display == "block") ? document.getElementById("HelpMenu").style.display = "none" : document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
-                    
+                case 27:
+                    (document.getElementById("HelpMenu").style.display == "block") ? document.getElementById("HelpMenu").style.display = "none": document.getElementById("ExitMenu").style.display = (document.getElementById("ExitMenu").style.display == "none") ? "block" : "none";
+
                     //location.href = 'index.html';
                     break
-            
+
                 default:
                     console.log(e.keyCode)
                     break;
@@ -369,7 +405,7 @@
 
         function convertImageToBase64(imgUrl, loc) {
             const image = new Image();
-            image.crossOrigin='anonymous';
+            image.crossOrigin = 'anonymous';
             image.onload = () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -385,19 +421,22 @@
 
         function Playtest() {
             try {
-                localStorage['Chart'] = JSON.stringify(Json); window.open('game.html', '_blank');
+                localStorage['Chart'] = JSON.stringify(Json);
+                localStorage['Difficulty'] = 0;
+                localStorage['ID'] = null;
+                window.open('game.html', '_blank');
             } catch (error) {
                 window.alert("Chart size is too large\n\n 1 - Try reducing the kbps of the audio or finding any other means to reduce the file size\n\n 2 - Reduce resolution of the Background\n\n 3 - Make a shorter map w(°o°)w (Maybe you have an unrealistically insurmountable number of notes)\n\nSorry for the inconvenience");
             }
         }
     </script>
-    <div id="MappingInfo" class = "UIContainer" style="width:20%; float: left; height: 50rem; max-height: 70%; overflow-y: scroll;">
+    <div id="MappingInfo" class="UIContainer" style="width:20%; float: left; height: 50rem; max-height: 70%; overflow-y: scroll;">
         <div id="Header">
             <p>
                 Mapping
             </p>
         </div>
-        <div class = "UIContainer">
+        <div class="UIContainer">
             <div>
                 <a>
                     Mapping Data:
@@ -408,19 +447,20 @@
             <div class="UIContainer">
                 <label for="songs">Pre-Songs:</label>
 
-                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]] }" id="songs">
+                <select id="MDPreAudio" name="songs" onchange="{UpdateChartJson(); Json['4Rows'][0]['Notes']= [[],[],[],[]] }" id="songs">
                     <option value="Custom">Custom</option>
                     <option value="Audio/Inaji-The_Pathbreaking.mp3">Inaji - The Pathbreaking</option>
                     <option value="Audio/Cyberspace Abyss.mp3">Cyphe Mercury - Cyberspace Abyss</option>
+                    <option value="Audio/X3ll3n-Spatium_Cursu.mp3">X3LL3N - Spatium Cursu</option>
                 </select>
-                <input id="MDAudio" onchange="{Json['4Rows']['Difficulty1']['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
+                <input id="MDAudio" onchange="{Json['4Rows'][0]['Notes']= [[],[],[],[]]; UpdateChartJson(); }" type="file" accept="audio/mp3"> <label>Not fully supported</label><br>
             </div>
             <label>BPM: </label>
             <input id="MDBPM" onchange="ReloadChart()" type="number" value="60"> <br>
             <label>Offset: </label>
             <input id="MDOffset" onchange="ReloadChart()" type="text"> <br>
         </div>
-        <div class = "UIContainer">
+        <div class="UIContainer">
             <div>
                 <a>
                     Preview:
@@ -446,39 +486,20 @@
                             
                 </span> <br>
                 <label>Tags: (Sepparated by space) </label>
-                <span id="InpTags" class="textarea" role="textbox" contenteditable>
-                            
-                </span> <br>
+                <span id="InpTags" class="textarea" role="textbox" contenteditable></span> <br>
                 <label>Source: WIP</label>
                 <input id="InpSource" onchange="UpdateChartJson()" type="text"> <br>
             </div>
         </div>
-        <div class = "UIContainer">
+        <div class="UIContainer">
             <div>
                 <a>
                     Background:
                 </a>
             </div>
-            <label>Main Background:
+            <label>Background:
                 <input id="BGBG" onchange="{var BG = blob.createObjectURL(this.files[0]); document.getElementById('BG').src = BG; convertImageToBase64(BG, 'BG'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
             </label>
-            <label>BG Twist: (Optional)</label>
-            <div class="UIContainer">
-                (Feature may be removed in the future)
-                <br>
-                <label>
-                    Center: 
-                    <input id="BGBGCenter" onchange="{var BGCenter = blob.createObjectURL(this.files[0]); document.getElementById('BGCenter').src = BGCenter; convertImageToBase64(BGCenter, 'Center'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-                <label>
-                    Pattern: 
-                    <input id="BGBGPattern" onchange="{var BGPattern = blob.createObjectURL(this.files[0]); document.getElementById('BGPattern').src = BGPattern; convertImageToBase64(BGPattern, 'Pattern'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-                <label>
-                    Gradient: 
-                    <input id="BGBGGradient" onchange="{var BGGradient = blob.createObjectURL(this.files[0]); document.getElementById('BGGradient').src = BGGradient; convertImageToBase64(BGGradient, 'Gradient'); UpdateChartJson();}" type="file" accept="image/png, image/gif, image/jpeg"> <br>
-                </label>
-            </div>
         </div>
         <div class="UIContainer">
             <div>
@@ -490,8 +511,8 @@
             <label id="ChartDiff"></label>
         </div>
     </div>
-    
-    <div id="MappingData" class="UIContainer"  style="width:20%; float: right;">
+
+    <div id="MappingData" class="UIContainer" style="width:20%; float: right;">
         <div>
             <p>
                 Export/Import:
@@ -518,13 +539,13 @@
             </div>
         </div>
     </div>
-    
+
     <audio id="audio" style="position: absolute; bottom: 0; left: 0; float: left;" controls></audio><br>
     <div style="position: absolute; bottom: 0; right: 0;">
         <a class="TextButton" onclick="{document.getElementById('HelpMenu').style.display = (document.getElementById('HelpMenu').style.display == 'none') ? 'block' : 'none';}">ⓘ</a>
         <button style=" width: 10rem; height:2.5rem;" onclick="Playtest()">Test Chart</button><br>
     </div>
-    
+
     <div id="HelpMenu" class="modal" style="display:none; position: absolute; width: 100%; height: 95%;">
         <div class="modal-content" style=" height: 100%;">
             <div class="UIContainer" style="background-color: rgba(0, 0, 0, 0.9); width: 97.5%; height: 100%;">
@@ -539,11 +560,7 @@
                         </a>
                         <hr>
                         <p>
-                            Toggle Note: [Left Mouse Click]<br>
-                            Play Audio: [Space Bar]<br>
-                            Scroll: [Mouse Wheel]<br>
-                            Exit editor: [esc]<br>
-                            Exit menus: [esc]
+                            Toggle Note: [Left Mouse Click]<br> Play Audio: [Space Bar]<br> Scroll: [Mouse Wheel]<br> Exit editor: [esc]<br> Exit menus: [esc]
                         </p>
                     </div>
                     <div class="UIContainer" style="width: 38rem; max-width: 50%; height: fit-content;">
@@ -555,8 +572,8 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Trills.png">
-                                <hr>
-                                Trills<br>
+                                <hr> Trills
+                                <br>
                                 <a>
                                     A repeating pattern alternating between 2 notes.
                                 </a>
@@ -564,17 +581,15 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
-                                <hr>
-                                Jump Trills<br>
+                                <hr> Jump Trills<br>
                                 <a>
                                     A repeating pattern alternating between 2 notes on the left then 2 notes on the right or vise versa.
                                 </a>
                             </div>
 
                             <div class="UIContainer">
-                                <img style="width: 100%;" src="Sprites/Guide/Jumptrills.png">
-                                <hr>
-                                Split Trills<br>
+                                <img style="width: 100%;" src="Sprites/Guide/Splittrills.png">
+                                <hr> Split Trills<br>
                                 <a>
                                     A repeating pattern alternating between 2 notes on the outer sides then 2 notes in the middle or vise versa.
                                 </a>
@@ -585,8 +600,8 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Stream.png">
-                                <hr>
-                                Stream<br>
+                                <hr> Stream
+                                <br>
                                 <a>
                                     A pattern of notes aligned so that the next note over (left or right) is a set distance over.
                                 </a>
@@ -594,8 +609,7 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Jumpsream.png">
-                                <hr>
-                                Jump Streams<br>
+                                <hr> Jump Streams<br>
                                 <a>
                                     A pattern of notes alternating like streams back and forth, also 2 notes are on every line that represents some difference in audio.
                                 </a>
@@ -603,8 +617,7 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Handstream.png">
-                                <hr>
-                                Hand Stream<br>
+                                <hr> Hand Stream<br>
                                 <a>
                                     (Light)<br>
                                     Hands with 3 notes inbetween.
@@ -620,8 +633,8 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Hands.png">
-                                <hr>
-                                Hands<br>
+                                <hr> Hands
+                                <br>
                                 <a>
                                     3 notes every set distance with a different spot open.
                                 </a>
@@ -629,8 +642,7 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Minijacks.png">
-                                <hr>
-                                Mini Jacks<br>
+                                <hr> Mini Jacks<br>
                                 <a>
                                     Notes that repeat in succession, strung together by 2 to 3 note, with more notes accenting the audio.
                                 </a>
@@ -638,8 +650,7 @@
 
                             <div class="UIContainer">
                                 <img style="width: 100%;" src="Sprites/Guide/Runningman.png">
-                                <hr>
-                                Running Man<br>
+                                <hr> Running Man<br>
                                 <a>
                                     Jacks on one side and a stream like pattern on the other pinging back and forth.
                                 </a>
@@ -652,8 +663,9 @@
                         </a>
                         <hr>
                         <p>
-                           Lets say you made a chart. All the metadata is filled out. The timing & offset is right. Someone has modded it (Having a someone who makes charts look at the chart and tell you what you should change). It has a background and everything else, and you want it to be played by everyone. Then this is for you. This will explain how one should go about publishing a chart. But before you try publishing it anywhere make sure it meets the criteria.
-                           <br><br>If you've gotten no infomating back on if your chart is worthy or not wait 1 month and try again. If this happens again... I don't know what to tell you..... Try again, again? maybe.
+                            Lets say you made a chart. All the metadata is filled out. The timing & offset is right. Someone has modded it (Having a someone who makes charts look at the chart and tell you what you should change). It has a background and everything else, and you
+                            want it to be played by everyone. Then this is for you. This will explain how one should go about publishing a chart. But before you try publishing it anywhere make sure it meets the criteria.
+                            <br><br>If you've gotten no infomating back on if your chart is worthy or not wait 1 month and try again. If this happens again... I don't know what to tell you..... Try again, again? maybe.
                         </p>
                         <br>
                         <div class="UIContainer">
@@ -662,10 +674,7 @@
                                 Way: #1
                             </a>
                             <p style="margin-left: 10%; text-align: left;">
-                                1.) Download your chart.<br>
-                                2.) Join (<a href="">discord</a>).<br>
-                                3.) Post your chart in the charts channel.<br>
-                                4.) Wait. You will be pinged if your chart is considered worthy.
+                                1.) Download your chart.<br> 2.) Join (<a href="">discord</a>).<br> 3.) Post your chart in the charts channel.<br> 4.) Wait. You will be pinged if your chart is considered worthy.
                             </p>
                         </div>
                         <div class="UIContainer">
@@ -674,9 +683,7 @@
                                 Way: #2
                             </a>
                             <p style="margin-left: 10%; text-align: left;">
-                                1.) Download your chart.<br>
-                                2.) Email your file to <a href="cyphe371@gmail.com">cyphe371@gmail.com</a>.<br>
-                                3.) Wait. You will be emailed back if your chart is considered worthy.
+                                1.) Download your chart.<br> 2.) Email your file to <a href="cyphe371@gmail.com">cyphe371@gmail.com</a>.<br> 3.) Wait. You will be emailed back if your chart is considered worthy.
                             </p>
                         </div>
                     </div>
@@ -684,7 +691,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="ExitMenu" class="modal" style="display:none; position: absolute; width: 100%;">
         <div class="modal-content">
             <div class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8); width: 97.5%;">
@@ -694,10 +701,8 @@
                 <br>
                 <p>
                     Press 'esc' to close this window.
-                <br>
-                    Make sure you copy your JSON code for your map and save it into a file so you don't lose it.
-                <br>
-                    Currently you can only load charts in the JSON expirimental features in the game
+                    <br> Make sure you copy your JSON code for your map and save it into a file so you don't lose it.
+                    <br> Currently you can only load charts in the JSON expirimental features in the game
                 </p>
                 <div class="UIContainer" style="background-color: rgba(56, 56, 56, 0.4);">
                     <button onclick="{location.href = 'index.html'}" style=" width: 5rem; height: 3rem;">
@@ -740,5 +745,7 @@
         }
     </script>
     <script src="Scripts/DifficultyCalculator.js"></script>
-  </body>
+    <script src="Scripts/Fullscreenify.js"></script>
+</body>
+
 </html>

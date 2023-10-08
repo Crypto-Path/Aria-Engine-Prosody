@@ -1,135 +1,268 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Prosody</title>
-  <link rel="stylesheet" href="CSS/UI.css">
-  <link rel="stylesheet" href="CSS/BG.css">
-  <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
 
-    #big {
-        aspect-ratio : 1 / 1;
-        width: 30%;
-        font-size: 24px;
-        margin: auto;
+    <title>Prosody</title>
+    <meta content="Prosody - A 4K-VSRG - Play Now" property="og:title">
+    <meta content="Embark on a free-to-play, 4K browser VSRG (Vertical Scrolling Rhythm Game) adventure. Ascend the leaderboards in user-created charts, striving to become the ultimate 4-key VSRG virtuoso. Alternatively, unleash your mapping prowess and conquer the title of the game's premier mapper. The choice is yours!"
+        property="og:description">
+    <meta content="Prosody" property="og:site_name">
+    <meta content='https://prosody-server.schiytu37.repl.co/resources/gameIcon.png' property='og:image'>
 
-        animation-name: expand;
-        animation-duration: 1.5s;
-        animation-delay: 0ms;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-    }
-
-    #big-button {
-        aspect-ratio : 1 / 1;
-        width: 30%;
-        font-size: 24px;
-        margin: auto;
-
-        animation-name: ping;
-        animation-duration: 0.5s;
-        animation-delay: 1s;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-    }
-
-    #big-button:hover {
-        transition-timing-function: ease-in-out;
-        transition-duration: 0.15s;
-        width: 34.5%;
-        cursor: pointer;
-
-        animation-name: rotate;
-        animation-duration: 8s;
-        animation-delay: 0ms;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-    }
-
-    @keyframes rotate {
-        from {transform: rotate(0deg);}
-        to {transform: rotate(360deg);}
-    }
-
-    @keyframes ping {
-        from {transform: scale(0.9);}
-        to {transform: scale(1.1);}
-    }
-
-    @keyframes expand {
-        from {transform: scale(0.5);}
-        to {transform: scale(10);}
-    }
-
-    #top-buttons, #bottom-buttons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 5rem;
-        background-color: #f0f0f0;
-        position: fixed;
-        left: 0;
-        margin-left: 0;
-    }
-
-    #top-buttons {
-        top: 0;
-        margin-top: 0;
-    }
-
-    #bottom-buttons {
-        bottom: 0;
-    }
-
-    .small-button {
-        width: 30%;
-        height: 90%;
-        font-size: 26px;
-    }
-
-    .button {
-        width: 30%;
-        height: 90%;
-        font-size: 26px;
-        color: #f0f0f0;
-        background-color: rgba(67, 119, 134, 0.33);
-    }
-
-    button:hover {
-        background-color: rgba(127, 127, 127, 0.66);
-        cursor: pointer;
-    }
-  </style>
+    <link rel="shortcut icon" type="image/png" href="Sprites/Icon.png" />
+    <link rel="stylesheet" href="CSS/UI.css">
+    <link rel="stylesheet" href="CSS/BG.css">
+    <link rel="stylesheet" href="CSS/NoSelect.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #big {
+            aspect-ratio: 1 / 1;
+            width: 30%;
+            font-size: 24px;
+            margin: auto;
+            animation-name: expand;
+            animation-duration: 3s;
+            animation-delay: 0ms;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        
+        #big-button {
+            aspect-ratio: 1 / 1;
+            width: 30%;
+            font-size: 24px;
+            margin: auto;
+            animation-name: ping;
+            animation-duration: 0.5s;
+            animation-delay: 1s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        
+        #big-button:hover {
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.15s;
+            width: 34.5%;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.2);
+            filter: brightness(110%);
+            animation-name: rotate;
+            animation-duration: 8s;
+            animation-delay: 0ms;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes ping {
+            from {
+                transform: scale(0.9);
+            }
+            to {
+                transform: scale(1.1);
+            }
+        }
+        
+        @keyframes expand {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(20);
+            }
+        }
+        
+        #top-buttons,
+        #bottom-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 5rem;
+            background-color: #f0f0f0;
+            position: fixed;
+            left: 0;
+            margin-left: 0;
+        }
+        
+        #top-buttons {
+            top: 0;
+            margin-top: 0;
+        }
+        
+        #bottom-buttons {
+            bottom: 0;
+        }
+        
+        .small-button {
+            width: 30%;
+            height: 90%;
+            font-size: 26px;
+        }
+        
+        .button {
+            width: 30%;
+            height: 90%;
+            font-size: 26px;
+            color: #f0f0f0;
+            background-color: rgba(67, 119, 134, 0.33);
+        }
+        
+        button:hover {
+            background-color: rgba(127, 127, 127, 0.66);
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
     <div class="bg"></div>
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
     <div id="top-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
         <button class="small-button" style="border-radius: 0.625rem 0 0 0.625rem;">Download (WIP)</button>
-        <button class="small-button" style="border-radius: 0 0 0 0;">Leaderboard (WIP)</button>
-        <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Account (WIP)</button>
+        <button class="button" onclick="location.href = 'https://prosody-server.schiytu37.repl.co/leaderboard.html'" style="border-radius: 0 0 0 0;">Leaderboard</button>
+        <button class="button" onclick="location.href = 'https://prosody-server.schiytu37.repl.co/profiles/account.html'" style="border-radius: 0 0.625rem 0.625rem 0;">Account</button>
     </div>
-
-    <img id="big-button" onclick="{
-        this.id = 'big'
-        setTimeout(() => {location.href = 'menu.html'},1000)
-        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Notes/Hitter_Lit_1.png" />
 
     <div id="bottom-buttons" class="UIContainer" style="background-color: rgba(0, 0, 0, 0.8);">
         <button class="button" onclick="location.href = 'editor.html'" style="border-radius: 0.625rem 0 0 0.625rem;">Editor</button>
         <button class="small-button" style="border-radius: 0 0 0 0;">Skinner (WIP)</button>
         <button class="small-button" style="border-radius: 0 0.625rem 0.625rem 0;">Settings (WIP)</button>
     </div>
-    </body>
-    <script>
-        
-    </script>
+    <div id="LoginContainer" class="UIContainer" style="position: absolute; top: 15%; height: 66%; width: 23%; left: 5%; overflow-y: scroll;">
+        <div>
+            <div id="loginForm" style="display: block">
+                <a style="font-size: 26px;">
+                Login
+                </a>
+                <hr>
+                <input type="text" id="username" name="username" style="width: auto" required> <label for="username">Username</label><br>
+
+                <input type="password" id="password" name="password" style="width: auto" required> <label for="password">Password</label><br>
+
+                <button onClick="{login(document.getElementById('username').value, document.getElementById('password').value)}" style="background-color: rgb(0 0 0 / 66%); width: auto; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; cursor: pointer; transition: background-color 0.3s ease; margin: 5px;">Login</button>
+            </div>
+            <div style="display: none;" id="userPanel">
+                <div id="background" style="z-index: -1; position: absolute; width:100%; height: 150px; background-image: url('https://prosody-server.schiytu37.repl.co/resources/DefaultBackground.png'); background-size: cover; background-position-x: center; top: 0;">
+                </div>
+                <div style="position: relative;width: 100%; background-color: rgba(62, 86, 114, 0.5); margin-top: 150px;">
+                    <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" style="width: 100px; height: 100px; border-radius: 100px; margin-top: -50px;">
+                    </img>
+                    <div>
+                        <h1><a id="userUsername" href="">Some Title</a></h1>
+                        <h3>Stats</h3>
+                        <div>
+                            <p>
+                                Playtime: <a id="userStatPlaytime">0</a>h
+                                <br> playcount: <a id="userStatPlaycount">0</a>
+                                <br> Score: <a id="userStatScore">0</a>
+                                <br> Acc: <a id="userStatAccuracy">0</a>%
+                                <br> Value: <a id="userStatValue">0</a>
+                                <br> Notes hit: <a id="userStatNotesHit">0</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="UpdateContainer" class="UIContainer" style="position: absolute; top: 15%; height: 66%; width: 30%; left: 63%; overflow-y: scroll;">
+        <a style="font-size: 26px;">
+            Chang log
+        </a>
+        <hr>
+    </div>
+
+    <img id="big-button" onclick="{
+        this.id = 'big'
+        setTimeout(() => {location.href = 'menu.html'},2500);
+        setTimeout(() => {
+            document.getElementById('TitleText').style.transition = 'opacity ' + 750 + 'ms';
+            document.getElementById('TitleText').style.opacity = '0';
+        },1500);
+        }" style="border-radius: 50%;image-rendering: pixelated;" src="Sprites/Icon.png" />
+    <img id="TitleText" style="pointer-events:none; aspect-ratio: 1 / 1;position: absolute;border-radius: 50%;image-rendering: pixelated; width: 400px; left: calc(50% - 200px); top: calc(50% - 200px);" src="Sprites/Title.png" />
+</body>
+<script>
+    function AddUpdate(_v, _u, _t) {
+        container = document.createElement("div");
+
+        container.classList.add("UIContainer")
+
+        versionText = document.createElement("a");
+
+        changelogContainer = document.createElement("div");
+        changelogText = document.createElement("a");
+
+        changelogContainer.style.textAlign = "left";
+        changelogContainer.style.marginLeft = "1rem";
+
+        changelogText.style.whiteSpace = "pre-wrap";
+
+        versionText.innerHTML = _v + "<br>" + _u;
+        changelogText.innerText = _t;
+
+        container.appendChild(versionText);
+        container.appendChild(changelogText);
+        container.appendChild(document.createElement("hr"));
+        container.appendChild(changelogContainer);
+        changelogContainer.appendChild(changelogText);
+        document.getElementById("UpdateContainer").appendChild(container);
+
+        return container;
+    }
+</script>
+<script src="Data/Updates.js"></script>
+<script>
+    function login(username, password) {
+        fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+            .then(response => response.text())
+            .then(data => {
+                const a = JSON.parse(data)["correctUser"];
+                document.getElementById("loginForm").style.display = a ? "none" : "block";
+                document.getElementById("userPanel").style.display = a ? "block" : "none";
+                sessionStorage["username"] = username;
+                sessionStorage["password"] = password;
+                fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/userData.json`)
+                    .then(response => response.text())
+                    .then(userData => {
+                        user = JSON.parse(userData);
+                        document.getElementById("userUsername").innerText = username;
+                        document.getElementById("userUsername").href = `https://prosody-server.schiytu37.repl.co/profiles/user.html?user=${username.replace(/ /g, "_")}`;
+                        document.getElementById("pfp").src = `https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/pfp.png`;
+                        document.getElementById("background").style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/profiles/${username.replace(/ /g, "_")}/background.png')`;
+                        console.log(user);
+                        document.getElementById("userStatPlaytime").innerText = Math.floor(user["playtime"] / 360) / 10
+                        document.getElementById("userStatPlaycount").innerText = user["playcount"]
+                        document.getElementById("userStatScore").innerText = user["score"]
+                        document.getElementById("userStatAccuracy").innerText = Math.floor(user["acc"] / user["playcount"] * 10000) / 100
+                        document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
+                        document.getElementById("userStatNotesHit").innerText = user["hits"]
+                    });
+            });
+    }
+    if (sessionStorage["username"] != null) {
+        login(sessionStorage["username"], sessionStorage["password"])
+    } else if (sessionStorage["session"] != null) {
+        document.getElementById("username").value = sessionStorage["session"].split(",")[1] // TO FIX
+    }
+</script>
+
 </html>

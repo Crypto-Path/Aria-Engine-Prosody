@@ -9,8 +9,9 @@ class Chart {
      * @param {*} yVel 
      * @param {*} progress 
      */
-    constructor(map, rows, xOffset = 0, yOffset = 0, xVel = 0, yVel = 0, progress = 0, rate = 1) {
+    constructor(map, difficulty, rows, xOffset = 0, yOffset = 0, xVel = 0, yVel = 0, progress = 0, rate = 1) {
         this.map = map;
+        this.difficulty = difficulty;
         this.rows = rows;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
@@ -20,12 +21,12 @@ class Chart {
         this.rate = rate;
 
         this.audio = null;
-
+        this.delayTimer = null;
         this.row = []
-        /*Sets each row to an empty array for some purpose idk*/
+            /*Sets each row to an empty array for some purpose idk*/
         for (let i = 0; i < rows; i++) {
             this.row[i] = [];
-           // this.map["4Rows"]["Difficulty1"]["Notes"][i][0];
+            // this.map["4Rows"]["Difficulty1"]["Notes"][i][0];
         }
 
 
@@ -34,14 +35,15 @@ class Chart {
 
     // Load Chart
     Load_Map() {
-        const mapChart = this.map["4Rows"]["Difficulty1"]["Notes"]; // Gets the difficulty Level
+        console.log(this.map)
+        const mapChart = this.map["4Rows"][this.difficulty]["Notes"]; // Gets the difficulty Level
         for (let i in mapChart) { //
             try {
                 const notes = mapChart[i];
                 for (let x = 0; x < notes.length; x++) {
                     const element = notes[x];
-                    this.tempNote = new Note(i*100, element/this.rate,this.row[i].length) // Creates note object
-                    this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], -(this.tempNote.Get_Pos()[1]) / (this.map["BPM"] / 60) - this.map["4Rows"]["Difficulty1"]["Offset"] / this.rate /* this.rate/*+ (this.row[i][this.row[i].length].Get_Pos()[1]) /* Gets previous not position */]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
+                    this.tempNote = new Note(i * 100, element / this.rate, this.row[i].length) // Creates note object
+                    this.tempNote.Set_Start_Pos([this.tempNote.Get_Pos()[0], -(this.tempNote.Get_Pos()[1]) / (this.map["BPM"] / 60) - this.map["4Rows"][this.difficulty]["Offset"] / this.rate /* this.rate/*+ (this.row[i][this.row[i].length].Get_Pos()[1]) /* Gets previous not position */ ]); // Sets note y offset of previous note ([10,10] -> [10,20]) to avoid overlap and reduce map size
                     this.tempNote.Set_Pos(this.tempNote.Get_Start_Pos());
                     this.Append(this.tempNote, i) // Appends note to row array which holds all notes
                 }
@@ -55,7 +57,7 @@ class Chart {
      * Returns map data (Map Name, Map Create, Etc.)
      */
     Get_MetaData() {
-        return [this.map["Name"],this.map["SongArtist"],this.map["Creator"],this.map["BPM"],this.map["4Rows"]["Difficulty1"]["Map Name"]]
+        return [this.map["Name"], this.map["SongArtist"], this.map["Creator"], this.map["BPM"], this.map["4Rows"][this.difficulty]["Map Name"]]
     }
 
     /**
@@ -72,15 +74,15 @@ class Chart {
     }
 
     UpdateNotes() {
-        for (let i = 0; i < this.row.length; i++) {
-            const _row = this.row[i];
-            for (let j = 0; j < _row.length; j++) {
-                const note = _row[j];
-                note.Set_Pos([note.Get_Pos()[0], note.Get_Start_Pos()[1] + this.yVel * this.progress]);
+            for (let i = 0; i < this.row.length; i++) {
+                const _row = this.row[i];
+                for (let j = 0; j < _row.length; j++) {
+                    const note = _row[j];
+                    note.Set_Pos([note.Get_Pos()[0], note.Get_Start_Pos()[1] + this.yVel * this.progress]);
+                }
             }
         }
-    }
-    //Update
+        //Update
 
     Get_Next(row) {
         return this.row[row][0]
@@ -133,7 +135,9 @@ class Chart {
         const audioLocation = this.map["Audio"]; // Gets JSON url or directory location for audio
         this.audio = new Audio(audioLocation);
         this.audio.playbackRate = _rate;
-        this.audio.play();
+        this.delayTimer = setTimeout(() => {
+            this.audio.play();
+        }, 3000)
     }
 
     Stop_Audio() {
