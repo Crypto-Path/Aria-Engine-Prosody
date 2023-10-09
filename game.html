@@ -244,7 +244,7 @@
                             startMap();
                             for (let i = 0; i < hitKeys.length; i++) {
                                 const letter = String.fromCharCode(hitKeys[i]);
-                                showLetter(letter, 'Arial', window.innerWidth / 1920 * 42, window.innerWidth / 1920 * 820 + (i * 96), window.innerHeight / 1920 * (document.getElementById("OptionUpscroll").checked ? 384 : window.innerWidth - 384), 1000, 10000, true, 1000);
+                                showLetter(letter, 'Arial', window.innerWidth / 1920 * 42, window.innerWidth / 1920 * (document.getElementById("OptionPlayfieldXOffset").value * 16 + 48) + (i * 96), window.innerHeight / 1920 * (document.getElementById("OptionUpscroll").checked ? 384 : window.innerWidth - 384), 1000, 10000, true, 1000);
                             }
                         }
                         break;
