@@ -418,7 +418,7 @@
                 var main = document.createElement("button")
 
                 //console.log(`url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/chartData.json')`);
-                main.style.backgroundImage = `url('https://prosody-server.schiytu37.repl.co/charts/ranked/${(parseInt(_mapId) + 1)}/bg.png')`;
+                main.style.backgroundImage = `url('https://api.cyphemercury.online/prosody/charts/ranked/${(parseInt(_mapId) + 1)}/bg.png')`;
 
                 var info = document.createElement("div")
                 var title = document.createElement("a")
@@ -554,7 +554,7 @@
         }, 100);
 
         chartCount = 10000
-        fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/count.json")
+        fetch("https://api.cyphemercury.online/prosody/charts/ranked/count.json")
             .then(response => response.text())
             .then(data => {
                 chartCount = JSON.parse(data)["RankedCharts"];
@@ -728,7 +728,7 @@
     </script>
     <script>
         function login(username, password) {
-            fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+            /* fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
                 .then(response => response.text())
                 .then(data => {
                     const a = JSON.parse(data)["correctUser"];
@@ -749,7 +749,7 @@
                             document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
                             document.getElementById("userStatNotesHit").innerText = user["hits"]
                         });
-                });
+                }); */
         }
         if (sessionStorage["username"] != null) {
             login(sessionStorage["username"], sessionStorage["password"])

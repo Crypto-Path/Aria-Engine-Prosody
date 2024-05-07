@@ -388,7 +388,7 @@
 
 
             if (!document.getElementById("OptionModAuto").checked) {
-                fetch('https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/uploadScore', {
+                /*fetch('https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/uploadScore', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -404,7 +404,7 @@
                         value: Get_Value(Judgements, JudgementWeights, HighestCombos, chart.map, localStorage["Difficulty"], rate),
                         notesHit: Judgements[1] + Judgements[2] + Judgements[3] + Judgements[4]
                     })
-                });
+                }); */
             }
 
 
@@ -1053,7 +1053,7 @@
             ud = {};
 
             function login(username, password) {
-                fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
+                /* fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/clientLogin?user=${username}&pass=${password}`)
                     .then(response => response.text())
                     .then(data => {
                         const a = JSON.parse(data)["correctUser"];
@@ -1075,7 +1075,7 @@
                                 document.getElementById("userStatValue").innerText = Math.round(user["value"] * 10) / 10
                                 document.getElementById("userStatNotesHit").innerText = user["hits"]
                             });
-                    });
+                    });*/
             }
             if (sessionStorage["username"] != null) {
                 login(sessionStorage["username"], sessionStorage["password"])

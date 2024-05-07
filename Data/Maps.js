@@ -3,7 +3,7 @@ let _charts = [];
 let _alt = [];
 
 function getCharts() {
-    fetch("https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/count.json")
+    fetch("https://api.cyphemercury.online/prosody/charts/ranked/count.json")
         .then(response => response.text())
         .then(data => {
             //console.log(data);
@@ -16,7 +16,7 @@ function getCharts() {
             progressBarText.innerText = `0/${progressBar.max+1} charts loaded...`;
 
             for (let i = 1; i < chartCount; i++) {
-                fetch(`https://corsproxy.io/?https://prosody-server.schiytu37.repl.co/charts/ranked/${i}/chartData.json`)
+                fetch(`https://api.cyphemercury.online/prosody/charts/ranked/${i}/chartData.json`)
                     .then(chart => chart.text())
                     .then(chartData => {
                         skip = false;
